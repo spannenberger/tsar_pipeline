@@ -38,6 +38,5 @@ stages:
 
     tensorboard:
       callback: TensorboardLogger
-      metric_names: ["accuracy01", "accuracy03"]
 
   train_stage: {}

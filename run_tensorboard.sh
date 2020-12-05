@@ -1,1 +1,1 @@
-tensorboard --logdir=logs/train_log
+tensorboard --logdir=logs/

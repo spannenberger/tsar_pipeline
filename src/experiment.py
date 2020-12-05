@@ -47,10 +47,10 @@ class Experiment(ConfigExperiment):
                                            transforms=self.get_transforms("train"),
                                            image_size=image_size)
 
-        datasets["valid"] = CassavaDataset(image_paths_val,
-                                           labels_val,
-                                           transforms=self.get_transforms("val"),
-                                           image_size=image_size)
+        datasets["val"] = CassavaDataset(image_paths_val,
+                                         labels_val,
+                                         transforms=self.get_transforms("val"),
+                                         image_size=image_size)
 
                                            
         return datasets
