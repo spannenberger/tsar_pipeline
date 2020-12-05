@@ -132,3 +132,6 @@ dmypy.json
 train_dataset/
 logs/
 .vscode
+*.zip
+ngrok
+notebooks/src
