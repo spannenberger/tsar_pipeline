@@ -137,3 +137,5 @@ ngrok
 notebooks/src
 notebooks/*.txt
 notebooks/config
+cassava-leaf-disease-classification
+.DS_Store
