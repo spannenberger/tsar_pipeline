@@ -128,10 +128,12 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# other
+# Project temp files
 train_dataset/
 logs/
 .vscode
 *.zip
 ngrok
 notebooks/src
+notebooks/*.txt
+notebooks/config
