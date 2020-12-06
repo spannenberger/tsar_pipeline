@@ -30,12 +30,14 @@ class Experiment(ConfigExperiment):
             image_size = tuple(image_size)
 
         train_dir = Path(data_params["train_dir"])
+        metadata_path = train_dir.joinpath(data_params["train_meta"])
+        images_dir = train_dir.joinpath(data_params["image_dir"])
         
-        images_and_labels = pd.read_csv(train_dir.joinpath(data_params["train_meta"]))
-        images_and_labels["label"] = images_and_labels["label"].astype(np.int64)
+        train_meta = pd.read_csv(metadata_path)
+        train_meta["label"] = train_meta["label"].astype(np.int64)
         
-        image_paths = [train_dir.joinpath("images", i) for i in images_and_labels["image_id"]]
-        labels = images_and_labels["label"].tolist()
+        image_paths = [images_dir.joinpath(i) for i in train_meta["image_id"]]
+        labels = train_meta["label"].tolist()
 
         image_paths_train, image_paths_val, \
         labels_train, labels_val = train_test_split(image_paths, labels,
