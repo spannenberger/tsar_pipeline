@@ -11,7 +11,7 @@ stages:
   data_params:
     batch_size: 64
     num_workers: 0
-    train_dir: "./cassava-leaf-disease-classification/"
+    train_dir: "./train_dataset/"
     image_dir: "train_images"
     train_meta: "train.csv"
     image_size: [224, 224]
