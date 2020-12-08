@@ -13,5 +13,6 @@ sh ./train.sh
 sh ./train_kfold.sh 10
 
 # Run tensorflow for visualisation
-sh ./run_tensorboard.sh
+tensorboard --logdir=logs # for usual pipeline
+tensorboard --logdir=crossval_log # for kfold pipeline
 ```
