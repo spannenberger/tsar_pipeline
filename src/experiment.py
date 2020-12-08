@@ -11,14 +11,14 @@ from sklearn.model_selection import train_test_split
 
 
 class Experiment(ConfigExperiment):
-    @staticmethod
-    def get_transforms(mode: str, **kwargs):
-        assert mode in ["train", "val"]
+    # @staticmethod
+    # def get_transforms(mode: str, **kwargs):
+    #     assert mode in ["train", "val"]
 
-        if mode == "train":
-            return A.Normalize()
-        else:
-            return A.Normalize()
+    #     if mode == "train":
+    #         return A.Normalize()
+    #     else:
+    #         return A.Normalize()
 
     def get_datasets(self, stage: str, **kwargs):
         datasets = OrderedDict()
@@ -41,18 +41,16 @@ class Experiment(ConfigExperiment):
 
         image_paths_train, image_paths_val, \
         labels_train, labels_val = train_test_split(image_paths, labels,
-                                                    stratify=labels, 
+                                                    stratify=labels,
                                                     test_size=data_params["valid_size"])
 
         datasets["train"] = CassavaDataset(image_paths_train,
                                            labels_train,
-                                           transforms=self.get_transforms("train"),
-                                           image_size=image_size)
+                                           transforms=self.get_transforms(stage, "train"))
 
         datasets["valid"] = CassavaDataset(image_paths_val,
                                           labels_val,
-                                          transforms=self.get_transforms("val"),
-                                          image_size=image_size)
+                                          transforms=self.get_transforms(stage, "valid"))
 
                                            
         return datasets
