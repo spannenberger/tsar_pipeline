@@ -71,6 +71,7 @@ stages:
 
       tensorboard:
         callback: TensorboardLogger
+        metric_names: ["accuracy01", "average_precision", "loss", "lr"]
 
       confusion_matrix:
         callback: ConfusionMatrixCallback

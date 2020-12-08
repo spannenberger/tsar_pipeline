@@ -1,3 +1,5 @@
+rm -r -f crossval_log> /dev/null
+
 echo "Num folds is $1\n"
 echo "================\n"
 if [[  "$1" ]]

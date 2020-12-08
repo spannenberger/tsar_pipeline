@@ -7,7 +7,7 @@ import numpy as np
 from collections import OrderedDict
 from catalyst.dl import ConfigExperiment
 from .dataset import CassavaDataset
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, StratifiedKFold
 
 
 class Experiment(ConfigExperiment):
@@ -36,7 +36,25 @@ class Experiment(ConfigExperiment):
                                                         stratify=labels,
                                                         test_size=data_params["valid_size"])
         else:
-            raise NotImplemented()
+            kfold = StratifiedKFold(n_splits=data_params["num_folds"],
+                                    shuffle=True,
+                                    random_state=self.initial_seed)
+
+            image_paths_train, image_paths_val = [], []
+            labels_train, labels_val = [], []
+            
+            for fold_index, (train_index, val_index) in enumerate(kfold.split(image_paths, labels)):
+                if fold_index != data_params["fold_index"]:
+                    continue
+                
+                for i in train_index:
+                    image_paths_train.append(image_paths[i])
+                    labels_train.append(labels[i])
+
+                for i in val_index:
+                    image_paths_val.append(image_paths[i])
+                    labels_val.append(labels[i])
+                
 
         datasets["train"] = CassavaDataset(image_paths_train,
                                            labels_train,
