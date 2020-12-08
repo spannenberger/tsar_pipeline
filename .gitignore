@@ -139,3 +139,4 @@ notebooks/*.txt
 notebooks/config
 cassava-leaf-disease-classification
 .DS_Store
+crossval_log/

@@ -11,15 +11,6 @@ from sklearn.model_selection import train_test_split
 
 
 class Experiment(ConfigExperiment):
-    # @staticmethod
-    # def get_transforms(mode: str, **kwargs):
-    #     assert mode in ["train", "val"]
-
-    #     if mode == "train":
-    #         return A.Normalize()
-    #     else:
-    #         return A.Normalize()
-
     def get_datasets(self, stage: str, **kwargs):
         datasets = OrderedDict()
         data_params = self.stages_config[stage]["data_params"]
@@ -39,10 +30,13 @@ class Experiment(ConfigExperiment):
         image_paths = [images_dir.joinpath(i) for i in train_meta["image_id"]]
         labels = train_meta["label"].tolist()
 
-        image_paths_train, image_paths_val, \
-        labels_train, labels_val = train_test_split(image_paths, labels,
-                                                    stratify=labels,
-                                                    test_size=data_params["valid_size"])
+        if not data_params.get("num_folds", 0) > 0:
+            image_paths_train, image_paths_val, \
+            labels_train, labels_val = train_test_split(image_paths, labels,
+                                                        stratify=labels,
+                                                        test_size=data_params["valid_size"])
+        else:
+            raise NotImplemented()
 
         datasets["train"] = CassavaDataset(image_paths_train,
                                            labels_train,
