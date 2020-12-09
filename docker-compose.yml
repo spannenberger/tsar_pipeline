@@ -1,0 +1,16 @@
+version: '3.4'
+
+services:
+  cassava:
+    image: cassava
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/workspace/cassava_code
+    build:
+      context: .
+      network: host
+      dockerfile: ./Dockerfile
+
+volumes:
+  cassava_code:

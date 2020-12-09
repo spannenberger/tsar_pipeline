@@ -16,3 +16,15 @@ sh ./train_kfold.sh 10
 tensorboard --logdir=logs # for usual pipeline
 tensorboard --logdir=crossval_log # for kfold pipeline
 ```
+
+## Test in docker
+```
+# build ur project, u need to do this only once
+docker-compose build
+
+# run docker ur container
+docker-compose up
+
+# shutdown ur container
+docker-compose stop
+```
