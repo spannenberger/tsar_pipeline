@@ -11,9 +11,37 @@ args:
   benchmark: True
 
 stages:
+  callbacks_params:
+    infer:
+      callback: InerCallback
+      subm_file: "./crossval_log/preds.csv"
+    loss:
+      callback: CriterionCallback
+    optimizer:
+      callback: OptimizerCallback
+
+    accuracy:
+      callback: AccuracyCallback
+      accuracy_args: [1]
+
+    precision:
+      callback: AveragePrecisionCallback
+
+    tensorboard:
+      callback: TensorboardLogger
+      metric_names: ["accuracy01", "average_precision", "loss", "lr"]
+
+    confusion_matrix:
+      callback: ConfusionMatrixCallback
+      num_classes: *num_classes
+      tensorboard_callback_name: "tensorboard"
+
+    saver:
+      callback: CheckpointCallback
+      save_n_best: 3
   data_params:
-    batch_size: 5
-    num_workers: 0
+    batch_size: 32
+    num_workers: 0 #для локальной поставить 0
     shuffle: false
     train_dir: "./train_dataset/"
     image_dir: "train_images"
@@ -56,30 +84,5 @@ stages:
 
     infer: *transform
 
-  callbacks_params:
-      loss:
-        callback: CriterionCallback
-      optimizer:
-        callback: OptimizerCallback
-
-      accuracy:
-        callback: AccuracyCallback
-        accuracy_args: [1]
-
-      precision:
-        callback: AveragePrecisionCallback
-
-      tensorboard:
-        callback: TensorboardLogger
-        metric_names: ["accuracy01", "average_precision", "loss", "lr"]
-
-      confusion_matrix:
-        callback: ConfusionMatrixCallback
-        num_classes: *num_classes
-        tensorboard_callback_name: "tensorboard"
-
-      saver:
-        callback: CheckpointCallback
-        save_n_best: 3
 
   stage1: {}

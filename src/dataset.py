@@ -30,6 +30,7 @@ class CassavaDataset(Dataset):
             image = self.transforms({"image": image})["image"]
 
         image = np.moveaxis(image, -1, 0)
+        item["image_name"] = image_path
         item["features"] = torch.from_numpy(image)
         item["targets"] = self.image_labels[idx]
 

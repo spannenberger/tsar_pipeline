@@ -10,7 +10,7 @@ from .dataset import CassavaDataset
 from sklearn.model_selection import train_test_split, StratifiedKFold
 
 
-class Experiment(ConfigExperiment):
+class Experiment(ConfigExperiment):        
     def get_datasets(self, stage: str, **kwargs):
         datasets = OrderedDict()
         data_params = self.stages_config[stage]["data_params"]
