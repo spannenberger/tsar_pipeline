@@ -1,5 +1,5 @@
 model_params:
-  model: ResNet18
+  model: ResNextFacebook32x8d
   num_classes: &num_classes 5
 
 args:
