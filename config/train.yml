@@ -41,7 +41,7 @@ stages:
       save_n_best: 3
   data_params:
     batch_size: 32
-    tta: 2
+    tta: 1
     num_workers: 0 #для локальной поставить 0
     shuffle: false
     train_dir: "./train_dataset"
@@ -60,7 +60,15 @@ stages:
 
   optimizer_params:
     optimizer: Adam
-    lr: 0.001
+    lr: 0.0001
+
+  scheduler_params:
+    _key_value: False
+
+    scheduler: CustomScheduler
+    delay_epochs: 2
+    total_epochs: 10
+    eta_min: 0.00001
 
   transform_params:
     _key_value: True
