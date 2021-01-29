@@ -13,24 +13,29 @@ class InerCallback(Callback):
         self.preds = []
 
     def on_batch_end(self, state: State):
-        paths = state.input["image_name"]
-        targets = state.input['targets']
-        preds = state.output["logits"].detach().cpu().numpy()
-        preds = preds.argmax(axis=1)
-        for path, pred, target in zip(paths, preds, targets):
-            self.preds.append((path, pred, target))
+        if state.loader_name == 'valid' and state.epoch == state.num_epochs:
+            paths = state.input["image_name"]
+            targets = state.input['targets']
+            preds = state.output["logits"].detach().cpu().numpy()
+            preds = preds.argmax(axis=1)
+            for path, pred, target in zip(paths, preds, targets):
+                self.preds.append((path, pred, target))
     
 
-    def on_loader_end(self, _):
-        subm = ["path,class_id,target"]
-        subm += [f"{path},{cls},{tar}" for path, cls, tar in self.preds]
-        if hasattr(self,'num_folds'):
+    def on_experiment_end(self, _):
+        
+        if not hasattr(self,'num_folds'):
+            subm = ["path,class_id,target"]
+            subm += [f"{path},{cls},{tar}" for path, cls, tar in self.preds]
             with open(self.subm_file, 'w') as file:
-                file.write("\n".join(subm))
+                file.write("\n".join(subm)+"\n")
         else:
             if self.fold_index == 0:
+                subm = ["path,class_id,target"]
+                subm += [f"{path},{cls},{tar}" for path, cls, tar in self.preds]
                 with open(self.subm_file, 'w') as file:
-                    file.write("\n".join(subm))
+                    file.write("\n".join(subm)+"\n")
             else:
+                subm = [f"{path},{cls},{tar}" for path, cls, tar in self.preds]
                 with open(self.subm_file, 'a') as file:
-                    file.write("\n".join(subm)[1:])
+                    file.write("\n".join(subm)[1:]+"\n")
