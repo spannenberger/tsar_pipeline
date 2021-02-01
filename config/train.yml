@@ -12,6 +12,11 @@ args:
 
 stages:
   callbacks_params:
+    torchscript_saver:
+      callback: TorchscriptSaveCallback
+      out_dir: "./logs/torchsript"
+      checkpoint_names: ["best", "best_full"]
+
     infer:
       callback: InerCallback
       subm_file: "./crossval_log/preds.csv"
