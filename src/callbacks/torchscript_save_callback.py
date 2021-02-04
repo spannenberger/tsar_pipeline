@@ -8,39 +8,18 @@ from catalyst.utils.tracing import (
 @registry.Callback
 class TorchscriptSaveCallback(Callback):
 
-    def __init__(self,
-                 method_name = "forward",
-                 checkpoint_names = ["best"],
-                 mode = "eval",
-                 device = "cuda:0",
-                 requires_grad = False,
-                 out_dir = "./tochsript"):
-
-        self.method_name = method_name
-        self.method_name = method_name
-        self.checkpoint_names = checkpoint_names
-        self.mode = mode
-        self.device = device
-        self.requires_grad = requires_grad
+    def __init__(self,out_dir,checkpoint_names):
         self.out_dir = Path(out_dir)
+        self.checkpoint_names = checkpoint_names
         super().__init__(CallbackOrder.Internal)
 
     def on_experiment_end(self, state: State):
         for checkpoint in self.checkpoint_names:
-            traced_model = trace_model_from_checkpoint(
-                logdir = state.logdir,
-                method_name = self.method_name,
-                checkpoint_name = checkpoint,
-                mode = self.mode,
-                requires_grad = self.requires_grad,
-                device = self.device
-            )
-            save_traced_model(
-                model = traced_model,
-                logdir = state.logdir,
-                method_name = self.method_name,
-                checkpoint_name = checkpoint,
-                mode = self.mode,
-                requires_grad = self.requires_grad,
-                out_dir = self.out_dir
-            )
+            path = state.logdir / "checkpoints" / (checkpoint + ".pth")
+            state.model.load_state_dict(torch.load(path)['model_state_dict'])
+            state.model.eval()
+
+            scripted = torch.jit.script(state.model,torch.rand(1,3, 512,512))
+            path = state.logdir/self.out_dir/(checkpoint+".pt")
+            path.parent.mkdir(parents = True,exist_ok = True)
+            torch.jit.save(scripted, str(path))
