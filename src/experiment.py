@@ -6,7 +6,7 @@ import albumentations as A
 import numpy as np
 from collections import OrderedDict
 from catalyst.dl import ConfigExperiment
-from .dataset import CassavaDataset
+from dataset import CassavaDataset
 from sklearn.model_selection import train_test_split, StratifiedKFold
 from catalyst.data.sampler import DynamicBalanceClassSampler
 

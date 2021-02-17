@@ -1,0 +1,89 @@
+model_params:
+  model: ResNet18
+  num_classes: &num_classes 5
+
+args:
+  expdir: src
+  logdir: logs
+  verbose: True
+  seed: 42
+  deterministic: True
+  benchmark: True
+
+stages:
+  callbacks_params:
+    # torchscript_saver:
+    #   callback: TorchscriptSaveCallback
+    #   out_dir: "./logs/torchsript"
+    #   checkpoint_names: ["best", "best_full"]
+
+    infer:
+      callback: InerCallback
+      subm_file: "./crossval_log/preds.csv"
+    loss:
+      callback: CriterionCallback
+    optimizer:
+      callback: OptimizerCallback
+
+    accuracy:
+      callback: AccuracyCallback
+      accuracy_args: [1]
+
+    precision:
+      callback: AveragePrecisionCallback
+
+    tensorboard:
+      callback: TensorboardLogger
+      metric_names: ["accuracy01", "average_precision", "loss", "lr"]
+
+    confusion_matrix:
+      callback: ConfusionMatrixCallback
+      num_classes: *num_classes
+      tensorboard_callback_name: "tensorboard"
+    saver:
+      callback: CheckpointCallback
+      save_n_best: 3
+  data_params:
+    batch_size: 1
+    num_workers: 0 #для локальной поставить 0
+    shuffle: false
+    train_dir: "./train_dataset"
+    image_dir: "train_images"
+    train_meta: "train.csv"
+    valid_size: 0.2
+
+  stage_params:
+    num_epochs: 20
+    valid_loader: valid
+    main_metric: accuracy01
+    minimize_metric: False
+
+  criterion_params:
+    criterion: CrossEntropyLoss
+
+  optimizer_params:
+    layerwise_params:
+        fc:
+          lr: 0.001
+    optimizer: Adam
+    lr: 0.0001
+  scheduler_params:
+    _key_value: False
+
+    scheduler: CustomScheduler
+    delay_epochs: 10
+    total_epochs: 20
+    eta_min: 0.000001
+
+  scheduler_params:
+    _key_value: False
+
+    scheduler: CustomScheduler
+    delay_epochs: 2
+    total_epochs: 10
+    eta_min: 0.00001
+
+
+
+
+  stage1: {}

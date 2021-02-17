@@ -1,0 +1,76 @@
+stages:
+  transform_params:
+    _key_value: True
+
+    train:
+      transform: A.Compose
+      transforms:
+        - OneOf: #размытие, контраст
+          - transform: A.MedianBlur
+            blur_limit: 5
+            p: 0.4
+          - transform: A.Solarize
+            threshold: 150
+            p: 0.4
+          - transform: A.HueSaturationValue
+            hue_shift_limit: 50
+            sat_shift_limit: 80
+            val_shift_limit: 80
+            p: 0.5
+          p: 0.5
+        - OneOf: #повороты, вращения
+          - transform: A.HorizontalFlip
+            p: 0.5
+          - transform: A.VerticalFlip
+            p: 0.5
+          - transform: A.RandomRotate90
+            p: 0.5
+          - transform: A.ShiftScaleRotate
+            shift_limit: 0.625
+            scale_limit: 0.1
+            rotate_limit: 120
+            interpolation: 1
+            p: 0.5
+          p: 1
+          OneOf: #яркость
+          - transfrom: A.RandomBrightnessContrast
+            brightness_limit: [0.1, 0.2]
+            contrast_limit: 0.5
+            p: 0.2
+          - transfrom: A.GaussNoise
+            var_limit: [250.0, 280.0]
+            mean: 50
+            p: 0.5
+          p: 0.5
+        - transform: A.Cutout
+          num_holes: 70
+          max_w_size: 30
+          max_h_size: 20
+          fill_value: 0
+          p: 0.9
+        - transform: A.Normalize
+        - transform: A.Resize
+          height: 512
+          width: 512
+
+    valid: &transform  # only for valid dataset
+      transform: A.Compose
+      transforms:
+        - transform: A.ShiftScaleRotate
+          shift_limit: 0.625
+          scale_limit: 0.1
+          rotate_limit: 120
+          interpolation: 1
+          p: 0.5
+        - transfrom: A.RandomBrightnessContrast
+          brightness_limit: [-0.1,0.1]
+          contrast_limit: [-0.1,0.1]
+          p: 0.8
+        - transform: A.Normalize
+        - transform: A.RandomRotate90
+          p: 1.0
+        - transform: A.Resize
+          height: 512
+          width: 512
+
+    infer: *transform
