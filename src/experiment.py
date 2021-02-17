@@ -8,7 +8,7 @@ from collections import OrderedDict
 from catalyst.dl import ConfigExperiment
 from .dataset import CassavaDataset
 from sklearn.model_selection import train_test_split, StratifiedKFold
-
+from catalyst.data.sampler import DynamicBalanceClassSampler
 
 class Experiment(ConfigExperiment):
     def get_datasets(self, stage: str, **kwargs):
@@ -55,11 +55,11 @@ class Experiment(ConfigExperiment):
                     image_paths_val.append(image_paths[i])
                     labels_val.append(labels[i])
 
-
-        datasets["train"] = CassavaDataset(image_paths_train,
-                                           labels_train,
-                                           transforms=self.get_transforms(stage, "train"))
-
+        datasets["train"] = {'dataset':CassavaDataset(image_paths_train,
+                                            labels_train,
+                                            transforms=self.get_transforms(stage, "train")),
+                                "sampler":DynamicBalanceClassSampler(labels_train)
+                                }
         datasets["valid"] = CassavaDataset(image_paths_val,
                                           labels_val,
                                           transforms=self.get_transforms(stage, "valid"),

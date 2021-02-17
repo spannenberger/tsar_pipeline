@@ -11,7 +11,8 @@ then
                         --stages/data_params/num_folds=$(($1)):int \
                         --stages/data_params/fold_index=$(($i - 1)):int \
                         --stages/callbacks_params/infer/fold_index=$(($i - 1)):int \
-                        --stages/callbacks_params/infer/num_folds=$(($1)):int
+                        --stages/callbacks_params/infer/num_folds=$(($1)):int \
+                        --check
         python fold_metric.py $i
         echo "================\n"
         done

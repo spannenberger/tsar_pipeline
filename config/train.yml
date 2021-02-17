@@ -44,17 +44,14 @@ stages:
       callback: CheckpointCallback
       save_n_best: 3
   data_params:
-    batch_size: 32
-    tta: 4
-    num_workers: 48 #для локальной поставить 0
+    batch_size: 1
+    tta: 1
+    num_workers: 0 #для локальной поставить 0
     shuffle: false
     train_dir: "./train_dataset"
     image_dir: "train_images"
     train_meta: "train.csv"
     valid_size: 0.2
-    sampler_params:
-      train:
-        sampler: ImbalancedDatasetSampler
 
   stage_params:
     num_epochs: 20
@@ -75,7 +72,7 @@ stages:
     _key_value: False
 
     scheduler: CustomScheduler
-    delay_epochs: 13
+    delay_epochs: 10
     total_epochs: 20
     eta_min: 0.000001
 
@@ -115,7 +112,6 @@ stages:
     valid: &transform  # only for valid dataset
       transform: A.Compose
       transforms:
-
         - transform: A.RandomRotate90
           p: 1.0
         - transform: A.Normalize 
