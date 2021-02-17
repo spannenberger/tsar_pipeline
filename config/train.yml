@@ -45,7 +45,6 @@ stages:
       save_n_best: 3
   data_params:
     batch_size: 1
-    tta: 1
     num_workers: 0 #для локальной поставить 0
     shuffle: false
     train_dir: "./train_dataset"
