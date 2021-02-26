@@ -129,6 +129,7 @@ dmypy.json
 .pyre/
 
 # Project temp files
+train_dataset_kcm/
 train_dataset/
 logs/
 .vscode

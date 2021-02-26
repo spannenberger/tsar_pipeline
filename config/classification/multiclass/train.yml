@@ -28,7 +28,9 @@ stages:
     accuracy:
       callback: AccuracyCallback
       accuracy_args: [1]
-
+    f1_score:
+      callback: CustomF1Score
+      
     precision:
       callback: AveragePrecisionCallback
 
