@@ -22,7 +22,6 @@ class ResNet18(nn.Module):
 # test model
 if __name__ == "__main__":
     model = ResNet18()
-    model.eval()
     input_tensor = torch.randn(1, 3, 256, 256)
     output = model(input_tensor)
 

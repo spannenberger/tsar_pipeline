@@ -132,6 +132,7 @@ dmypy.json
 train_dataset_kcm/
 train_dataset/
 logs/
+mlruns/
 .vscode
 *.zip
 ngrok

@@ -1,59 +1,53 @@
-stages:
-  transform_params:
-    _key_value: True
+train:
+  transform: Compose
+  transforms:
+    - OneOf: #размытие, контраст
+      - transform: MedianBlur
+        blur_limit: 5
+        p: 0.4
+      - transform: HueSaturationValue
+        hue_shift_limit: 50
+        sat_shift_limit: 80
+        val_shift_limit: 80
+        p: 0.5
+      p: 0.5
+    - OneOf: #повороты, вращения и тд
+      - transform: HorizontalFlip
+        p: 0.5
+      - transform: VerticalFlip
+        p: 0.5
+      - transform: RandomRotate90
+        p: 0.5
+      - transform: ShiftScaleRotate
+        shift_limit: 0.625
+        scale_limit: 0.1
+        rotate_limit: 120
+        interpolation: 1
+        p: 0.5
+      p: 1
+    - transform: Cutout
+      num_holes: 50
+      max_w_size: 35
+      max_h_size: 20
+      fill_value: 0
+      p: 1
+    - transform: Normalize
+    - transform: Resize
+      height: 512
+      width: 512
 
-    train:
-      transform: A.Compose
-      transforms:
-        - OneOf: #размытие, контраст
-          - transform: A.MedianBlur
-            blur_limit: 5
-            p: 0.4
-          - transform: A.HueSaturationValue
-            hue_shift_limit: 50
-            sat_shift_limit: 80
-            val_shift_limit: 80
-            p: 0.5
-          p: 0.5
-        - OneOf: #повороты, вращения и тд
-          - transform: A.HorizontalFlip
-            p: 0.5
-          - transform: A.VerticalFlip
-            p: 0.5
-          - transform: A.RandomRotate90
-            p: 0.5
-          - transform: A.ShiftScaleRotate
-            shift_limit: 0.625
-            scale_limit: 0.1
-            rotate_limit: 120
-            interpolation: 1
-            p: 0.5
-          p: 1
-        - transform: A.Cutout
-          num_holes: 50
-          max_w_size: 35
-          max_h_size: 20
-          fill_value: 0
-          p: 1
-        - transform: A.Normalize
-        - transform: A.Resize
-          height: 512
-          width: 512
-
-    valid: &transform  # only for valid dataset
-      transform: A.Compose
-      transforms:
-        - transform: A.ShiftScaleRotate
-          shift_limit: 0.625
-          scale_limit: 0.1
-          rotate_limit: 120
-          interpolation: 1
-          p: 0.5
-        - transform: A.Normalize
-        - transform: A.RandomRotate90
-          p: 1.0
-        - transform: A.Resize
-          height: 512
-          width: 512
-
-    infer: *transform
+valid: &transform  # only for valid dataset
+  transform: Compose
+  transforms:
+    - transform: ShiftScaleRotate
+      shift_limit: 0.625
+      scale_limit: 0.1
+      rotate_limit: 120
+      interpolation: 1
+      p: 0.5
+    - transform: Normalize
+    - transform: RandomRotate90
+      p: 1.0
+    - transform: Resize
+      height: 512
+      width: 512

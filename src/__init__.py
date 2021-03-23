@@ -1,13 +1,17 @@
-# from catalyst.dl import SupervisedRunner as Runner
-from TTASupervisedRunner import TTASupervisedRunner as Runner
-from experiment import Experiment
+from TTASupervisedRunner import TTASupervisedRunner
 from resnet18 import ResNet18
-from catalyst.dl import registry
-from catalyst.contrib.callbacks.confusion_matrix_logger import ConfusionMatrixCallback
-from callbacks.torchscript_save_callback import TorchscriptSaveCallback
+from catalyst.registry import Registry
+from catalyst.callbacks.metrics.confusion_matrix import ConfusionMatrixCallback
 from callbacks.iner_callback import InerCallback
 from callbacks.new_scheduler import CustomScheduler
-from callbacks.custom_f1_score import CustomF1Score
+from catalyst.loggers.tensorboard import TensorboardLogger
+# from callbacks.metric_callbacks.recall_callback import RecallMetric
 
-registry.Model(ResNet18)
-registry.Callback(ConfusionMatrixCallback)
+from callbacks.logger_callbacks.mlflow_logging_callback import MLFlowloggingCallback
+from callbacks.logger_callbacks.tensorboard_image_logger import TensorboardImageCustomLogger
+from catalyst.loggers.mlflow import MLflowLogger
+
+
+Registry(TTASupervisedRunner)
+Registry(ResNet18)
+Registry(ConfusionMatrixCallback)

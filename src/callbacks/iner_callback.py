@@ -1,12 +1,17 @@
-from catalyst.dl import registry, Callback, CallbackOrder, State
+from catalyst.dl import Callback, CallbackOrder
+from catalyst.core.runner import IRunner
+from catalyst.registry import Registry
 from sklearn.metrics import accuracy_score
 import pandas as pd
 from pathlib import Path
 from sklearn.metrics import log_loss
+from torch.nn import BCELoss, Sigmoid
+from catalyst.metrics._accuracy import MultilabelAccuracyMetric
 from torch.nn import CrossEntropyLoss
+import torch
 
 
-@registry.Callback
+@Registry
 class InerCallback(Callback):
 
     def __init__(self, subm_file, fold_index = 0, num_folds = 0):
@@ -20,13 +25,13 @@ class InerCallback(Callback):
         self.loss_f = CrossEntropyLoss(reduce=False)
 
 
-    def on_batch_end(self, state: State):
+    def on_batch_end(self, state: IRunner):
         if state.is_valid_loader:
-            self.paths += state.input["image_name"]
-            self.targets += state.input['targets'].tolist()
-            preds = state.output["logits"].detach().cpu().numpy()
+            self.paths += state.batch["image_name"]
+            self.targets += state.batch['targets'].tolist()
+            preds = state.batch["logits"].detach().cpu().numpy()
             self.preds += list(preds.argmax(axis=1))
-            self.losses += list(self.loss_f(state.output["logits"].detach().cpu(),state.input['targets'].detach().cpu()))
+            self.losses += list(self.loss_f(state.batch["logits"].detach().cpu(),state.batch['targets'].detach().cpu()))
             
     def on_loader_start(self, _):
         self.paths = []
@@ -34,7 +39,7 @@ class InerCallback(Callback):
         self.preds = []
         self.losses = []
 
-    def on_loader_end(self, state: State):
+    def on_loader_end(self, state: IRunner):
         if state.is_valid_loader:
             cur_ac = accuracy_score(self.preds, self.targets)
             if cur_ac > self.ac:
