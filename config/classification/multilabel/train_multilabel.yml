@@ -1,29 +1,29 @@
 model:
   _target_: ResNet18
-  num_classes: &num_classes 5
+  num_classes: &num_classes 13
 
 args:
-  expdir: src
+  expdir: src_multilabel
   logdir: logs
   verbose: True
   seed: 42
   deterministic: True
   benchmark: True
+  threshold: &threshold 0.5 
 runner:
    _target_: TTASupervisedRunner
    input_key: &model_input "features"
    output_key: &model_output "logits"
    target_key: &model_target "targets"
    loss_key: &model_loss "loss"
+
 engine:
   _target_: DeviceEngine
-class_names: &class_names ["Cassava Bacterial Blight (CBB)", "Cassava Brown Streak Disease (CBSD)", "Cassava Green Mottle (CGM)", "Cassava Mosaic Disease (CMD)", "Healthy"]
+class_names: &class_names ["/anti-aerosol", "/anti_aerosol_error", "/cap", "/face", "/gas-aerosol", "/glasses_close", "/glasses_open", "/glasses_open_error", "/helmet", "/hood", "/panoram", "/screen", "/screen_yellow"]
 loggers:
-  console:
-    _target_: ConsoleLogger
   mlflow:
     _target_: MLflowLogger
-    experiment: 'cassava'
+    experiment: 'kcm'
   tensorboard:
     _target_: TensorboardLogger
     logdir: "./logs/ui"
@@ -31,7 +31,7 @@ loggers:
 stages:
   stage:
     criterion:
-      _target_: CrossEntropyLoss
+      _target_: BCEWithLogitsLoss
 
     optimizer:
       _target_: Adam
@@ -44,23 +44,31 @@ stages:
       total_epochs: 5
       eta_min: 0.00001
     callbacks:
+      f1:
+        _target_: MultilabelPrecisionRecallF1SupportCallback
+        input_key: for_metrics
+        target_key: *model_target
+        num_classes: *num_classes
+        zero_division: 0
       infer:
         _target_: InerCallback
         subm_file: "./crossval_log/preds.csv"
+        loss: BCEloss
+        accuracy: Multilabel
+        activation: Sigmoid
       optimizer:
         _target_: OptimizerCallback
         metric_key: *model_loss
       accuracy:
-        _target_: AccuracyCallback
+        _target_: MultilabelAccuracyCallback
         input_key: *model_output
         target_key: *model_target
+        threshold: *threshold
       loss:
         _target_: CriterionCallback
         input_key: *model_output
         target_key: *model_target
         metric_key: *model_loss
-      verbose:
-        _target_: TqdmCallback
       custom_mlflow:
         _target_: MLFlowloggingCallback
       saver:
@@ -69,18 +77,19 @@ stages:
         save_n_best: 3
       custom_tensorboard:
         _target_: TensorboardImageCustomLogger
-
     data:
+      tta: 1
       shuffle: false
-      train_dir: "./train_dataset"
-      train_image_dir: "train_images"
-      train_meta: "train.csv"
+      train_dir: "./train_dataset_kcm/"
+      train_image_dir: "images"
+      test_image_dir: "images"
+      train_meta: "train_metadata.csv"
+      test_meta: "test_metadata.csv"
       transform_path: "config/classification/augmentations/light.yml"
-      valid_size: 0.2
     loaders: &loaders
-      batch_size: 1
+      batch_size: 4
       num_workers: 0 #для локальной поставить 0
     num_epochs: 5
     valid_loader: valid
-    main_metric: accuracy01
+    main_metric: multi_label_accuracy
     minimize_metric: False

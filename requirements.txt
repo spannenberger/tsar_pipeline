@@ -6,7 +6,8 @@ albumentations==0.4.3
 torch_optimizer==0.1.0
 mlflow==1.14.0
 boto3==1.17.13
-torchtools==0.1.4
+scikit-multilearn==0.2.0
 torchvision==0.9.0
 python-dotenv==0.15.0
 torch-tools==0.1.5
+git+git://github.com/pabloppp/pytorch-tools.git@0.2.6
