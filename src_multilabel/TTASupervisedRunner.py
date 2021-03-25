@@ -32,7 +32,7 @@ class TTARunner(IRunner): # Кастомный runner нашего экспер�
         self.batch['for_metrics'] = (self.batch['logits'] > self.hparams['args']['threshold']).type(torch.ByteTensor)
         self._run_event("on_batch_end")
 
-    # Работа с данными, формирование train и valid 
+    # Работа с данными, формирование train и valid
     def get_datasets(self, stage: str, **kwargs):
         datasets = OrderedDict()
         data_params = self._stage_config[stage]["data"]
