@@ -15,6 +15,7 @@ class TensorboardImageCustomLogger(Callback):
         super().__init__(CallbackOrder.ExternalExtra)
 
     def on_experiment_end(self, state: IRunner):
+        # В конце эксперимента логаем ошибочные фотографии, раскидывая их в n папок, которые соответствуют class_names в нашем конфиге
         df = pd.read_csv('crossval_log/preds.csv', sep=';')
 
         df[['class_id', 'target', 'losses']] = df[['class_id', 'target', 'losses']].apply(lambda x:x.apply(ast.literal_eval))

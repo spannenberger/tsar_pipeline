@@ -1,4 +1,5 @@
-train:
+# аугментации из библиотеки albumentations
+train: # Для train
   transform: Compose
   transforms:
     - OneOf: #размытие, контраст
@@ -49,7 +50,7 @@ train:
       height: 512
       width: 512
 
-valid: &transform  # only for valid dataset
+valid: &transform  # для валидации
   transform: Compose
   transforms:
     - transform: ShiftScaleRotate

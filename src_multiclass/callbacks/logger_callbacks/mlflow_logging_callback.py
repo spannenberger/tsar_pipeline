@@ -18,8 +18,9 @@ class MLFlowloggingCallback(Callback):
         super().__init__(CallbackOrder.ExternalExtra)
 
     def on_stage_start(self, state: IRunner):
-        for config in state.hparams['args']['configs']:
-            mlflow.log_artifact(config,'config')
+        # Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа
+        mlflow.log_artifact(state.hparams['stages']['stage']['data']['transform_path'], 'config')
+        mlflow.log_artifact(state.hparams['args']['configs'][0],'config')
 
     def on_experiment_end(self, state: IRunner):
         df = pd.read_csv('crossval_log/preds.csv', sep=',')
@@ -35,4 +36,4 @@ class MLFlowloggingCallback(Callback):
 
 
 if __name__ == "__main__":
-    a = MLFlowloggingCallback(experiment_name = 'hui', is_locally=True, env_path='', model_path='', classes_list='')
+    a = MLFlowloggingCallback(experiment_name = 'test', is_locally=True, env_path='', model_path='', classes_list='')

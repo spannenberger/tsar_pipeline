@@ -5,6 +5,9 @@ import albumentations as A
 from pprint import pprint
 
 class CustomAugmentator():
+    """
+    Парсер yml файлов аугментаций
+    """
     def transforms(self, path, aug_mode='train'):
         """
         Чтение yml файлов с аугментациями

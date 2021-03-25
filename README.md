@@ -3,16 +3,24 @@ This repository contains solution for multiclass and multilabel classification
 
 ## Training run 
 ```bash
-# To check pipeline
-sh ./check.sh
+# To check multiclass pipeline
+sh ./check_multiclass.sh
+# To usual multiclass train pipeline
+sh ./train_multiclass.sh
 
-# To usual train pipeline
-sh ./train.sh
+
+# To check multilabel pipeline
+sh ./check_multilabel.sh
+# To usual multilabel train pipeline
+sh ./train_multilabel.sh
+
 
 # Run tensorflow for visualisation
 tensorboard --logdir=logs/ui # for our pipeline
-```
+# Run mlflow 
+mlfwlow ui
 
+```
 ## Test in docker
 ```
 # build ur project, u need to do this only once

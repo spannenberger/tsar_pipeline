@@ -1,3 +1,5 @@
+# Инициализация всего, что мы используем
+
 from TTASupervisedRunner import TTASupervisedRunner
 from resnet18 import ResNet18
 from catalyst.registry import Registry

@@ -8,8 +8,9 @@ import torch
 from dataset import CustomDataset
 from catalyst.data.transforms import ToTensor
 from pprint import pprint
-class TTARunner(IRunner):
+class TTARunner(IRunner): # Кастомный runner нашего эксперимента
 
+    # Реализация ТТА 
     def _run_stage(self, *args,**kwargs):
         try:
             self.tta = self.hparams['stages'][self.stage_key]['data']['tta']
@@ -31,6 +32,7 @@ class TTARunner(IRunner):
         self.batch['for_metrics'] = (self.batch['logits'] > self.hparams['args']['threshold']).type(torch.ByteTensor)
         self._run_event("on_batch_end")
 
+    # Работа с данными, формирование train и valid 
     def get_datasets(self, stage: str, **kwargs):
         datasets = OrderedDict()
         data_params = self._stage_config[stage]["data"]

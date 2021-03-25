@@ -18,10 +18,12 @@ class MLFlowloggingCallback(Callback):
         super().__init__(CallbackOrder.ExternalExtra)
 
     def on_stage_start(self, state: IRunner):
-        for config in state.hparams['args']['configs']:
-            mlflow.log_artifact(config,'config')
+        # Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа
+        mlflow.log_artifact(state.hparams['stages']['stage']['data']['transform_path'], 'config')
+        mlflow.log_artifact(state.hparams['args']['configs'][0],'config')
 
     def on_experiment_end(self, state: IRunner):
+        # В конце эксперимента логаем ошибочные фотографии, раскидывая их в n папок, которые соответствуют class_names в нашем конфиге
         df = pd.read_csv('crossval_log/preds.csv', sep=';')
 
         df[['class_id', 'target', 'losses']] = df[['class_id', 'target', 'losses']].apply(lambda x:x.apply(ast.literal_eval))

@@ -8,6 +8,9 @@ import albumentations as A
 from transform import CustomAugmentator
 from pprint import pprint
 class CustomDataset(Dataset):
+    """
+    Работа с данными и применение к ним указанных в конфиге аугментаций
+    """
     def __init__(self,
                  image_paths: list,
                  image_labels: list,
