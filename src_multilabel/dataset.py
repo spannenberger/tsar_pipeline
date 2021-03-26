@@ -5,7 +5,7 @@ from pathlib import Path
 import torch
 from torch.utils.data import Dataset
 import albumentations as A
-from transform import CustomAugmentator
+from src_multilabel.transform import CustomAugmentator
 from pprint import pprint
 class CustomDataset(Dataset):
     """

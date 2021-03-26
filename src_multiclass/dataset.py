@@ -4,7 +4,7 @@ import numpy as np
 from pathlib import Path
 import torch
 from torch.utils.data import Dataset
-from transform import CustomAugmentator
+from src_multiclass.transform import CustomAugmentator
 class CustomDataset(Dataset):
     def __init__(self,
                  image_paths: list,

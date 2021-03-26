@@ -1,5 +1,5 @@
 model:
-  _target_: resnext50_32x4d # Имя класса. Сам класс будет сконструирован в registry по этому имени
+  _target_: resnext101_32x8d # Имя класса. Сам класс будет сконструирован в registry по этому имени
   num_classes: &num_classes 13
 
 args: # Различные аргументы для Catalyst
@@ -88,7 +88,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
         activation: Sigmoid
       custom_mlflow: # Логирование ошибочных фотографий в mlflow
         _target_: MLFlowloggingCallback
-      custom_tensorboard: # Логирование ошибочных фотографий в tennsorboard
+      custom_tensorboard: # Логирование ошибочных фотографий в tensorboard
         _target_: TensorboardImageCustomLogger
 
     data: # Подключение данных и параметров обучения
@@ -101,7 +101,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       test_meta: "test_metadata.csv"
       transform_path: "config/classification/augmentations/light.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
     loaders: &loaders
-      batch_size: 4 # Размер батча для всех стейджей
+      batch_size: 1 # Размер батча для всех стейджей
       num_workers: 0 # Для локальной поставить 0
     num_epochs: 5 # Количество эпох эксперимента
     valid_loader: valid

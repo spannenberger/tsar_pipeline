@@ -12,12 +12,12 @@ def parse_args():
     )
     parser.add_argument(
         '--model_file',
-        default="src/resnet18.py",
+        default="src_multilabel/models/resnext101_32x8d.py",
         help='File of model'
     )
     parser.add_argument(
         '--model_name',
-        default='ResNet18',
+        default='resnext101_32x8d',
         help='Model class name'
     )
     parser.add_argument(
@@ -36,7 +36,7 @@ def parse_args():
     )
     parser.add_argument(
         '--config_file',
-        default='config/classification/multilabel/train_multilabel.yml',
+        default='config/classification/multiclass/train_multiclass.yml',
         help='Config file with model args'
     )
     return parser.parse_args()
@@ -87,6 +87,7 @@ output_dir.mkdir(parents = True,exist_ok = True)
 model_params = get_model_params(args.config_file)
 chechpoints = ['best','best_full']
 model_file = ".".join(args.model_file.split('/'))
+print(model_file[:-3])
 model_module = __import__(model_file[:-3], fromlist=[None])
 model = getattr(model_module, args.model_name)(**model_params)
 

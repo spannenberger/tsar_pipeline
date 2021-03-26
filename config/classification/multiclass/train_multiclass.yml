@@ -1,5 +1,5 @@
 model:
-  _target_: ResNet18
+  _target_: resnext101_32x8d
   num_classes: &num_classes 5
 
 args:
