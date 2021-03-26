@@ -11,7 +11,7 @@ from src_multilabel.models.densenet201 import densenet201 # converter True
 from src_multilabel.models.densenet161 import densenet161 # converter True
 from src_multilabel.models.resnest50 import resnest50 # False
 from src_multilabel.models.resnext50_32x4d import resnext50_32x4d # converter True 
-from src_multilabel.models.resnext101_32x8d import resnext101_32x8d
+from src_multilabel.models.resnext101_32x8d import resnext101_32x8d # converter True
 
 # Импорт колбэков
 from src_multilabel.callbacks.iner_callback import InerCallback
@@ -29,5 +29,5 @@ from catalyst.loggers.tensorboard import TensorboardLogger
 
 # Инициализаця
 Registry(TTASupervisedRunner)
-Registry(resnext101_32x8d)
+Registry(ResNet18)
 # Registry(ConfusionMatrixCallback)

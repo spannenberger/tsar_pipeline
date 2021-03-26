@@ -1,5 +1,5 @@
 model:
-  _target_: resnext101_32x8d # Имя класса. Сам класс будет сконструирован в registry по этому имени
+  _target_: ResNet18 # Имя класса. Сам класс будет сконструирован в registry по этому имени
   num_classes: &num_classes 13
 
 args: # Различные аргументы для Catalyst
@@ -103,7 +103,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
     loaders: &loaders
       batch_size: 1 # Размер батча для всех стейджей
       num_workers: 0 # Для локальной поставить 0
-    num_epochs: 5 # Количество эпох эксперимента
+    num_epochs: 1 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: multi_label_accuracy
     minimize_metric: False

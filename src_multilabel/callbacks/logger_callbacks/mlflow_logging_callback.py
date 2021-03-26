@@ -38,7 +38,7 @@ class MLFlowloggingCallback(Callback):
             error_ind = np.where(df['class_id'][i]!=df['target'][i])[0]
             for ind in error_ind:
                 image = Image.open(f"{paths_list[i]}")
-                mlflow.log_image(image, f"{class_names[ind][1:]}/image{i}.png")
+                mlflow.log_image(image, f"{class_names[ind][1:]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png")
 
         mlflow.log_artifact('logs/checkpoints/best.pth', 'model')
         mlflow.end_run()

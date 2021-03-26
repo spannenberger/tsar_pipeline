@@ -26,10 +26,18 @@ class MLFlowloggingCallback(Callback):
         df = pd.read_csv('crossval_log/preds.csv', sep=',')
 
         path_list = [i for i in df[df['class_id']!=df['target']]['path']]
+        print(path_list)
+        class_id = [i for i in df[df['class_id']!=df['target']]['class_id']]
+        print(class_id)
+        target = [i for i in df[df['class_id']!=df['target']]['target']]
+        print(target)
+
         class_names = state.hparams['class_names']
         for i in range(len(path_list)):
             image = Image.open(f"{path_list[i]}")
-            mlflow.log_image(image, f"image{i}.png")
+            print(image)
+            print(class_names[target[i]])
+            mlflow.log_image(image, f"{class_names[target[i]]}/{class_id[i]} - {target[i]} error number {i}.png")
 
         mlflow.log_artifact('logs/checkpoints/best.pth', 'model')
         mlflow.end_run()

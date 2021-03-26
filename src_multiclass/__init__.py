@@ -29,5 +29,5 @@ from catalyst.loggers.tensorboard import TensorboardLogger
 
 # Инициализаця
 Registry(TTASupervisedRunner)
-Registry(resnext101_32x8d)
+Registry(ResNet18)
 # Registry(ConfusionMatrixCallback)
