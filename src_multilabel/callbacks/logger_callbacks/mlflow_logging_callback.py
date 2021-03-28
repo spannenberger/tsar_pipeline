@@ -10,6 +10,7 @@ import ast
 from PIL import Image
 import numpy as np
 from pprint import pprint
+from tqdm import tqdm
 
 
 @Registry
@@ -23,7 +24,7 @@ class MLFlowloggingCallback(Callback):
         mlflow.log_artifact(state.hparams['args']['configs'][0],'config')
 
     def on_experiment_end(self, state: IRunner):
-        # В конце эксперимента логаем ошибочные фотографии, раскидывая их в n папок, которые соответствуют class_names в нашем конфиге
+        # В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок, которые соответствуют class_names в нашем конфиге
         df = pd.read_csv('crossval_log/preds.csv', sep=';')
 
         df[['class_id', 'target', 'losses']] = df[['class_id', 'target', 'losses']].apply(lambda x:x.apply(ast.literal_eval))
@@ -34,9 +35,9 @@ class MLFlowloggingCallback(Callback):
         df['class_id'] = df['class_id'].apply(lambda x:np.array([1.0 if i > 0.5 else 0.0 for i in x]))
         df['class_id'] = df['class_id'].apply(lambda x:np.array(x))
         class_names = state.hparams['class_names']
-        for i in range(length):
+        for i in tqdm(range(length)):
             error_ind = np.where(df['class_id'][i]!=df['target'][i])[0]
-            for ind in error_ind:
+            for ind in tqdm(error_ind):
                 image = Image.open(f"{paths_list[i]}")
                 mlflow.log_image(image, f"{class_names[ind][1:]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png")
 

@@ -23,7 +23,7 @@ engine: # Параметры для distributed training и NVIDIA Apex
 
 class_names: &class_names ["/anti-aerosol", "/anti_aerosol_error", "/cap", "/face", "/gas-aerosol", "/glasses_close", "/glasses_open", "/glasses_open_error", "/helmet", "/hood", "/panoram", "/screen", "/screen_yellow"]
 
-loggers: 
+loggers:
 # Встроенные логеры каталиста
 #(Возможные логеры: https://github.com/catalyst-team/catalyst/tree/master/catalyst/loggers)
   mlflow:
@@ -50,7 +50,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       eta_min: 0.00001
 
     callbacks:
-    # Подключение колбэков каталиста 
+    # Подключение колбэков каталиста
     # (Возможные колбэки: https://github.com/catalyst-team/catalyst/tree/master/catalyst/callbacks)
 
       f1: # f1-score метрика
@@ -79,7 +79,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
 
       # Подключение кастомных колбэков
       #(Возможные колбэки: ./src_multilabel/callbacks/)
-      
+
       infer: #
         _target_: InerCallback
         subm_file: "./crossval_log/preds.csv"
@@ -101,7 +101,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       test_meta: "test_metadata.csv"
       transform_path: "config/classification/augmentations/light.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
     loaders: &loaders
-      batch_size: 1 # Размер батча для всех стейджей
+      batch_size: 16 # Размер батча для всех стейджей
       num_workers: 0 # Для локальной поставить 0
     num_epochs: 1 # Количество эпох эксперимента
     valid_loader: valid

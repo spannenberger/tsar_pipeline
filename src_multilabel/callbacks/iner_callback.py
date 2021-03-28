@@ -14,7 +14,10 @@ import torch
 class InerCallback(Callback):
     """
     InerCallback - кастомный колбэк
-    Записывает в файл preds.csv, в нашем случае, картинку(ее путь), то что предсказала наша модель, то что должна была предсказать и лосс этой картинки(использовалось для просмотра фотографий с большим лоссом)
+    Записывает в файл preds.csv, в нашем случае,
+    картинку(ее путь), то что предсказала наша модель,
+    то что должна была предсказать и лосс этой картинки(использовалось для
+    просмотра фотографий с большим лоссом)
     """
     def __init__(self,
                 subm_file,
@@ -69,7 +72,6 @@ class InerCallback(Callback):
 
     def on_loader_end(self, state: IRunner):
         if state.is_valid_loader:
-            # print(self.ac_score_f.threshold)
             cur_ac = self.ac_score_f(torch.Tensor(self.preds), torch.Tensor(self.targets))
             if cur_ac[0] > self.ac:
                 self.ac = cur_ac[0]

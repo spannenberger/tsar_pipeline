@@ -2,6 +2,10 @@
 train: # Для train
   transform: Compose
   transforms:
+    - transform: Normalize
+    - transform: Resize
+      height: 224
+      width: 224
     - transform: HorizontalFlip
       p: 0.5
     - transform: VerticalFlip
@@ -9,9 +13,9 @@ train: # Для train
     - transform: RandomRotate90
       p: 1
     - transform: Cutout
-      num_holes: 70
-      max_w_size: 30
-      max_h_size: 25
+      num_holes: 20
+      max_w_size: 5
+      max_h_size: 5
       fill_value: 0
       p: 0.4
     - transform: Transpose
@@ -23,19 +27,14 @@ train: # Для train
       hue_shift_limit: 0.2
       sat_shift_limit: 0.2
       val_shift_limit: 0.2
-    - transform: Normalize
-    - transform: Resize
-      height: 512
-      width: 512
+
 
 valid: &transform  # для валидации
   transform: Compose
   transforms:
     - transform: RandomRotate90
       p: 1.0
-    - transform: Normalize 
+    - transform: Normalize
     - transform: Resize
-      height: 512
-      width: 512
-      
-
+      height: 224
+      width: 224

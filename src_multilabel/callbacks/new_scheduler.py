@@ -6,7 +6,7 @@ from catalyst.registry import Registry
 class CustomScheduler(DelayerScheduler):
     """
     Псевдо кастомный шедулер
-    Спустя указанный delay уменьшает learning rate по параболе 
+    Спустя указанный delay уменьшает learning rate по косинусу
     """
     def __init__(self, lr=None, delay_epochs=None, total_epochs=None, optimizer=None, eta_min=None):
         base_scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, total_epochs - delay_epochs, eta_min)

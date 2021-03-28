@@ -8,6 +8,7 @@ import torch
 import ast
 from PIL import Image
 from torchvision.transforms import ToTensor
+from tqdm import tqdm
 
 @Registry
 class TensorboardImageCustomLogger(Callback):
@@ -15,7 +16,7 @@ class TensorboardImageCustomLogger(Callback):
         super().__init__(CallbackOrder.ExternalExtra)
 
     def on_experiment_end(self, state: IRunner):
-        # В конце эксперимента логаем ошибочные фотографии, раскидывая их в n папок, которые соответствуют class_names в нашем конфиге
+        # В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок, которые соответствуют class_names в нашем конфиге
         df = pd.read_csv('crossval_log/preds.csv', sep=';')
 
         df[['class_id', 'target', 'losses']] = df[['class_id', 'target', 'losses']].apply(lambda x:x.apply(ast.literal_eval))
@@ -28,8 +29,8 @@ class TensorboardImageCustomLogger(Callback):
         df['class_id'] = df['class_id'].apply(lambda x:np.array(x))
 
         class_names = state.hparams['class_names']
-        for i in range(length):
+        for i in tqdm(range(length)):
             error_ind = np.where(df['class_id'][i]!=df['target'][i])[0]
-            for ind in error_ind:
+            for ind in tqdm(error_ind):
                 image = ToTensor()(Image.open(f"{paths_list[i]}"))
                 state.loggers['tensorboard'].loggers['valid'].add_image(f"{class_names[ind][1:]}/image{i}.png", image)

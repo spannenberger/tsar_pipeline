@@ -8,9 +8,9 @@ import torch
 from src_multilabel.dataset import CustomDataset
 from catalyst.data.transforms import ToTensor
 from pprint import pprint
-class TTARunner(IRunner): # Кастомный runner нашего эксперимента
+class TTARunner(IRunner):
+    """Кастомный runner нашего эксперимента"""
 
-    # Реализация ТТА 
     def _run_stage(self, *args,**kwargs):
         try:
             self.tta = self.hparams['stages'][self.stage_key]['data']['tta']
@@ -23,10 +23,10 @@ class TTARunner(IRunner): # Кастомный runner нашего экспер�
         self.handle_batch(batch=self.batch)
 
         if self.is_valid_loader and self.tta > 1:
-            # resize inputs
+            # изменение размерности входных данных
             self.batch['image_name'] = [x for x in self.batch['image_name'][::self.tta]]
             self.batch['targets']= torch.stack([x for x in self.batch['targets'][::self.tta]])
-            # averaging outputs
+            # усреднение выходов
             logits = self.batch['logits']
             self.batch['logits'] = torch.stack([logits[i: i + self.tta].mean(dim = 0)/self.tta for i in range(0, len(logits) - self.tta + 1, self.tta)])
         self.batch['for_metrics'] = (self.batch['logits'] > self.hparams['args']['threshold']).type(torch.ByteTensor)
@@ -52,7 +52,6 @@ class TTARunner(IRunner): # Кастомный runner нашего экспер�
         test_meta = pd.read_csv(test_path)
         train_meta['label'] = [i[0] for i in zip(train_meta.iloc[:, 1:].values)]
         test_meta['label'] = [i[0] for i in zip(test_meta.iloc[:, 1:].values)]
-        # train_meta["label"] = train_meta["label"].astype(np.int64)
 
         train_image_paths = [train_images_dir.joinpath(i) for i in train_meta["path"]]
         test_image_paths = [test_images_dir.joinpath(i) for i in test_meta["path"]]
