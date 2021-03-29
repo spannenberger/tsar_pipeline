@@ -10,7 +10,7 @@ import ast
 from PIL import Image
 import numpy as np
 from pprint import pprint
-
+from tqdm import tqdm
 
 @Registry
 class MLFlowloggingCallback(Callback):
@@ -23,20 +23,16 @@ class MLFlowloggingCallback(Callback):
         mlflow.log_artifact(state.hparams['args']['configs'][0],'config')
 
     def on_experiment_end(self, state: IRunner):
+        # В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок, которые соответствуют class_names в нашем конфиге
         df = pd.read_csv('crossval_log/preds.csv', sep=',')
 
         path_list = [i for i in df[df['class_id']!=df['target']]['path']]
-        print(path_list)
         class_id = [i for i in df[df['class_id']!=df['target']]['class_id']]
-        print(class_id)
         target = [i for i in df[df['class_id']!=df['target']]['target']]
-        print(target)
 
         class_names = state.hparams['class_names']
-        for i in range(len(path_list)):
+        for i in tqdm(range(len(path_list))):
             image = Image.open(f"{path_list[i]}")
-            print(image)
-            print(class_names[target[i]])
             mlflow.log_image(image, f"{class_names[target[i]]}/{class_id[i]} - {target[i]} error number {i}.png")
 
         mlflow.log_artifact('logs/checkpoints/best.pth', 'model')

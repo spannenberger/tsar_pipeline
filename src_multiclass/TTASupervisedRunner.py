@@ -10,6 +10,7 @@ from src_multiclass.dataset import CustomDataset
 from catalyst.data.transforms import ToTensor
 from pprint import pprint
 class TTARunner(IRunner):
+    """Кастомный runner нашего эксперимента"""
 
     # def _run_experiment(self, *args,**kwargs):
 
@@ -35,6 +36,8 @@ class TTARunner(IRunner):
     #         logits = self.output['logits']
     #         self.output['logits'] = torch.stack([logits[i: i + self.tta].mean(dim = 0) for i in range(0, len(logits) - self.tta + 1, self.tta)])
     #     self._run_event("on_batch_end")
+
+    # Работа с данными, формирование train и valid
     def get_datasets(self, stage: str, **kwargs):
             datasets = OrderedDict()
             data_params = self._stage_config[stage]["data"]

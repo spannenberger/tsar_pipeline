@@ -9,12 +9,6 @@ class ResNet18(nn.Module):
         self.backbone = vision.models.resnet18(pretrained=True)
         self.backbone.fc = nn.Linear(512, num_classes)
 
-        for param in self.backbone.parameters():
-            param.requires_grad = False
-
-        for param in self.backbone.fc.parameters():
-            param.requires_grad = True
-
     def forward(self, X):
         return self.backbone(X)
 

@@ -6,6 +6,9 @@ import torch
 from torch.utils.data import Dataset
 from src_multiclass.transform import CustomAugmentator
 class CustomDataset(Dataset):
+    """
+    Работа с данными и применение к ним указанных в конфиге аугментаций
+    """
     def __init__(self,
                  image_paths: list,
                  image_labels: list,
