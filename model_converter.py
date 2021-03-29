@@ -2,7 +2,8 @@ import argparse
 from pathlib import Path
 import torch
 import yaml
-
+import sys
+import os
 def parse_args():
     parser = argparse.ArgumentParser(description='Convert checkpoints .pth to other format')
     parser.add_argument(
@@ -12,12 +13,12 @@ def parse_args():
     )
     parser.add_argument(
         '--model_file',
-        default="src/src_multiclass/models/ResNet101.py",
+        default="src/multilabel/models/ResNet18.py",
         help='File of model'
     )
     parser.add_argument(
         '--model_name',
-        default='ResNet101',
+        default='ResNet18',
         help='Model class name'
     )
     parser.add_argument(
@@ -36,7 +37,7 @@ def parse_args():
     )
     parser.add_argument(
         '--config_file',
-        default='config/classification/multiclass/train_multiclass.yml',
+        default='config/classification/multilabel/train_multilabel.yml',
         help='Config file with model args'
     )
     return parser.parse_args()
@@ -86,9 +87,12 @@ output_dir.mkdir(parents = True,exist_ok = True)
 
 model_params = get_model_params(args.config_file)
 chechpoints = ['best','best_full']
-model_file = ".".join(args.model_file.split('/'))
-print(model_file[:-3])
-model_module = __import__(model_file[:-3], fromlist=[None])
+model_file = args.model_file.split('/')
+model_file = ".".join(model_file)[:-3]
+
+sys.path.append(os.getcwd() + "/" + "/".join(args.model_file.split('/')[:-3]))
+model_module = __import__(model_file,fromlist=[None])
+
 model = getattr(model_module, args.model_name)(**model_params)
 
 for checkpoint in chechpoints:
