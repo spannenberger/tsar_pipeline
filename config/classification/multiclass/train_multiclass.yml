@@ -1,9 +1,9 @@
 model:
-  _target_: wide_resnet50_2
+  _target_: ResNet18_swsl
   num_classes: &num_classes 5
 
 args:
-  expdir: src/src_multiclass
+  expdir: src/multiclass
   logdir: logs
   verbose: True
   seed: 42

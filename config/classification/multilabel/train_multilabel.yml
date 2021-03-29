@@ -1,9 +1,9 @@
 model:
-  _target_: ResNet18 # Имя класса. Сам класс будет сконструирован в registry по этому имени
+  _target_: ResNet34 # Имя класса. Сам класс будет сконструирован в registry по этому имени
   num_classes: &num_classes 13
 
 args: # Различные аргументы для Catalyst
-  expdir: src_multilabel # Путь до нашего эксперимента, с файлом `__init__`, в котором импортируется Runner, и, опционально, регистрируются все дополнительные сущности: model, callback, criterion, etc
+  expdir: src/multilabel # Путь до нашего эксперимента, с файлом `__init__`, в котором импортируется Runner, и, опционально, регистрируются все дополнительные сущности: model, callback, criterion, etc
   logdir: logs # Путь в который будут сохранятся логи
   verbose: True # Нужно ли выводить на консоль информацию об обучении
   seed: 42 # сид обучения для PyTorch, Numpy, Python и Tensorflow

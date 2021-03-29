@@ -2,7 +2,7 @@ import torch
 from torch import nn
 import torchvision as vision
 
-class wide_resnet50_2(nn.Module):
+class WideResnet50_2(nn.Module):
     def __init__(self, num_classes=10):
         super().__init__()
         self.backbone = torch.hub.load('pytorch/vision:v0.9.0', 'wide_resnet50_2', pretrained=True)
@@ -30,7 +30,7 @@ class wide_resnet50_2(nn.Module):
 
 # test model
 if __name__ == "__main__":
-    model = wide_resnet50_2()
+    model = WideResnet50_2()
     model.eval()
     input_tensor = torch.randn(1, 3, 256, 256)
     output = model(input_tensor)

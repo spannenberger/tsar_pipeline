@@ -12,12 +12,12 @@ def parse_args():
     )
     parser.add_argument(
         '--model_file',
-        default="src/src_multiclass/models/yolov5.py",
+        default="src/src_multiclass/models/ResNet101.py",
         help='File of model'
     )
     parser.add_argument(
         '--model_name',
-        default='yolov5',
+        default='ResNet101',
         help='Model class name'
     )
     parser.add_argument(

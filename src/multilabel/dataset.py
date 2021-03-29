@@ -4,7 +4,9 @@ import numpy as np
 from pathlib import Path
 import torch
 from torch.utils.data import Dataset
-from src_multiclass.transform import CustomAugmentator
+import albumentations as A
+from multilabel.transform import CustomAugmentator
+from pprint import pprint
 class CustomDataset(Dataset):
     """
     Работа с данными и применение к ним указанных в конфиге аугментаций
@@ -16,7 +18,6 @@ class CustomDataset(Dataset):
                  tta: int = 1,
                  transforms_path = None):
         assert  len(image_paths) == len(image_labels)
-
         self.image_paths = image_paths
         self.image_labels = image_labels
         self.transforms_path = transforms_path
@@ -27,12 +28,11 @@ class CustomDataset(Dataset):
         else:
             aug_mode = 'train'
         self.transforms = CustomAugmentator().transforms(self.transforms_path, aug_mode)
-
-
+        
     def __len__(self):
         if self.valid:
-            return len(self.image_paths) * self.tta
-        return len(self.image_paths)
+            return len(self.image_labels) * self.tta
+        return len(self.image_labels)
 
     def __getitem__(self, idx):
         item = {}
@@ -47,9 +47,12 @@ class CustomDataset(Dataset):
 
         if self.transforms:
             image = self.transforms(image = image)["image"]
+
         image = np.moveaxis(image, -1, 0)
         item["image_name"] = image_path
         item["features"] = torch.from_numpy(image)
-        item["targets"] = self.image_labels[idx]
-
+        labels = self.image_labels[idx]
+        labels = torch.Tensor(labels)
+        labels = labels.type(torch.DoubleTensor)
+        item["targets"] = labels
         return item

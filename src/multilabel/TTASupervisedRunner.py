@@ -5,7 +5,7 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 import torch
-from src_multilabel.dataset import CustomDataset
+from multilabel.dataset import CustomDataset
 from catalyst.data.transforms import ToTensor
 from pprint import pprint
 class TTARunner(IRunner):
