@@ -2,14 +2,11 @@ from catalyst.dl import Callback, CallbackOrder
 from catalyst.registry import Registry
 from catalyst.core.runner import IRunner
 import mlflow
-from mlflow.tracking import MlflowClient
-from dotenv import load_dotenv
 import pandas as pd
 import torch
 import ast
 from PIL import Image
 import numpy as np
-from pprint import pprint
 from tqdm import tqdm
 
 @Registry

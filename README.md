@@ -4,15 +4,15 @@ This repository contains solution for multiclass and multilabel classification
 ## Training run 
 ```bash
 # To check multiclass pipeline
-sh ./check_multiclass.sh
+sh classification_shells/check_multiclass.sh
 # To usual multiclass train pipeline
-sh ./train_multiclass.sh
+sh classification_shells/train_multiclass.sh
 
 
 # To check multilabel pipeline
-sh ./check_multilabel.sh
+sh classification_shells/check_multilabel.sh
 # To usual multilabel train pipeline
-sh ./train_multilabel.sh
+sh classification_shells/train_multilabel.sh
 
 
 # Run tensorflow for visualisation

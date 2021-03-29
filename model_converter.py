@@ -12,12 +12,12 @@ def parse_args():
     )
     parser.add_argument(
         '--model_file',
-        default="src_multilabel/models/resnext101_32x8d.py",
+        default="src/src_multiclass/models/yolov5.py",
         help='File of model'
     )
     parser.add_argument(
         '--model_name',
-        default='resnext101_32x8d',
+        default='yolov5',
         help='Model class name'
     )
     parser.add_argument(

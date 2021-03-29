@@ -12,7 +12,7 @@ from src_multiclass.models.densenet161 import densenet161 # converter True
 from src_multiclass.models.resnest50 import resnest50 # False
 from src_multiclass.models.resnext50_32x4d import resnext50_32x4d # converter True 
 from src_multiclass.models.resnext101_32x8d import resnext101_32x8d # converter True 
-
+from src_multiclass.models.wide_resnet50_2 import wide_resnet50_2
 # Импорт колбэков
 from src_multiclass.callbacks.iner_callback import InerCallback
 from src_multiclass.callbacks.new_scheduler import CustomScheduler
@@ -29,5 +29,5 @@ from catalyst.loggers.tensorboard import TensorboardLogger
 
 # Инициализаця
 Registry(TTASupervisedRunner)
-Registry(ResNet18)
+Registry(yolov5)
 # Registry(ConfusionMatrixCallback)
