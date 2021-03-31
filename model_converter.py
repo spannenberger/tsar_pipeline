@@ -5,6 +5,8 @@ import yaml
 import sys
 import os
 import onnxruntime as rt
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description='Convert checkpoints .pth to other format')
     parser.add_argument(
@@ -43,38 +45,41 @@ def parse_args():
     )
     return parser.parse_args()
 
-def get_model_params(config_file:str):
+
+def get_model_params(config_file: str):
     with open(config_file) as f:
         params = yaml.safe_load(f)
         params = params['model']
         del params['_target_']
         return params
 
-def torchscript(model:torch.nn.Module, checkpoint:str, input_dir:Path, output_dir:Path):
+
+def torchscript(model: torch.nn.Module, checkpoint: str, input_dir: Path, output_dir: Path):
     model.load_state_dict(torch.load(input_dir/(checkpoint+'.pth'))['model_state_dict'])
     model.eval()
-    x = torch.rand(1,3, 512,512)
-    scripted = torch.jit.script(model,x)
+    x = torch.rand(1, 3, 512, 512)
+    scripted = torch.jit.script(model, x)
     output = output_dir / (checkpoint + '.pt')
     torch.jit.save(scripted, str(output))
     loaded = torch.jit.load(str(output))
-    print(loaded(x)==model(x))
+    print(loaded(x) == model(x))
 
-def onnx(model:torch.nn.Module, checkpoint:str, input_dir:Path, output_dir:Path):
+
+def onnx(model: torch.nn.Module, checkpoint: str, input_dir: Path, output_dir: Path):
     model.load_state_dict(torch.load(input_dir / (checkpoint + '.pth'))['model_state_dict'])
     model.eval()
     x = torch.randn(1, 3, 224, 224, requires_grad=True)
     path = output_dir / (checkpoint+'.onnx')
     torch.onnx.export(model,               # model being run
-          x,                         # model input (or a tuple for multiple inputs)
-          str(path),   # where to save the model (can be a file or file-like object)
-          export_params=True,        # store the trained parameter weights inside the model file
-          opset_version=10,          # the ONNX version to export the model to
-          do_constant_folding=True,  # whether to execute constant folding for optimization
-          input_names = ['input'],   # the model's input names
-          output_names = ['output'], # the model's output names
-          dynamic_axes={'input' : {0 : 'batch_size'},    # variable lenght axes
-                        'output' : {0 : 'batch_size'}})
+                      x,                         # model input (or a tuple for multiple inputs)
+                      str(path),   # where to save the model (can be a file or file-like object)
+                      export_params=True,        # store the trained parameter weights inside the model file
+                      opset_version=10,          # the ONNX version to export the model to
+                      do_constant_folding=True,  # whether to execute constant folding for optimization
+                      input_names=['input'],   # the model's input names
+                      output_names=['output'],  # the model's output names
+                      dynamic_axes={'input': {0: 'batch_size'},    # variable lenght axes
+                                    'output': {0: 'batch_size'}})
 
     onnx_input = x.detach().clone().numpy()
     preds_torch = model(x)
@@ -82,15 +87,15 @@ def onnx(model:torch.nn.Module, checkpoint:str, input_dir:Path, output_dir:Path)
     session = rt.InferenceSession(str(path))
     inputs_name = session.get_inputs()[0].name
     outputs_name = session.get_outputs()[0].name
-    preds_onx = session.run([outputs_name],{inputs_name:onnx_input})[0]
+    preds_onx = session.run([outputs_name], {inputs_name: onnx_input})[0]
     print()
     print(preds_torch.detach())
     print(torch.Tensor(preds_onx))
 
 
 converters = {
-    'torchscript':torchscript,
-    'onnx':onnx,
+    'torchscript': torchscript,
+    'onnx': onnx,
 }
 
 args = parse_args()
@@ -99,15 +104,15 @@ try:
     output_dir = Path(args.output_dir)
 except:
     output_dir = Path(args.logdir + args.format)
-output_dir.mkdir(parents = True,exist_ok = True)
+output_dir.mkdir(parents=True, exist_ok=True)
 
 model_params = get_model_params(args.config_file)
-chechpoints = ['best','best_full']
+chechpoints = ['best', 'best_full']
 model_file = args.model_file.split('/')
 model_file = '.'.join(model_file)[:-3]
 
 sys.path.append(os.getcwd() + '/' + '/'.join(args.model_file.split('/')[:-3]))
-model_module = __import__(model_file,fromlist=[None])
+model_module = __import__(model_file, fromlist=[None])
 
 model = getattr(model_module, args.model_name)(**model_params)
 

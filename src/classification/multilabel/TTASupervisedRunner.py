@@ -8,15 +8,17 @@ import torch
 from dataset import CustomDataset
 from catalyst.data.transforms import ToTensor
 from pprint import pprint
+
+
 class TTARunner(IRunner):
     """Кастомный runner нашего эксперимента"""
 
-    def _run_stage(self, *args,**kwargs):
+    def _run_stage(self, *args, **kwargs):
         try:
             self.tta = self.hparams['stages'][self.stage_key]['data']['tta']
         except Exception as e:
             self.tta = 1
-        super()._run_stage(*args,**kwargs)
+        super()._run_stage(*args, **kwargs)
 
     def _run_batch(self):
         self._run_event("on_batch_start")
@@ -25,10 +27,11 @@ class TTARunner(IRunner):
         if self.is_valid_loader and self.tta > 1:
             # изменение размерности входных данных
             self.batch['image_name'] = [x for x in self.batch['image_name'][::self.tta]]
-            self.batch['targets']= torch.stack([x for x in self.batch['targets'][::self.tta]])
+            self.batch['targets'] = torch.stack([x for x in self.batch['targets'][::self.tta]])
             # усреднение выходов
             logits = self.batch['logits']
-            self.batch['logits'] = torch.stack([logits[i: i + self.tta].mean(dim = 0)/self.tta for i in range(0, len(logits) - self.tta + 1, self.tta)])
+            self.batch['logits'] = torch.stack([logits[i: i + self.tta].mean(dim=0) / self.tta
+                                                for i in range(0, len(logits) - self.tta + 1, self.tta)])
         self.batch['for_metrics'] = (self.batch['logits'] > self.hparams['args']['threshold']).type(torch.ByteTensor)
         self._run_event("on_batch_end")
 
@@ -70,16 +73,18 @@ class TTARunner(IRunner):
         labels_val = test_labels
 
         tta = data_params.get('tta', 1)
-        datasets["train"] = {'dataset':CustomDataset(image_paths_train,
-                                            labels_train,
-                                            transforms_path=data_params['transform_path']
-                                            )
-                                }
+        datasets["train"] = {'dataset': CustomDataset(image_paths_train,
+                                                      labels_train,
+                                                      transforms_path=data_params['transform_path']
+                                                      )
+                             }
         datasets["valid"] = CustomDataset(image_paths_val,
                                           labels_val,
                                           transforms_path=data_params['transform_path'],
-                                          valid = True,
-                                          tta = tta)
+                                          valid=True,
+                                          tta=tta)
         return datasets
+
+
 class TTASupervisedRunner(TTARunner, SupervisedConfigRunner):
     pass

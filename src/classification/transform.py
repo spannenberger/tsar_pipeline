@@ -4,10 +4,12 @@ import yaml
 import albumentations as A
 from pprint import pprint
 
+
 class CustomAugmentator():
     """
     Парсер yml файлов аугментаций
     """
+
     def transforms(self, path, aug_mode='train'):
         """
         Чтение yml файлов с аугментациями
@@ -41,6 +43,7 @@ class CustomAugmentator():
         elif mode == 'OneOf':
             return A.OneOf(augs_list)
         raise Exception('Unknown mode')
+
 
 if __name__ == "__main__":
     a = CustomAugmentator().transforms("config/classification/augmentations/medium.yml")

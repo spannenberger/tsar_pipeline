@@ -14,7 +14,7 @@ import torch
 @Registry
 class InerCallback(Callback):
 
-    def __init__(self, subm_file, fold_index = 0, num_folds = 0):
+    def __init__(self, subm_file, fold_index=0, num_folds=0):
         self.fold_index = fold_index
         self.num_folds = num_folds
         super().__init__(CallbackOrder.Internal)
@@ -24,15 +24,15 @@ class InerCallback(Callback):
         self.ac = -1
         self.loss_f = CrossEntropyLoss(reduce=False)
 
-
     def on_batch_end(self, state: IRunner):
         if state.is_valid_loader:
             self.paths += state.batch["image_name"]
             self.targets += state.batch['targets'].tolist()
             preds = state.batch["logits"].detach().cpu().numpy()
             self.preds += list(preds.argmax(axis=1))
-            self.losses += list(self.loss_f(state.batch["logits"].detach().cpu(),state.batch['targets'].detach().cpu()))
-            
+            self.losses += list(self.loss_f(state.batch["logits"].detach().cpu(),
+                                state.batch['targets'].detach().cpu()))
+
     def on_loader_start(self, _):
         self.paths = []
         self.targets = []
@@ -48,20 +48,19 @@ class InerCallback(Callback):
                 for path, pred, target, loss in zip(self.paths, self.preds, self.targets, self.losses):
                     self.final.append((path, pred, target, loss))
 
-
     def on_experiment_end(self, _):
         if self.num_folds == 0:
             subm = ["path,class_id,target,losses"]
             subm += [f"{path},{cls},{tar},{los}" for path, cls, tar, los in self.final]
-            with self.subm_file.open(mode = 'w') as file:
+            with self.subm_file.open(mode='w') as file:
                 file.write("\n".join(subm)+"\n")
         else:
             if self.fold_index == 0:
                 subm = ["path,class_id,target,losses"]
                 subm += [f"{path},{cls},{tar},{los}" for path, cls, tar, los in self.final]
-                with self.subm_file.open(mode = 'w') as file:
+                with self.subm_file.open(mode='w') as file:
                     file.write("\n".join(subm)+"\n")
             else:
                 subm = [f"{path},{cls},{tar},{los}" for path, cls, tar, los in self.final]
-                with self.subm_file.open(mode = 'a') as file:
+                with self.subm_file.open(mode='a') as file:
                     file.write("\n".join(subm)+"\n")
