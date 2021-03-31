@@ -87,9 +87,9 @@ stages: # Словарь всех стадий Catalyst, для обучения
         accuracy: Multilabel
         activation: Sigmoid
       custom_mlflow: # Логирование ошибочных фотографий в mlflow
-        _target_: MLFlowloggingCallback
+        _target_: MLFlowMultilabelLoggingCallback
       custom_tensorboard: # Логирование ошибочных фотографий в tensorboard
-        _target_: TensorboardImageCustomLogger
+        _target_: TensorboardMultilabelLoggingCallback
 
     data: # Подключение данных и параметров обучения
       tta: 1

@@ -25,8 +25,8 @@ from models.ResNet18_swsl import ResNet18_swsl
 # Импорт колбэков
 from multiclass.multiclass_callbacks.iner_callback import InerCallback
 from callbacks.custom_scheduler import CustomScheduler
-from multiclass.multiclass_callbacks.logger_callbacks.mlflow_logging_callback import MLFlowloggingCallback
-from multiclass.multiclass_callbacks.logger_callbacks.tensorboard_image_logger import TensorboardImageCustomLogger
+from callbacks.logger_callbacks.mlflow_image_logger import MLFlowMulticlassLoggingCallback
+from callbacks.logger_callbacks.tensorboard_image_logger import TensorboardMulticlassLoggingCallback
 
 # Импорт инструментов каталиста
 from catalyst.registry import Registry

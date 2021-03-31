@@ -62,13 +62,13 @@ stages:
       verbose:
         _target_: TqdmCallback
       custom_mlflow:
-        _target_: MLFlowloggingCallback
+        _target_: MLFlowMulticlassLoggingCallback
       saver:
         _target_: CheckpointCallback
         logdir: "logs/checkpoints"
         save_n_best: 3
       custom_tensorboard:
-        _target_: TensorboardImageCustomLogger
+        _target_: TensorboardMulticlassLoggingCallback
 
     data:
       shuffle: false
