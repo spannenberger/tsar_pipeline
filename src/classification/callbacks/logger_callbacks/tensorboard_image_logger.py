@@ -16,7 +16,7 @@ class TensorboardMulticlassLoggingCallback(Callback):
 
     def on_experiment_end(self, state: IRunner):
         # В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок, которые соответствуют class_names в нашем конфиге
-        df = pd.read_csv('crossval_log/preds.csv', sep=',')
+        df = pd.read_csv('crossval_log/preds.csv', sep=';')
 
         path_list = [i for i in df[df['class_id'] != df['target']]['path']]
         class_names = state.hparams['class_names']

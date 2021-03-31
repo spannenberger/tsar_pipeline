@@ -2,7 +2,7 @@ from catalyst.dl import Callback, CallbackOrder
 from catalyst.registry import Registry
 from catalyst.core.runner import IRunner
 import mlflow
-import pandas as pd 
+import pandas as pd
 import ast
 from PIL import Image
 import numpy as np
@@ -21,7 +21,7 @@ class MLFlowMulticlassLoggingCallback(Callback):
 
     def on_experiment_end(self, state: IRunner):
         # В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок, которые соответствуют class_names в нашем конфиге
-        df = pd.read_csv('crossval_log/preds.csv', sep=',')
+        df = pd.read_csv('crossval_log/preds.csv', sep=';')
 
         path_list = [i for i in df[df['class_id'] != df['target']]['path']]
         class_id = [i for i in df[df['class_id'] != df['target']]['class_id']]
