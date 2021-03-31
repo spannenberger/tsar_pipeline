@@ -1,5 +1,5 @@
 model:
-  _target_: ResNet18
+  _target_: ResNet18_swsl
   num_classes: &num_classes 5
 
 args:
@@ -82,7 +82,7 @@ stages:
     loaders: &loaders
       batch_size: 1
       num_workers: 0 #для локальной поставить 0
-    num_epochs: 5
+    num_epochs: 1
     valid_loader: valid
     main_metric: accuracy01
     minimize_metric: False

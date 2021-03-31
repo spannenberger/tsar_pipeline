@@ -30,7 +30,9 @@ class MLFlowMulticlassLoggingCallback(Callback):
         class_names = state.hparams['class_names']
         for i in tqdm(range(len(path_list))):
             image = Image.open(f"{path_list[i]}")
-            mlflow.log_image(image, f"{class_names[target[i]]}/{class_id[i]} - {target[i]} error number {i}.png")
+            mlflow.log_image(
+                image, 
+                f"{class_names[target[i]]}/{class_id[i]} - {target[i]} error number {i}.png")
 
         mlflow.log_artifact('logs/checkpoints/best.pth', 'model')
         mlflow.end_run()
@@ -52,12 +54,19 @@ class MLFlowMultilabelLoggingCallback(Callback):
 
         df[['class_id', 'target', 'losses']] = df[['class_id', 'target', 'losses']].apply(
             lambda x: x.apply(ast.literal_eval))
-        df['class_id'] = df['class_id'].apply(lambda x: [1.0 if i > 0.5 else 0.0 for i in x])
+
+        df['class_id'] = df['class_id'].apply(
+            lambda x: [1.0 if i > 0.5 else 0.0 for i in x])
+
         length = len(df[df['class_id'] != df['target']])
         paths_list = df[df['class_id'] != df['target']]['path']
 
-        df['class_id'] = df['class_id'].apply(lambda x: np.array([1.0 if i > 0.5 else 0.0 for i in x]))
-        df['class_id'] = df['class_id'].apply(lambda x: np.array(x))
+        df['class_id'] = df['class_id'].apply(
+            lambda x: np.array([1.0 if i > 0.5 else 0.0 for i in x]))
+
+        df['class_id'] = df['class_id'].apply(
+            lambda x: np.array(x))
+            
         class_names = state.hparams['class_names']
         for i in tqdm(range(length)):
             error_ind = np.where(df['class_id'][i] != df['target'][i])[0]
