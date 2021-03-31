@@ -3,7 +3,7 @@ model:
   num_classes: &num_classes 5
 
 args:
-  expdir: src/multiclass
+  expdir: src/classification/multiclass
   logdir: logs
   verbose: True
   seed: 42
