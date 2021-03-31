@@ -33,10 +33,27 @@ from catalyst.registry import Registry
 from catalyst.loggers.mlflow import MLflowLogger
 from catalyst.loggers.tensorboard import TensorboardLogger
 from catalyst.loggers.tensorboard import TensorboardLogger
-# from catalyst.callbacks.metrics.confusion_matrix import ConfusionMatrixCallback
 
 
 # Инициализаця
 Registry(TTASupervisedRunner)
 Registry(ResNet18)
-# Registry(ConfusionMatrixCallback)
+Registry(ResNet34)
+Registry(ResNet50)
+Registry(ResNet101)
+Registry(EffNetb0)
+Registry(EffNetb3)
+Registry(EffNetb6)
+Registry(densenet121)
+Registry(densenet169)
+Registry(densenet201)
+Registry(densenet161)
+Registry(resnest50)
+Registry(resnext50_32x4d)
+Registry(resnext101_32x8d)
+Registry(WideResnet50_2)
+Registry(WideResnet101_2)
+Registry(MobilenetV2)
+Registry(MobilenetV3Large)
+Registry(MobilenetV3Small)
+Registry(ResNet18_swsl)
