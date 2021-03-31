@@ -5,7 +5,7 @@ from pathlib import Path
 import pandas as pd
 import numpy as np
 import torch
-from multilabel.dataset import CustomDataset
+from dataset import CustomDataset
 from catalyst.data.transforms import ToTensor
 from pprint import pprint
 class TTARunner(IRunner):
@@ -57,7 +57,13 @@ class TTARunner(IRunner):
         test_image_paths = [test_images_dir.joinpath(i) for i in test_meta["path"]]
 
         train_labels = train_meta["label"].tolist()
+        train_labels = torch.Tensor(train_labels)
+        train_labels = train_labels.type(torch.DoubleTensor)
+
         test_labels = test_meta["label"].tolist()
+        test_labels = torch.Tensor(test_labels)
+        test_labels = test_labels.type(torch.DoubleTensor)
+
         image_paths_train = train_image_paths
         labels_train = train_labels
         image_paths_val = test_image_paths

@@ -1,5 +1,5 @@
 model:
-  _target_: ResNet18_swsl
+  _target_: ResNet18
   num_classes: &num_classes 5
 
 args:

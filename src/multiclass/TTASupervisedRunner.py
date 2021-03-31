@@ -6,7 +6,7 @@ import pandas as pd
 import numpy as np
 import torch
 from sklearn.model_selection import train_test_split, StratifiedKFold
-from multiclass.dataset import CustomDataset
+from dataset import CustomDataset
 from catalyst.data.transforms import ToTensor
 from pprint import pprint
 class TTARunner(IRunner):
