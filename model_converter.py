@@ -4,6 +4,7 @@ import torch
 import yaml
 import sys
 import os
+import onnxruntime as rt
 def parse_args():
     parser = argparse.ArgumentParser(description='Convert checkpoints .pth to other format')
     parser.add_argument(
@@ -13,7 +14,7 @@ def parse_args():
     )
     parser.add_argument(
         '--model_file',
-        default="src/multilabel/models/ResNet18.py",
+        default='src/multilabel/models/ResNet18.py',
         help='File of model'
     )
     parser.add_argument(
@@ -27,7 +28,7 @@ def parse_args():
     )
     parser.add_argument(
         '--format',
-        default="torchscript",
+        default='torchscript',
         help='Format into which we convert'
     )
     parser.add_argument(
@@ -50,17 +51,20 @@ def get_model_params(config_file:str):
         return params
 
 def torchscript(model:torch.nn.Module, checkpoint:str, input_dir:Path, output_dir:Path):
-    model.load_state_dict(torch.load(input_dir/(checkpoint+".pth"))['model_state_dict'])
+    model.load_state_dict(torch.load(input_dir/(checkpoint+'.pth'))['model_state_dict'])
     model.eval()
-    scripted = torch.jit.script(model,torch.rand(1,3, 512,512))
-    output = output_dir/(checkpoint+".pt")
+    x = torch.rand(1,3, 512,512)
+    scripted = torch.jit.script(model,x)
+    output = output_dir / (checkpoint + '.pt')
     torch.jit.save(scripted, str(output))
+    loaded = torch.jit.load(str(output))
+    print(loaded(x)==model(x))
 
 def onnx(model:torch.nn.Module, checkpoint:str, input_dir:Path, output_dir:Path):
-    model.load_state_dict(torch.load(input_dir / (checkpoint + ".pth"))['model_state_dict'])
+    model.load_state_dict(torch.load(input_dir / (checkpoint + '.pth'))['model_state_dict'])
     model.eval()
     x = torch.randn(1, 3, 224, 224, requires_grad=True)
-    path = output_dir / (checkpoint+".onnx")
+    path = output_dir / (checkpoint+'.onnx')
     torch.onnx.export(model,               # model being run
           x,                         # model input (or a tuple for multiple inputs)
           str(path),   # where to save the model (can be a file or file-like object)
@@ -71,6 +75,18 @@ def onnx(model:torch.nn.Module, checkpoint:str, input_dir:Path, output_dir:Path)
           output_names = ['output'], # the model's output names
           dynamic_axes={'input' : {0 : 'batch_size'},    # variable lenght axes
                         'output' : {0 : 'batch_size'}})
+
+    onnx_input = x.detach().clone().numpy()
+    preds_torch = model(x)
+
+    session = rt.InferenceSession(str(path))
+    inputs_name = session.get_inputs()[0].name
+    outputs_name = session.get_outputs()[0].name
+    preds_onx = session.run([outputs_name],{inputs_name:onnx_input})[0]
+    print()
+    print(preds_torch.detach())
+    print(torch.Tensor(preds_onx))
+
 
 converters = {
     'torchscript':torchscript,
@@ -88,9 +104,9 @@ output_dir.mkdir(parents = True,exist_ok = True)
 model_params = get_model_params(args.config_file)
 chechpoints = ['best','best_full']
 model_file = args.model_file.split('/')
-model_file = ".".join(model_file)[:-3]
+model_file = '.'.join(model_file)[:-3]
 
-sys.path.append(os.getcwd() + "/" + "/".join(args.model_file.split('/')[:-3]))
+sys.path.append(os.getcwd() + '/' + '/'.join(args.model_file.split('/')[:-3]))
 model_module = __import__(model_file,fromlist=[None])
 
 model = getattr(model_module, args.model_name)(**model_params)
