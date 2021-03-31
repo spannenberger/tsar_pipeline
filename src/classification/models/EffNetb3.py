@@ -1,6 +1,5 @@
 import torch
 from torch import nn
-import torchvision as vision
 
 
 class EffNetb3(nn.Module):

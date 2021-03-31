@@ -1,6 +1,5 @@
 import torch
 from torch import nn
-import torchvision as vision
 
 
 class resnext101_32x8d(nn.Module):

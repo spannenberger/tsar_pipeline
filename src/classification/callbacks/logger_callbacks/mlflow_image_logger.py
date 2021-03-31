@@ -2,8 +2,7 @@ from catalyst.dl import Callback, CallbackOrder
 from catalyst.registry import Registry
 from catalyst.core.runner import IRunner
 import mlflow
-import pandas as pd
-import torch
+import pandas as pd 
 import ast
 from PIL import Image
 import numpy as np

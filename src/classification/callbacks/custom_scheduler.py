@@ -1,5 +1,4 @@
-from catalyst.dl import Callback, CallbackOrder
-from torch import optim, nn
+from torch import optim
 from torchtools.lr_scheduler import DelayerScheduler
 from catalyst.registry import Registry
 

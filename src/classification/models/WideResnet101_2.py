@@ -1,6 +1,5 @@
 import torch
 from torch import nn
-import torchvision as vision
 
 
 class WideResnet101_2(nn.Module):

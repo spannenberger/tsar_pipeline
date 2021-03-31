@@ -1,12 +1,9 @@
 import cv2
-import pandas as pd
 import numpy as np
 from pathlib import Path
 import torch
 from torch.utils.data import Dataset
-import albumentations as A
 from transform import CustomAugmentator
-from pprint import pprint
 
 
 class CustomDataset(Dataset):

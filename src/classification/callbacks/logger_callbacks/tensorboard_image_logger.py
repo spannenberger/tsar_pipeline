@@ -3,7 +3,6 @@ from catalyst.registry import Registry
 from catalyst.core.runner import IRunner
 import numpy as np
 import pandas as pd
-import torch
 import ast
 from PIL import Image
 from torchvision.transforms import ToTensor
