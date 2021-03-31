@@ -23,7 +23,7 @@ from models.MobilenetV3Small import MobilenetV3Small
 from models.ResNet18_swsl import ResNet18_swsl
 
 # Импорт колбэков
-from multiclass.multiclass_callbacks.iner_callback import InerCallback
+from callbacks.iner_callback import MulticlassInerCallback
 from callbacks.custom_scheduler import CustomScheduler
 from callbacks.logger_callbacks.mlflow_image_logger import MLFlowMulticlassLoggingCallback
 from callbacks.logger_callbacks.tensorboard_image_logger import TensorboardMulticlassLoggingCallback

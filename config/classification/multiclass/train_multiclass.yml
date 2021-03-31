@@ -44,9 +44,11 @@ stages:
       total_epochs: 5
       eta_min: 0.00001
     callbacks:
-      infer:
-        _target_: InerCallback
+      infer: #
+        _target_: MulticlassInerCallback
         subm_file: "./crossval_log/preds.csv"
+
+
       optimizer:
         _target_: OptimizerCallback
         metric_key: *model_loss

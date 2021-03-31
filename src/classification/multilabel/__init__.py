@@ -13,8 +13,8 @@ from models.densenet169 import densenet169 # converter True
 from models.densenet201 import densenet201 # converter True
 from models.densenet161 import densenet161 # converter True
 from models.resnest50 import resnest50 # False
-from models.resnext50_32x4d import resnext50_32x4d # converter True 
-from models.resnext101_32x8d import resnext101_32x8d # converter True 
+from models.resnext50_32x4d import resnext50_32x4d # converter True
+from models.resnext101_32x8d import resnext101_32x8d # converter True
 from models.WideResnet50_2 import WideResnet50_2
 from models.WideResnet101_2 import WideResnet101_2
 from models.MobilenetV2 import MobilenetV2
@@ -23,7 +23,7 @@ from models.MobilenetV3Small import MobilenetV3Small
 from models.ResNet18_swsl import ResNet18_swsl
 
 # Импорт колбэков
-from multilabel.multilabel_callbacks.iner_callback import InerCallback
+from callbacks.iner_callback import MultilabelInerCallback
 from callbacks.custom_scheduler import CustomScheduler
 from callbacks.logger_callbacks.mlflow_image_logger import MLFlowMultilabelLoggingCallback
 from callbacks.logger_callbacks.tensorboard_image_logger import TensorboardMultilabelLoggingCallback
@@ -57,4 +57,3 @@ Registry(MobilenetV2)
 Registry(MobilenetV3Large)
 Registry(MobilenetV3Small)
 Registry(ResNet18_swsl)
-

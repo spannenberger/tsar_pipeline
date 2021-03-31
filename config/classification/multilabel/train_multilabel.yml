@@ -81,11 +81,8 @@ stages: # Словарь всех стадий Catalyst, для обучения
       #(Возможные колбэки: ./src_multilabel/callbacks/)
 
       infer: #
-        _target_: InerCallback
+        _target_: MultilabelInerCallback
         subm_file: "./crossval_log/preds.csv"
-        loss: BCEloss
-        accuracy: Multilabel
-        activation: Sigmoid
       custom_mlflow: # Логирование ошибочных фотографий в mlflow
         _target_: MLFlowMultilabelLoggingCallback
       custom_tensorboard: # Логирование ошибочных фотографий в tensorboard
@@ -101,8 +98,8 @@ stages: # Словарь всех стадий Catalyst, для обучения
       test_meta: "test_metadata.csv"
       transform_path: "config/classification/augmentations/light.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
     loaders: &loaders
-      batch_size: 1 # Размер батча для всех стейджей
-      num_workers: 2 # Для локальной поставить 0
+      batch_size: 16 # Размер батча для всех стейджей
+      num_workers: 0 # Для локальной поставить 0
     num_epochs: 1 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: multi_label_accuracy
