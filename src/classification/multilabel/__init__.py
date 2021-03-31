@@ -23,20 +23,18 @@ from models.MobilenetV3Small import MobilenetV3Small
 from models.ResNet18_swsl import ResNet18_swsl
 
 # Импорт колбэков
-from multilabel.callbacks.iner_callback import InerCallback
-from multilabel.callbacks.new_scheduler import CustomScheduler
-from multilabel.callbacks.logger_callbacks.mlflow_logging_callback import MLFlowloggingCallback
-from multilabel.callbacks.logger_callbacks.tensorboard_image_logger import TensorboardImageCustomLogger
+from multilabel.multilabel_callbacks.iner_callback import InerCallback
+from callbacks.custom_scheduler import CustomScheduler
+from multilabel.multilabel_callbacks.logger_callbacks.mlflow_logging_callback import MLFlowloggingCallback
+from multilabel.multilabel_callbacks.logger_callbacks.tensorboard_image_logger import TensorboardImageCustomLogger
 
 # Импорт инструментов каталиста
 from catalyst.registry import Registry
 from catalyst.loggers.mlflow import MLflowLogger
 from catalyst.loggers.tensorboard import TensorboardLogger
 from catalyst.loggers.tensorboard import TensorboardLogger
-# from catalyst.callbacks.metrics.confusion_matrix import ConfusionMatrixCallback
 
 
 # Инициализаця
 Registry(TTASupervisedRunner)
 Registry(ResNet18)
-# Registry(ConfusionMatrixCallback)

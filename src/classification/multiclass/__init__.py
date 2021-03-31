@@ -23,10 +23,10 @@ from models.MobilenetV3Small import MobilenetV3Small
 from models.ResNet18_swsl import ResNet18_swsl
 
 # Импорт колбэков
-from multiclass.callbacks.iner_callback import InerCallback
-from multiclass.callbacks.new_scheduler import CustomScheduler
-from multiclass.callbacks.logger_callbacks.mlflow_logging_callback import MLFlowloggingCallback
-from multiclass.callbacks.logger_callbacks.tensorboard_image_logger import TensorboardImageCustomLogger
+from multiclass.multiclass_callbacks.iner_callback import InerCallback
+from callbacks.custom_scheduler import CustomScheduler
+from multiclass.multiclass_callbacks.logger_callbacks.mlflow_logging_callback import MLFlowloggingCallback
+from multiclass.multiclass_callbacks.logger_callbacks.tensorboard_image_logger import TensorboardImageCustomLogger
 
 # Импорт инструментов каталиста
 from catalyst.registry import Registry
