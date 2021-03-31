@@ -14,8 +14,7 @@ class TTARunner(IRunner):
     # Работа с данными, формирование train и valid
     def get_datasets(self, stage: str, **kwargs):
         datasets = OrderedDict()
-        data_params = self._stage_confi
-        g[stage]["data"]
+        data_params = self._stage_config[stage]["data"]
         image_size = data_params.get("image_size")
         if image_size is not None:
             assert len(image_size) == 2
