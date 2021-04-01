@@ -1,4 +1,5 @@
-from multiclass.TTASupervisedRunner import TTASupervisedRunner
+from SupervisedRunner import MulticlassSupervisedRunner
+from SupervisedRunner import MultilabelSupervisedRunner
 
 # Импорт моделей
 from models.ResNet18 import ResNet18  # converter True
@@ -23,10 +24,15 @@ from models.MobilenetV3Small import MobilenetV3Small
 from models.ResNet18_swsl import ResNet18_swsl
 
 # Импорт колбэков
-from callbacks.iner_callback import MulticlassInerCallback
 from callbacks.custom_scheduler import CustomScheduler
+# Multiclass
+from callbacks.iner_callback import MulticlassInerCallback
 from callbacks.logger_callbacks.mlflow_image_logger import MLFlowMulticlassLoggingCallback
 from callbacks.logger_callbacks.tensorboard_image_logger import TensorboardMulticlassLoggingCallback
+# Multilabel
+from callbacks.iner_callback import MultilabelInerCallback
+from callbacks.logger_callbacks.mlflow_image_logger import MLFlowMultilabelLoggingCallback
+from callbacks.logger_callbacks.tensorboard_image_logger import TensorboardMultilabelLoggingCallback
 
 # Импорт инструментов каталиста
 from catalyst.registry import Registry
@@ -36,7 +42,8 @@ from catalyst.loggers.tensorboard import TensorboardLogger
 
 
 # Инициализаця
-Registry(TTASupervisedRunner)
+Registry(MulticlassSupervisedRunner)
+Registry(MultilabelSupervisedRunner)
 Registry(ResNet18)
 Registry(ResNet34)
 Registry(ResNet50)

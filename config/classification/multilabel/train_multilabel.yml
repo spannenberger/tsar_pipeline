@@ -3,7 +3,7 @@ model:
   num_classes: &num_classes 13
 
 args: # Различные аргументы для Catalyst
-  expdir: src/classification/multilabel # Путь до нашего эксперимента, с файлом `__init__`, в котором импортируется Runner, и, опционально, регистрируются все дополнительные сущности: model, callback, criterion, etc
+  expdir: src/classification # Путь до нашего эксперимента, с файлом `__init__`, в котором импортируется Runner, и, опционально, регистрируются все дополнительные сущности: model, callback, criterion, etc
   logdir: logs # Путь в который будут сохранятся логи
   verbose: True # Нужно ли выводить на консоль информацию об обучении
   seed: 42 # сид обучения для PyTorch, Numpy, Python и Tensorflow
@@ -12,7 +12,7 @@ args: # Различные аргументы для Catalyst
   threshold: &threshold 0.5
 
 runner: # Параметры для инициализации Runner
-   _target_: TTASupervisedRunner
+   _target_: MultilabelSupervisedRunner
    input_key: &model_input "features"
    output_key: &model_output "logits"
    target_key: &model_target "targets"

@@ -1,16 +1,16 @@
 model:
-  _target_: ResNet18_swsl
+  _target_: ResNet18
   num_classes: &num_classes 5
 
 args:
-  expdir: src/classification/multiclass
+  expdir: src/classification
   logdir: logs
   verbose: True
   seed: 42
   deterministic: True
   benchmark: True
 runner:
-   _target_: TTASupervisedRunner
+   _target_: MulticlassSupervisedRunner
    input_key: &model_input "features"
    output_key: &model_output "logits"
    target_key: &model_target "targets"

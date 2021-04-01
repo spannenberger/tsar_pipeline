@@ -11,11 +11,15 @@ from tqdm import tqdm
 
 @Registry
 class TensorboardMulticlassLoggingCallback(Callback):
+
     def __init__(self):
         super().__init__(CallbackOrder.ExternalExtra)
 
     def on_experiment_end(self, state: IRunner):
-        # В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок, которые соответствуют class_names в нашем конфиге
+        """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок, 
+        которые соответствуют class_names в нашем конфиге
+        """
+
         df = pd.read_csv('crossval_log/preds.csv', sep=';')
 
         path_list = [i for i in df[df['class_id'] != df['target']]['path']]
@@ -26,7 +30,7 @@ class TensorboardMulticlassLoggingCallback(Callback):
         for i in tqdm(range(len(path_list))):
             image = ToTensor()(Image.open(f"{path_list[i]}"))
             state.loggers['tensorboard'].loggers['valid'].add_image(
-                f"{class_names[target[i]]}/{class_id[i]} - {target[i]} error number {i}.png", 
+                f"{class_names[target[i]]}/{class_id[i]} - {target[i]} error number {i}.png",
                 image)
 
 
@@ -36,7 +40,10 @@ class TensorboardMultilabelLoggingCallback(Callback):
         super().__init__(CallbackOrder.ExternalExtra)
 
     def on_experiment_end(self, state: IRunner):
-        # В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок, которые соответствуют class_names в нашем конфиге
+        """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок, 
+        которые соответствуют class_names в нашем конфиге
+        """
+
         df = pd.read_csv('crossval_log/preds.csv', sep=';')
 
         df[['class_id', 'target', 'losses']] = df[['class_id', 'target', 'losses']].apply(
@@ -60,5 +67,5 @@ class TensorboardMultilabelLoggingCallback(Callback):
             for ind in tqdm(error_ind):
                 image = ToTensor()(Image.open(f"{paths_list[i]}"))
                 state.loggers['tensorboard'].loggers['valid'].add_image(
-                    f"{class_names[ind][1:]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png", 
+                    f"{class_names[ind][1:]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png",
                     image)

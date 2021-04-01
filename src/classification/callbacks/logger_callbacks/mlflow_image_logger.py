@@ -15,12 +15,17 @@ class MLFlowMulticlassLoggingCallback(Callback):
         super().__init__(CallbackOrder.ExternalExtra)
 
     def on_stage_start(self, state: IRunner):
-        # Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа
-        mlflow.log_artifact(state.hparams['stages']['stage']['data']['transform_path'], 'config')
+        """Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа"""
+
+        mlflow.log_artifact(
+            state.hparams['stages']['stage']['data']['transform_path'], 'config')
         mlflow.log_artifact(state.hparams['args']['configs'][0], 'config')
 
     def on_experiment_end(self, state: IRunner):
-        # В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок, которые соответствуют class_names в нашем конфиге
+        """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок, 
+        которые соответствуют class_names в нашем конфиге
+        """
+
         df = pd.read_csv('crossval_log/preds.csv', sep=';')
 
         path_list = [i for i in df[df['class_id'] != df['target']]['path']]
@@ -31,7 +36,7 @@ class MLFlowMulticlassLoggingCallback(Callback):
         for i in tqdm(range(len(path_list))):
             image = Image.open(f"{path_list[i]}")
             mlflow.log_image(
-                image, 
+                image,
                 f"{class_names[target[i]]}/{class_id[i]} - {target[i]} error number {i}.png")
 
         mlflow.log_artifact('logs/checkpoints/best.pth', 'model')
@@ -44,12 +49,17 @@ class MLFlowMultilabelLoggingCallback(Callback):
         super().__init__(CallbackOrder.ExternalExtra)
 
     def on_stage_start(self, state: IRunner):
-        # Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа
-        mlflow.log_artifact(state.hparams['stages']['stage']['data']['transform_path'], 'config')
+        """Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа"""
+
+        mlflow.log_artifact(
+            state.hparams['stages']['stage']['data']['transform_path'], 'config')
         mlflow.log_artifact(state.hparams['args']['configs'][0], 'config')
 
     def on_experiment_end(self, state: IRunner):
-        # В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок, которые соответствуют class_names в нашем конфиге
+        """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок, 
+        которые соответствуют class_names в нашем конфиге
+        """
+
         df = pd.read_csv('crossval_log/preds.csv', sep=';')
 
         df[['class_id', 'target', 'losses']] = df[['class_id', 'target', 'losses']].apply(
@@ -66,7 +76,7 @@ class MLFlowMultilabelLoggingCallback(Callback):
 
         df['class_id'] = df['class_id'].apply(
             lambda x: np.array(x))
-            
+
         class_names = state.hparams['class_names']
         for i in tqdm(range(length)):
             error_ind = np.where(df['class_id'][i] != df['target'][i])[0]
