@@ -2,7 +2,7 @@ import torch
 from torch import nn
 
 
-class resnext101_32x8d(nn.Module):
+class Resnext101_32x8d(nn.Module):
     def __init__(self, num_classes=10):
         super().__init__()
         self.backbone = torch.hub.load('pytorch/vision:v0.6.0', 'resnext101_32x8d', pretrained=True)
@@ -29,7 +29,7 @@ class resnext101_32x8d(nn.Module):
 
 # test model
 if __name__ == "__main__":
-    model = resnext101_32x8d()
+    model = Resnext101_32x8d()
     model.eval()
     input_tensor = torch.randn(1, 3, 256, 256)
     output = model(input_tensor)

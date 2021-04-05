@@ -6,16 +6,16 @@ from models.ResNet18 import ResNet18  # converter True
 from models.ResNet34 import ResNet34
 from models.ResNet50 import ResNet50
 from models.ResNet101 import ResNet101
-from models.EffNetb0 import EffNetb0  # converter onnx: False
-from models.EffNetb3 import EffNetb3  # converter onnx: False
-from models.EffNetb6 import EffNetb6  # converter onnx: False
-from models.densenet121 import densenet121  # converter True
-from models.densenet169 import densenet169  # converter True
-from models.densenet201 import densenet201  # converter True
-from models.densenet161 import densenet161  # converter True
-from models.resnest50 import resnest50  # False
-from models.resnext50_32x4d import resnext50_32x4d  # converter True
-from models.resnext101_32x8d import resnext101_32x8d  # converter True
+from models.EfficientNetb0 import EfficientNetb0  # converter onnx: False
+from models.EfficientNetb3 import EfficientNetb3  # converter onnx: False
+from models.EfficientNetb6 import EfficientNetb6  # converter onnx: False
+from models.Densenet121 import Densenet121  # converter True
+from models.Densenet169 import Densenet169  # converter True
+from models.Densenet201 import Densenet201  # converter True
+from models.Densenet161 import Densenet161  # converter True
+from models.Resnest50 import Resnest50  # False
+from models.Resnext50_32x4d import Resnext50_32x4d  # converter True
+from models.Resnext101_32x8d import Resnext101_32x8d  # converter True
 from models.WideResnet50_2 import WideResnet50_2
 from models.WideResnet101_2 import WideResnet101_2
 from models.MobilenetV2 import MobilenetV2
@@ -48,16 +48,16 @@ Registry(ResNet18)
 Registry(ResNet34)
 Registry(ResNet50)
 Registry(ResNet101)
-Registry(EffNetb0)
-Registry(EffNetb3)
-Registry(EffNetb6)
-Registry(densenet121)
-Registry(densenet169)
-Registry(densenet201)
-Registry(densenet161)
-Registry(resnest50)
-Registry(resnext50_32x4d)
-Registry(resnext101_32x8d)
+Registry(EfficientNetb0)
+Registry(EfficientNetb3)
+Registry(EfficientNetb6)
+Registry(Densenet121)
+Registry(Densenet169)
+Registry(Densenet201)
+Registry(Densenet161)
+Registry(Resnest50)
+Registry(Resnext50_32x4d)
+Registry(Resnext101_32x8d)
 Registry(WideResnet50_2)
 Registry(WideResnet101_2)
 Registry(MobilenetV2)
