@@ -11,7 +11,7 @@
 # User guide
 ### Структура репозитория
 - [classifications_shells](#training-run) - папка, содержащая скрипты запуска репозитория
-- [config](#Configs-with-full-description) - папка с конфигами эксперимента, в которых мы можем изменять: модель, путь до данных, шедулеры, коллбэки и тд
+- config - папка с конфигами эксперимента, в которых мы можем изменять: модель, путь до данных, шедулеры, коллбэки и тд
     * [Multiclass](config/classification/multiclass/train_multiclass.yml) - конфиг мультикласс классификации
     * [Multilabel](config/classification/multilabel/train_multilabel.yml) - конфиг мультилейбл класификаци
 - [src](src/) - папка с основными файлами проекта, в которую добавляются новые шедулеры, модели, коллбэки и тд
