@@ -3,19 +3,19 @@
 :muscle: :muscle: :muscle: :muscle:
 ----
 ### Table of Contents
-- [User guide](#User-guide)
-  * [Структура репозитория](#Структура-репозитория)
-  * [Инструкция по использования репозитория](#Инструкция-по-использования-репозитория)
-- [Training run](#Training-run)
-- [Test in docker](#Test-in-docker)
+- [User guide](#user-guide)
+  * [Структура репозитория](#структура-репозитория)
+  * [Инструкция по использования репозитория](#инструкция-по-использования-репозитория)
+- [Training run](#training-run)
+- [Test in docker](#test-in-docker)
 # User guide
 ### Структура репозитория
-- [classifications_shells](#Training-run) - папка, содержащая скрипты запуска репозитория
+- [classifications_shells](#training-run) - папка, содержащая скрипты запуска репозитория
 - [config](#Configs-with-full-description) - папка с конфигами эксперимента, в которых мы можем изменять: модель, путь до данных, шедулеры, коллбэки и тд
-    * [Multiclass](config/multiclass/train_multiclass.yml) - конфиг мультикласс классификации
-    * [Multilabel](config/multilabel/train_multilabel.yml) - конфиг мультилейбл класификаци
+    * [Multiclass](config/classification/multiclass/train_multiclass.yml) - конфиг мультикласс классификации
+    * [Multilabel](config/classification/multilabel/train_multilabel.yml) - конфиг мультилейбл класификаци
 - [src](src/) - папка с основными файлами проекта, в которую добавляются новые шедулеры, модели, коллбэки и тд
-- [docker-compose.yml](#Test-in-docker) - конфиг файл для докера
+- [docker-compose.yml](#test-in-docker) - конфиг файл для докера
 - [model_converter.py](/model_converter.py) - файл для конвертации моделей в форматы torchscript, onnx и проверки корректности преобразованных файлов
 - [requirements.txt](/requirements.txt) - файл с библиотеками и инструментами, которые нам нужны в проектах
 ---
