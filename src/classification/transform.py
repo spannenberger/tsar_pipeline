@@ -1,8 +1,5 @@
-from catalyst.core import IRunner
-from catalyst.runners import SupervisedConfigRunner
 import yaml
 import albumentations as A
-from pprint import pprint
 
 
 class CustomAugmentator():
@@ -18,7 +15,7 @@ class CustomAugmentator():
         """
         self.path = path
         self.aug_mode = aug_mode
-        with open(self.path) as f:
+        with open(self.path, encoding="utf8") as f:
             params = yaml.safe_load(f)
         return self.parse(params[self.aug_mode]['transforms'], 'Compose')
 

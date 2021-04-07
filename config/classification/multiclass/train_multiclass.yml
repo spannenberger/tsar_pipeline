@@ -20,7 +20,7 @@ runner: # Параметры для инициализации Runner
 engine: # Параметры для distributed training и NVIDIA Apex
   _target_: DeviceEngine
 
-class_names: &class_names ["sigi", "other"]
+# class_names: &class_names ["sigi", "other"]
 
 loggers:
 # Встроенные логеры каталиста
@@ -56,7 +56,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       optimizer: # Параметры для оптимизатора
         _target_: OptimizerCallback
         metric_key: *model_loss
-      accuracy: 
+      accuracy:
         _target_: AccuracyCallback
         input_key: *model_output
         target_key: *model_target
@@ -75,7 +75,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       # Подключение кастомных колбэков
       #(Возможные колбэки: ./src_multilabel/callbacks/)
 
-      infer: 
+      infer:
         _target_: MulticlassInerCallback
         subm_file: "./crossval_log/preds.csv"
       custom_mlflow: # Логирование ошибочных фотографий в mlflow

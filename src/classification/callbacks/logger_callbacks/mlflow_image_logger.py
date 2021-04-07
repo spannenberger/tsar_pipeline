@@ -22,7 +22,7 @@ class MLFlowMulticlassLoggingCallback(Callback):
         mlflow.log_artifact(state.hparams['args']['configs'][0], 'config')
 
     def on_experiment_end(self, state: IRunner):
-        """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок, 
+        """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок,
         которые соответствуют class_names в нашем конфиге
         """
 
@@ -31,8 +31,10 @@ class MLFlowMulticlassLoggingCallback(Callback):
         path_list = [i for i in df[df['class_id'] != df['target']]['path']]
         class_id = [i for i in df[df['class_id'] != df['target']]['class_id']]
         target = [i for i in df[df['class_id'] != df['target']]['target']]
-
-        class_names = state.hparams['class_names']
+        try:
+            class_names = state.hparams['class_names']
+        except KeyError:
+            class_names = [x for x in range(state.hparams['model']['num_classes'])]
         for i in tqdm(range(len(path_list))):
             image = Image.open(f"{path_list[i]}")
             mlflow.log_image(
@@ -56,7 +58,7 @@ class MLFlowMultilabelLoggingCallback(Callback):
         mlflow.log_artifact(state.hparams['args']['configs'][0], 'config')
 
     def on_experiment_end(self, state: IRunner):
-        """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок, 
+        """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок,
         которые соответствуют class_names в нашем конфиге
         """
 
@@ -76,15 +78,17 @@ class MLFlowMultilabelLoggingCallback(Callback):
 
         df['class_id'] = df['class_id'].apply(
             lambda x: np.array(x))
-
-        class_names = state.hparams['class_names']
+        try:
+            class_names = state.hparams['class_names']
+        except KeyError:
+            class_names = [x for x in range(state.hparams['model']['num_classes'])]
         for i in tqdm(range(length)):
             error_ind = np.where(df['class_id'][i] != df['target'][i])[0]
             for ind in tqdm(error_ind):
                 image = Image.open(f"{paths_list[i]}")
                 mlflow.log_image(
                     image,
-                    f"{class_names[ind][1:]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png")
+                    f"{class_names[ind]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png")
 
         mlflow.log_artifact('logs/checkpoints/best.pth', 'model')
         mlflow.end_run()

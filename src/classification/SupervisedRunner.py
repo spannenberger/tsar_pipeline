@@ -4,7 +4,6 @@ from collections import OrderedDict
 from pathlib import Path
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
 from dataset import CustomDataset
 import torch
 
@@ -12,8 +11,8 @@ import torch
 class MulticlassRunner(IRunner):
     """Кастомный runner нашего эксперимента"""
 
-    # Работа с данными, формирование train и valid
     def get_datasets(self, stage: str, **kwargs):
+        """Работа с данными, формирование train и valid"""
         datasets = OrderedDict()
         data_params = self._stage_config[stage]["data"]
         image_size = data_params.get("image_size")
@@ -30,7 +29,7 @@ class MulticlassRunner(IRunner):
 
         train_meta = pd.read_csv(metadata_path)
         test_meta = pd.read_csv(test_path)
-        
+
         train_meta["label"] = train_meta["label"].astype(np.int64)
         test_meta["label"] = test_meta["label"].astype(np.int64)
 
@@ -74,8 +73,8 @@ class MultilabelRunner(IRunner):
             self.batch['logits'] > self.hparams['args']['threshold']).type(torch.ByteTensor)
         self._run_event("on_batch_end")
 
-    # Работа с данными, формирование train и valid
     def get_datasets(self, stage: str, **kwargs):
+        """Работа с данными, формирование train и valid"""
         datasets = OrderedDict()
         data_params = self._stage_config[stage]["data"]
         image_size = data_params.get("image_size")
@@ -88,7 +87,6 @@ class MultilabelRunner(IRunner):
         test_path = train_dir.joinpath(data_params["test_meta"])
 
         train_images_dir = train_dir.joinpath(data_params["train_image_dir"])
-        print(train_images_dir)
         test_images_dir = train_dir.joinpath(data_params["test_image_dir"])
 
         train_meta = pd.read_csv(train_path)
@@ -115,7 +113,6 @@ class MultilabelRunner(IRunner):
         image_paths_val = test_image_paths
         labels_val = test_labels
 
-        tta = data_params.get('tta', 1)
         datasets["train"] = {'dataset': CustomDataset(image_paths_train,
                                                       labels_train,
                                                       transforms_path=data_params['transform_path']
@@ -124,8 +121,7 @@ class MultilabelRunner(IRunner):
         datasets["valid"] = CustomDataset(image_paths_val,
                                           labels_val,
                                           transforms_path=data_params['transform_path'],
-                                          valid=True,
-                                          tta=tta)
+                                          valid=True)
         return datasets
 
 

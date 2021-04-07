@@ -21,7 +21,7 @@ runner: # Параметры для инициализации Runner
 engine: # Параметры для distributed training и NVIDIA Apex
   _target_: DeviceEngine
 
-class_names: &class_names ["/anti-aerosol", "/anti_aerosol_error", "/cap", "/face", "/gas-aerosol", "/glasses_close", "/glasses_open", "/glasses_open_error", "/helmet", "/hood", "/panoram", "/screen", "/screen_yellow"]
+# class_names: &class_names ["anti-aerosol", "anti_aerosol_error", "cap", "face", "gas-aerosol", "glasses_close", "glasses_open", "glasses_open_error", "helmet", "hood", "panoram", "screen", "screen_yellow"]
 
 loggers:
 # Встроенные логеры каталиста

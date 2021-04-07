@@ -16,7 +16,7 @@ class TensorboardMulticlassLoggingCallback(Callback):
         super().__init__(CallbackOrder.ExternalExtra)
 
     def on_experiment_end(self, state: IRunner):
-        """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок, 
+        """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок,
         которые соответствуют class_names в нашем конфиге
         """
 
@@ -26,7 +26,10 @@ class TensorboardMulticlassLoggingCallback(Callback):
         class_id = [i for i in df[df['class_id'] != df['target']]['class_id']]
         target = [i for i in df[df['class_id'] != df['target']]['target']]
 
-        class_names = state.hparams['class_names']
+        try:
+            class_names = state.hparams['class_names']
+        except KeyError:
+            class_names = [x for x in range(state.hparams['model']['num_classes'])]
         for i in tqdm(range(len(path_list))):
             image = ToTensor()(Image.open(f"{path_list[i]}"))
             state.loggers['tensorboard'].loggers['valid'].add_image(
@@ -40,7 +43,7 @@ class TensorboardMultilabelLoggingCallback(Callback):
         super().__init__(CallbackOrder.ExternalExtra)
 
     def on_experiment_end(self, state: IRunner):
-        """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок, 
+        """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок,
         которые соответствуют class_names в нашем конфиге
         """
 
@@ -61,11 +64,14 @@ class TensorboardMultilabelLoggingCallback(Callback):
         df['class_id'] = df['class_id'].apply(
             lambda x: np.array(x))
 
-        class_names = state.hparams['class_names']
+        try:
+            class_names = state.hparams['class_names']
+        except KeyError:
+            class_names = [x for x in range(state.hparams['model']['num_classes'])]
         for i in tqdm(range(length)):
             error_ind = np.where(df['class_id'][i] != df['target'][i])[0]
             for ind in tqdm(error_ind):
                 image = ToTensor()(Image.open(f"{paths_list[i]}"))
                 state.loggers['tensorboard'].loggers['valid'].add_image(
-                    f"{class_names[ind][1:]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png",
+                    f"{class_names[ind]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png",
                     image)
