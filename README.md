@@ -25,28 +25,94 @@
    - Склонировать репозиторий
    -  Запустить команду ```pip install -r requirements.txt```
    -  Для изменения, подключения данных обучения:
-       - Изменить файл ```./src/multilabel/dataset.py```
+       - По стандарту данные идут в формате:
+       ```
+          train_dataset/
+            - images/
+              - train/
+                train_image_name_1.jpg
+                train_image_name_2.jpg
+                ...
+                train_image_name_N.jpg
+
+              - test/
+                test_image_name_1.jpg
+                test_image_name_2.jpg
+                ...
+                test_image_name_N.jpg
+
+           test_metadata.csv
+           train_metadata.csv
+        ```
+        - Структура csv файлов
+        ```
+        "image_path":
+          train_image_name_1.jpg,
+          train_image_name_2.jpg,
+          ...
+          train_image_name_N.jpg,
+        "label":
+          1,
+          0,
+          ...
+          1
+        ```
        - Изменить в папке ```./config/multiclass/train_multiclass.yml``` файл, прописав новые пути до данных в блоке ```data:```
-       - По стандарту данные идут в формате: csv файл с лейблами и названием фото, папки с фотографиями(трейн и валидация)
-       - Подготовка данных к эксперименту происходит в ```./src/multiclass/TTASupervisedRunner.py``` в методе get_datasets, 
-       чтение данных во время эксперимента происходит в ```dataset.py```
    - Изменение моделей обучения
-       - Изменить в файле ```./src/multiclass/__init__.py``` Registry модели, изменив на одну из импортированных
-       - Изменить в ```train_multiclass.yml``` файле название модели в блоке ```model:```
+       - Изменить в ```train_multiclass.yml``` файле название модели (доступные модели можно посмотреть в ```src/classification/__init__.py``` в ```Registry(some_model)```) в блоке ```model:```
 
 
  ### Запуск и изменение multilabel решения
    - Склонировать репозиторий
    - Запустить команду ```pip install -r requirements.txt```
    - Для изменения, подключения данных обучения:
-       - Изменить файл ```./src/multilabel/dataset.py```
+       - По стандарту данные идут в формате:
+       ```
+          train_dataset/
+            - images/
+              - train/
+                train_image_name_1.jpg
+                train_image_name_2.jpg
+                ...
+                train_image_name_N.jpg
+
+              - test/
+                test_image_name_1.jpg
+                test_image_name_2.jpg
+                ...
+                test_image_name_N.jpg
+
+           test_metadata.csv
+           train_metadata.csv
+        ```
+        - Структура csv файлов
+        ```
+        "image_path":
+          train_image_name_1.jpg,
+          train_image_name_2.jpg,
+          ...
+          train_image_name_N.jpg,
+        "class_0":
+          [1.0, 0.0, 1.0],
+          [0.0, 0.0, 1.0],
+          ...
+          [1.0, 1.0, 1.0],
+        "class_1":
+          [1.0, 0.0, 1.0],
+          [0.0, 0.0, 1.0],
+          ...
+          [1.0, 1.0, 1.0],
+        "class_2":
+          [1.0, 0.0, 1.0],
+          [0.0, 0.0, 1.0],
+          ...
+          [1.0, 1.0, 1.0],
+        ```
        - Изменить в папке ```./config/multilabel/train_multilabel.yml``` файл, прописав новые пути до данных в блоке ```data:```
-       - По стандарту данные идут в формате: csv файл с лейблами и названием фото, папки с фотографиями(трейн и валидация)
        - Подготовка данных к эксперименту происходит в ```./src/multilabel/TTASupervisedRunner.py``` в методе get_datasets,
        чтение данных во время эксперимента происходит в ```dataset.py```
    - Изменение моделей обучения
-       - Изменить в файле ```./src/multilabel/__init__.py``` Registry модели, изменив на одну из импортированных
-       - Изменить в ```train_multilabel.yml``` файле название модели в блоке ```model:```
+       - Изменить в ```train_multilabel.yml``` файле название модели (доступные модели можно посмотреть в ```src/classification/__init__.py``` в ```Registry(some_model)```) в блоке ```model:```
 
 
 
