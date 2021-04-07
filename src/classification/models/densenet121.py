@@ -2,7 +2,7 @@ import torch
 from torch import nn
 
 
-class Densenet121(nn.Module):
+class densenet121(nn.Module):
     def __init__(self, num_classes=10, path='pytorch/vision:v0.6.0'):
         super().__init__()
         self.backbone = torch.hub.load(path, 'densenet121', pretrained=True)

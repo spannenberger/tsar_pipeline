@@ -9,7 +9,7 @@ from models.ResNet101 import ResNet101
 from models.EfficientNetb0 import EfficientNetb0  # converter onnx: False
 from models.EfficientNetb3 import EfficientNetb3  # converter onnx: False
 from models.EfficientNetb6 import EfficientNetb6  # converter onnx: False
-from models.Densenet121 import Densenet121  # converter True
+from models.Densenet121 import densenet121  # converter True
 from models.Densenet169 import Densenet169  # converter True
 from models.Densenet201 import Densenet201  # converter True
 from models.Densenet161 import Densenet161  # converter True

@@ -2,7 +2,7 @@ import torch
 from torch import nn
 
 
-class Densenet161(nn.Module):
+class densenet161(nn.Module):
     def __init__(self, num_classes=10, path='pytorch/vision:v0.6.0'):
         super().__init__()
         self.backbone = torch.hub.load(path, 'densenet161', pretrained=True)
@@ -27,7 +27,7 @@ class Densenet161(nn.Module):
 
 # test model
 if __name__ == "__main__":
-    model = Densenet161()
+    model = densenet161()
     model.eval()
     input_tensor = torch.randn(1, 3, 256, 256)
     output = model(input_tensor)
