@@ -41,10 +41,10 @@ class CustomDataset(Dataset):
             idx = idx // self.tta
 
         image_path = self.image_paths[idx]
+        print(image_path)
         if isinstance(image_path, Path):
             image_path = image_path.as_posix()
         image = cv2.imread(image_path)
-
         if self.transforms:
             image = self.transforms(image=image)["image"]
 

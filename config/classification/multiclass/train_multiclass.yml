@@ -1,5 +1,5 @@
 model:
-  _target_: ResNet18 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: ResNet18_swsl # имя клаccа. Сам класс будет сконструирован в registry по этому имени
   num_classes: &num_classes 5
 
 args: # Различные аргументы для Catalyst
@@ -20,7 +20,7 @@ runner: # Параметры для инициализации Runner
 engine: # Параметры для distributed training и NVIDIA Apex
   _target_: DeviceEngine
 
-class_names: &class_names ["Cassava Bacterial Blight (CBB)", "Cassava Brown Streak Disease (CBSD)", "Cassava Green Mottle (CGM)", "Cassava Mosaic Disease (CMD)", "Healthy"]
+class_names: &class_names ["sigi", "other"]
 
 loggers:
 # Встроенные логеры каталиста
@@ -29,7 +29,7 @@ loggers:
     _target_: ConsoleLogger
   mlflow:
     _target_: MLflowLogger
-    experiment: 'cassava'
+    experiment: 'sigi'
   tensorboard:
     _target_: TensorboardLogger
     logdir: "./logs/ui"
@@ -85,11 +85,12 @@ stages: # Словарь всех стадий Catalyst, для обучения
 
     data: # Подключение данных и параметров обучения
       shuffle: false
-      train_dir: "./train_dataset"
-      train_image_dir: "train_images"
-      train_meta: "train.csv"
+      train_dir: "./train_dataset_sigi/"
+      train_image_dir: "images/train"
+      test_image_dir: "images/test"
+      train_meta: "train_metadata.csv"
+      test_meta: "test_metadata.csv"
       transform_path: "config/classification/augmentations/light.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
-      valid_size: 0.2
     loaders: &loaders
       batch_size: 1 # Размер батча для всех стейджей
       num_workers: 0 #для локальной поставить 0
