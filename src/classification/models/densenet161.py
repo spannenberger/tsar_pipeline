@@ -3,9 +3,9 @@ from torch import nn
 
 
 class Densenet161(nn.Module):
-    def __init__(self, num_classes=10):
+    def __init__(self, num_classes=10, path='pytorch/vision:v0.6.0'):
         super().__init__()
-        self.backbone = torch.hub.load('pytorch/vision:v0.6.0', 'densenet161', pretrained=True)
+        self.backbone = torch.hub.load(path, 'densenet161', pretrained=True)
 
         # replace classifier
         classifier_name, old_classifier = self.backbone._modules.popitem()
