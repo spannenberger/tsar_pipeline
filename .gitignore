@@ -131,6 +131,7 @@ dmypy.json
 # Project temp files
 train_dataset_kcm/
 train_dataset/
+dataset_classif_0804/
 train_dataset_sigi/
 logs/
 mlruns/
