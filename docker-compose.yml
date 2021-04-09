@@ -1,16 +1,13 @@
 version: '3.4'
 
 services:
-  cv:
-    image: cv
-    stdin_open: true
-    tty: true
-    volumes:
-      - .:/workspace/cv
-    build:
-      context: .
-      network: host
-      dockerfile: ./Dockerfile
-
-volumes:
-  cv:
+  test:
+    image: tensorflow/tensorflow:latest-gpu
+    command: python -c "import tensorflow as tf;tf.test.gpu_device_name()"
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            device_ids: ['0', '3']
+            capabilities: [gpu]
