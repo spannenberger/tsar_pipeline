@@ -2,9 +2,7 @@ version: '3.4'
 
 services:
   cv:
-    image: nvidia/cuda:10.2-base
-    runtime: nvidia
-    command: nvidia-smi
+    image: cv
     # deploy:
     #   resources:
     #     reservations:
