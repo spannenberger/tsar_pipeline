@@ -2,17 +2,7 @@ version: '3.4'
 
 services:
   cv:
-    image: nvidia/cuda:10.2-base
-    runtime: nvidia
-    command: nvidia-smi
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #       - driver: nvidia
-    #         count: 1
-    #         capabilities: [gpu, utility]
-
+    image: cv
     stdin_open: true
     tty: true
     volumes:
