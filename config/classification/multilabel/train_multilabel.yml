@@ -39,14 +39,14 @@ stages: # Словарь всех стадий Catalyst, для обучения
 
     optimizer: # Параметры оптимизатора
       _target_: Adam
-      lr: 0.00001
+      lr: 0.001
     scheduler: # Подключение кастомного шедулера
       _key_value: False
 
       _target_: CustomScheduler
       delay_epochs: 50
       total_epochs: 100
-      eta_min: 0.00001
+      eta_min: 0.000001
 
     callbacks:
     # Подключение колбэков каталиста
@@ -95,7 +95,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       test_image_dir: "images"
       train_meta: "train_metadata.csv"
       test_meta: "test_metadata.csv"
-      transform_path: "config/classification/augmentations/light.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
+      transform_path: "config/classification/augmentations/medium.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
     loaders: &loaders
       batch_size: 32 # Размер батча для всех стейджей
       num_workers: 3 # Для локальной поставить 0
