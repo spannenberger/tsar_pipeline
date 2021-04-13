@@ -7,6 +7,13 @@ services:
     tty: true
     command: nvidia-smi
     runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: 1
+            capabilities: [gpu, utility]
     volumes:
       - .:/workspace/cv
     build:
