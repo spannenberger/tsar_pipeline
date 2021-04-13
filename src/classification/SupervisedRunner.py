@@ -11,6 +11,10 @@ import torch
 class MulticlassRunner(IRunner):
     """Кастомный runner нашего эксперимента"""
 
+
+    def get_engine(self):
+        return dl.DeviceEngine("cuda:1")
+
     def get_datasets(self, stage: str, **kwargs):
         """Работа с данными, формирование train и valid"""
         datasets = OrderedDict()
