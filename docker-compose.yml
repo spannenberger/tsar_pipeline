@@ -5,7 +5,6 @@ services:
     image: nvidia/cuda:10.2-base
     stdin_open: true
     tty: true
-    command: nvidia-smi
     deploy:
       resources:
         reservations:
