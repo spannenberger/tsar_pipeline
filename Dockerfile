@@ -1,4 +1,4 @@
-FROM pytorch/pytorch
+FROM continuumio/anaconda3
 LABEL Name=cv Version=0.0.1
 
 RUN conda install pytorch torchvision cpuonly -c pytorch
