@@ -5,13 +5,8 @@ services:
     image: cv
     stdin_open: true
     tty: true
-    deploy:
-      resources:
-        reservations:
-          devices:
-          - driver: nvidia
-            count: 1
-            capabilities: [gpu, utility]
+    runtime: nvidia
+    pid: "host"
     volumes:
       - .:/workspace/cv
     build:
