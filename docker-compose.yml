@@ -5,6 +5,14 @@ services:
     image: cv
     stdin_open: true
     tty: true
+    command: nvidia-smi
+    deploy:
+      resources:
+        reservations:
+          devices:
+          - driver: nvidia
+            count: 1
+            capabilities: [gpu, utility]
     volumes:
       - .:/workspace/cv
     build:
