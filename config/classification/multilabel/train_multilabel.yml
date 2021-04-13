@@ -97,7 +97,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       transform_path: "config/classification/augmentations/medium.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
     loaders: &loaders
       batch_size: 32 # Размер батча для всех стейджей
-      num_workers: 4 # Для локальной поставить 0
+      num_workers: 3 # Для локальной поставить 0
     num_epochs: 600 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: multi_label_accuracy
