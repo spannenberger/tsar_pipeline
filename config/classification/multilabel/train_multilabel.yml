@@ -1,5 +1,5 @@
 model:
-  _target_: ResNet18 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: Densenet121 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
   num_classes: &num_classes 18
 
 args: # Различные аргументы для Catalyst
@@ -44,9 +44,9 @@ stages: # Словарь всех стадий Catalyst, для обучения
       _key_value: False
 
       _target_: CustomScheduler
-      delay_epochs: 50
-      total_epochs: 100
-      eta_min: 0.000001
+      delay_epochs: 200
+      total_epochs: 600
+      eta_min: 0.00000001
 
     callbacks:
     # Подключение колбэков каталиста
@@ -88,7 +88,6 @@ stages: # Словарь всех стадий Catalyst, для обучения
         _target_: TensorboardMultilabelLoggingCallback
 
     data: # Подключение данных и параметров обучения
-      tta: 2
       shuffle: false
       train_dir: "./dataset_classif_0804/"
       train_image_dir: "images"
@@ -98,8 +97,8 @@ stages: # Словарь всех стадий Catalyst, для обучения
       transform_path: "config/classification/augmentations/medium.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
     loaders: &loaders
       batch_size: 32 # Размер батча для всех стейджей
-      num_workers: 3 # Для локальной поставить 0
-    num_epochs: 100 # Количество эпох эксперимента
+      num_workers: 4 # Для локальной поставить 0
+    num_epochs: 600 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: multi_label_accuracy
     minimize_metric: False
