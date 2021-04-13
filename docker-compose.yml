@@ -2,11 +2,10 @@ version: '3.4'
 
 services:
   cv:
-    image: cv
+    image: nvidia/cuda:10.2-base
     stdin_open: true
     tty: true
     command: nvidia-smi
-    runtime: nvidia
     deploy:
       resources:
         reservations:
