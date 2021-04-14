@@ -20,7 +20,7 @@ runner: # Параметры для инициализации Runner
 
 engine: # Параметры для distributed training и NVIDIA Apex
   _target_: DeviceEngine
-  device: cuda:0
+  # device: cuda:0
 class_names: &class_names ['anti-aerosol', 'cap', 'hood', 'face', 'gas-aerosol', 'helmet', 'screen', 'panoram', 'glasses_open', 'glasses_close','screen_yellow', 'anti_aerosol_error', 'glasses_open_error', 'gas_aerosol_error','glasses_close_error', 'helmet_error', 'screen_error', 'screen_yellow_error']
 loggers:
 # Встроенные логеры каталиста
