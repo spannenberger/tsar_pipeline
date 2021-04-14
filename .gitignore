@@ -129,6 +129,7 @@ dmypy.json
 .pyre/
 
 # Project temp files
+ui/
 train_dataset_kcm/
 train_dataset/
 dataset_classif_0804/

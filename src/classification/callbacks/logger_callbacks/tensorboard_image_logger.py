@@ -12,7 +12,7 @@ from tqdm import tqdm
 @Registry
 class TensorboardMulticlassLoggingCallback(Callback):
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         super().__init__(CallbackOrder.ExternalExtra)
 
     def on_experiment_end(self, state: IRunner):
@@ -30,7 +30,8 @@ class TensorboardMulticlassLoggingCallback(Callback):
             class_names = state.hparams['class_names']
         except KeyError:
             class_names = [x for x in range(state.hparams['model']['num_classes'])]
-        for i in tqdm(range(len(path_list))):
+            
+        for i in tqdm(range(state.hparams['stages']['stage']['callbacks']['custom_tensorboard']['logging_image_number'])):
             image = ToTensor()(Image.open(f"{path_list[i]}"))
             state.loggers['tensorboard'].loggers['valid'].add_image(
                 f"{class_names[target[i]]}/{class_id[i]} - {target[i]} error number {i}.png",
@@ -39,7 +40,7 @@ class TensorboardMulticlassLoggingCallback(Callback):
 
 @Registry
 class TensorboardMultilabelLoggingCallback(Callback):
-    def __init__(self):
+    def __init__(self, **kwargs):
         super().__init__(CallbackOrder.ExternalExtra)
 
     def on_experiment_end(self, state: IRunner):
@@ -55,7 +56,6 @@ class TensorboardMultilabelLoggingCallback(Callback):
         df['class_id'] = df['class_id'].apply(
             lambda x: [1.0 if i > 0.5 else 0.0 for i in x])
 
-        length = len(df[df['class_id'] != df['target']])
         paths_list = df[df['class_id'] != df['target']]['path']
 
         df['class_id'] = df['class_id'].apply(
@@ -68,7 +68,8 @@ class TensorboardMultilabelLoggingCallback(Callback):
             class_names = state.hparams['class_names']
         except KeyError:
             class_names = [x for x in range(state.hparams['model']['num_classes'])]
-        for i in tqdm(range(length)):
+
+        for i in tqdm(range(state.hparams['stages']['stage']['callbacks']['custom_tensorboard']['logging_image_number'])):
             error_ind = np.where(df['class_id'][i] != df['target'][i])[0]
             for ind in tqdm(error_ind):
                 image = ToTensor()(Image.open(f"{paths_list[i]}"))

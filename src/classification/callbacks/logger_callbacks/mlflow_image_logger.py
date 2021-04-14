@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 @Registry
 class MLFlowMulticlassLoggingCallback(Callback):
-    def __init__(self):
+    def __init__(self, **kwargs):
         super().__init__(CallbackOrder.ExternalExtra)
 
     def on_stage_start(self, state: IRunner):
@@ -35,7 +35,7 @@ class MLFlowMulticlassLoggingCallback(Callback):
             class_names = state.hparams['class_names']
         except KeyError:
             class_names = [x for x in range(state.hparams['model']['num_classes'])]
-        for i in tqdm(range(len(path_list))):
+        for i in tqdm(range(state.hparams['stages']['stage']['callbacks']['custom_mlflow']['logging_image_number'])):
             image = Image.open(f"{path_list[i]}")
             mlflow.log_image(
                 image,
@@ -47,7 +47,7 @@ class MLFlowMulticlassLoggingCallback(Callback):
 
 @Registry
 class MLFlowMultilabelLoggingCallback(Callback):
-    def __init__(self):
+    def __init__(self, **kwargs):
         super().__init__(CallbackOrder.ExternalExtra)
 
     def on_stage_start(self, state: IRunner):
@@ -70,7 +70,7 @@ class MLFlowMultilabelLoggingCallback(Callback):
         df['class_id'] = df['class_id'].apply(
             lambda x: [1.0 if i > 0.5 else 0.0 for i in x])
 
-        length = len(df[df['class_id'] != df['target']])
+        # length = len(df[df['class_id'] != df['target']])
         paths_list = df[df['class_id'] != df['target']]['path']
 
         df['class_id'] = df['class_id'].apply(
@@ -82,7 +82,7 @@ class MLFlowMultilabelLoggingCallback(Callback):
             class_names = state.hparams['class_names']
         except KeyError:
             class_names = [x for x in range(state.hparams['model']['num_classes'])]
-        for i in tqdm(range(length)):
+        for i in tqdm(range(state.hparams['stages']['stage']['callbacks']['custom_mlflow']['logging_image_number'])):
             error_ind = np.where(df['class_id'][i] != df['target'][i])[0]
             for ind in tqdm(error_ind):
                 image = Image.open(f"{paths_list[i]}")
