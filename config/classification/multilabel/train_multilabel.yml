@@ -28,6 +28,7 @@ loggers:
   mlflow:
     _target_: MLflowLogger
     experiment: 'kcm'
+    tracking_uri: http://mlflow.ddc.itnap.ru:5000/
   tensorboard:
     _target_: TensorboardLogger
     logdir: "./logs/ui"
