@@ -1,6 +1,6 @@
 model:
-  _target_: ResNet18_swsl # имя клаccа. Сам класс будет сконструирован в registry по этому имени
-  num_classes: &num_classes 5
+  _target_: ResNet18 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  num_classes: &num_classes 2
 
 args: # Различные аргументы для Catalyst
   expdir: src/classification # Путь до нашего эксперимента, с файлом `__init__`, в котором импортируется Runner, и, опционально, регистрируются все дополнительные сущности: model, callback, criterion, etc
@@ -19,8 +19,9 @@ runner: # Параметры для инициализации Runner
 
 engine: # Параметры для distributed training и NVIDIA Apex
   _target_: DeviceEngine
+  device: cuda:0
 
-# class_names: &class_names ["sigi", "other"]
+class_names: &class_names ["sigi", "other"]
 
 loggers:
 # Встроенные логеры каталиста
@@ -80,10 +81,10 @@ stages: # Словарь всех стадий Catalyst, для обучения
         subm_file: "./crossval_log/preds.csv"
       custom_mlflow: # Логирование ошибочных фотографий в mlflow
         _target_: MLFlowMulticlassLoggingCallback
-        logging_image_number: 1
+        logging_image_number: 10
       custom_tensorboard: # Логирование ошибочных фотографий в tensorboard
         _target_: TensorboardMulticlassLoggingCallback
-        logging_image_number: 1
+        logging_image_number: 10
 
     data: # Подключение данных и параметров обучения
       shuffle: false
@@ -94,9 +95,9 @@ stages: # Словарь всех стадий Catalyst, для обучения
       test_meta: "test_metadata.csv"
       transform_path: "config/classification/augmentations/light.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
     loaders: &loaders
-      batch_size: 1 # Размер батча для всех стейджей
-      num_workers: 0 #для локальной поставить 0
-    num_epochs: 1 # Количество эпох эксперимента
+      batch_size: 16 # Размер батча для всех стейджей
+      num_workers: 3 #для локальной поставить 0
+    num_epochs: 90 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: accuracy01
     minimize_metric: False
