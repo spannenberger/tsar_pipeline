@@ -47,8 +47,8 @@ stages: # Словарь всех стадий Catalyst, для обучения
       _key_value: False
 
       _target_: CustomScheduler
-      delay_epochs: 2
-      total_epochs: 5
+      delay_epochs: 30
+      total_epochs: 90
       eta_min: 0.00001
     callbacks:
       # Подключение колбэков каталиста
@@ -95,7 +95,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       test_meta: "test_metadata.csv"
       transform_path: "config/classification/augmentations/light.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
     loaders: &loaders
-      batch_size: 16 # Размер батча для всех стейджей
+      batch_size: 32 # Размер батча для всех стейджей
       num_workers: 3 #для локальной поставить 0
     num_epochs: 90 # Количество эпох эксперимента
     valid_loader: valid
