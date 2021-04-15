@@ -51,7 +51,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
 
       _target_: CustomScheduler
       delay_epochs: 30
-      total_epochs: 60
+      total_epochs: 90
       eta_min: 0.00001
     callbacks:
       # Подключение колбэков каталиста
