@@ -5,6 +5,9 @@ services:
     image: cv
     runtime: nvidia
     pid: "host"
+    ports: 
+      - 5000:5000
+      - 6006:6006
     stdin_open: true
     tty: true
     volumes:
