@@ -27,15 +27,18 @@ class MLFlowMulticlassLoggingCallback(Callback):
         """
 
         df = pd.read_csv('crossval_log/preds.csv', sep=';')
-
         path_list = [i for i in df[df['class_id'] != df['target']]['path']]
+        length = len(path_list) if len(path_list) <= state.hparams['stages']['stage']['callbacks']['custom_mlflow']['logging_image_number'] \
+            else state.hparams['stages']['stage']['callbacks']['custom_mlflow']['logging_image_number']
+
         class_id = [i for i in df[df['class_id'] != df['target']]['class_id']]
         target = [i for i in df[df['class_id'] != df['target']]['target']]
         try:
             class_names = state.hparams['class_names']
         except KeyError:
-            class_names = [x for x in range(state.hparams['model']['num_classes'])]
-        for i in tqdm(range(state.hparams['stages']['stage']['callbacks']['custom_mlflow']['logging_image_number'])):
+            class_names = [x for x in range(
+                state.hparams['model']['num_classes'])]
+        for i in tqdm(range(length)):
             image = Image.open(f"{path_list[i]}")
             mlflow.log_image(
                 image,
@@ -70,7 +73,9 @@ class MLFlowMultilabelLoggingCallback(Callback):
         df['class_id'] = df['class_id'].apply(
             lambda x: [1.0 if i > 0.5 else 0.0 for i in x])
 
-        # length = len(df[df['class_id'] != df['target']])
+        length = len(df[df['class_id'] != df['target']]) if len(df[df['class_id'] != df['target']]) <= state.hparams['stages']['stage']['callbacks'][
+            'custom_mlflow']['logging_image_number'] else state.hparams['stages']['stage']['callbacks']['custom_mlflow']['logging_image_number']
+
         paths_list = df[df['class_id'] != df['target']]['path']
 
         df['class_id'] = df['class_id'].apply(
@@ -81,8 +86,9 @@ class MLFlowMultilabelLoggingCallback(Callback):
         try:
             class_names = state.hparams['class_names']
         except KeyError:
-            class_names = [x for x in range(state.hparams['model']['num_classes'])]
-        for i in tqdm(range(state.hparams['stages']['stage']['callbacks']['custom_mlflow']['logging_image_number'])):
+            class_names = [x for x in range(
+                state.hparams['model']['num_classes'])]
+        for i in tqdm(range(length)):
             error_ind = np.where(df['class_id'][i] != df['target'][i])[0]
             for ind in tqdm(error_ind):
                 image = Image.open(f"{paths_list[i]}")
