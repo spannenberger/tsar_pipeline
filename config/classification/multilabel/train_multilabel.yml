@@ -88,10 +88,10 @@ stages: # Словарь всех стадий Catalyst, для обучения
         subm_file: "./crossval_log/preds.csv"
       custom_mlflow: # Логирование ошибочных фотографий в mlflow
         _target_: MLFlowMultilabelLoggingCallback
-        logging_image_number: 0 # Кол-во фотографий, которые надо логнуть
+        logging_image_number: 30 # Кол-во фотографий, которые надо логнуть
       custom_tensorboard: # Логирование ошибочных фотографий в tensorboard
         _target_: TensorboardMultilabelLoggingCallback
-        logging_image_number: 0 # Кол-во фотографий, которые надо логнуть
+        logging_image_number: 30 # Кол-во фотографий, которые надо логнуть
 
     data: # Подключение данных и параметров обучения
       shuffle: false
