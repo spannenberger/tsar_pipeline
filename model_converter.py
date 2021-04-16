@@ -16,16 +16,17 @@ def parse_args():
     )
     parser.add_argument(
         '--model_file',
-        default='src/multilabel/models/ResNet18.py',
+        default='src/classification/models/Densenet121.py',
         help='File of model'
     )
     parser.add_argument(
         '--model_name',
-        default='ResNet18',
+        default='Densenet121',
         help='Model class name'
     )
     parser.add_argument(
         '--out_dir',
+        default=None,
         help='Output dir for checkpoints'
     )
     parser.add_argument(
@@ -47,7 +48,7 @@ def parse_args():
 
 
 def get_model_params(config_file: str):
-    with open(config_file) as f:
+    with open(config_file, encoding='utf8') as f:
         params = yaml.safe_load(f)
         params = params['model']
         del params['_target_']
@@ -74,7 +75,7 @@ def onnx(model: torch.nn.Module, checkpoint: str, input_dir: Path, output_dir: P
                       x,                         # model input (or a tuple for multiple inputs)
                       str(path),   # where to save the model (can be a file or file-like object)
                       export_params=True,        # store the trained parameter weights inside the model file
-                      opset_version=10,          # the ONNX version to export the model to
+                      opset_version=11,          # the ONNX version to export the model to
                       do_constant_folding=True,  # whether to execute constant folding for optimization
                       input_names=['input'],   # the model's input names
                       output_names=['output'],  # the model's output names
@@ -100,18 +101,17 @@ converters = {
 
 args = parse_args()
 input_dir = Path(args.input_dir)
-try:
-    output_dir = Path(args.output_dir)
-except:
+if args.out_dir is None:
     output_dir = Path(args.logdir + args.format)
+else:
+    output_dir = Path(args.output_dir)
 output_dir.mkdir(parents=True, exist_ok=True)
 
 model_params = get_model_params(args.config_file)
 chechpoints = ['best', 'best_full']
 model_file = args.model_file.split('/')
 model_file = '.'.join(model_file)[:-3]
-
-sys.path.append(os.getcwd() + '/' + '/'.join(args.model_file.split('/')[:-3]))
+sys.path.append(os.getcwd() + '/' + '/'.join(args.model_file.split('/')[:-2]))
 model_module = __import__(model_file, fromlist=[None])
 
 model = getattr(model_module, args.model_name)(**model_params)
