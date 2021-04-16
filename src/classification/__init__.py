@@ -34,6 +34,7 @@ from callbacks.iner_callback import MultilabelInerCallback
 from callbacks.logger_callbacks.mlflow_image_logger import MLFlowMultilabelLoggingCallback
 from callbacks.logger_callbacks.tensorboard_image_logger import TensorboardMultilabelLoggingCallback
 
+from callbacks.logger_callbacks.mlflow_logger import CustomMLflowLogger
 # Импорт инструментов каталиста
 from catalyst.registry import Registry
 from catalyst.loggers.mlflow import MLflowLogger
@@ -64,3 +65,4 @@ Registry(MobilenetV2)
 Registry(MobilenetV3Large)
 Registry(MobilenetV3Small)
 Registry(ResNet18_swsl)
+Registry(CustomMLflowLogger)

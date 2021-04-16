@@ -12,8 +12,8 @@ from tqdm import tqdm
 @Registry
 class TensorboardMulticlassLoggingCallback(Callback):
 
-    def __init__(self, **kwargs):
-        super().__init__(CallbackOrder.ExternalExtra)
+    def __init__(self, logging_image_number, **kwargs):
+        self.logging_image_number = logging_image_number
 
     def on_experiment_end(self, state: IRunner):
         """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок,
@@ -23,8 +23,10 @@ class TensorboardMulticlassLoggingCallback(Callback):
         df = pd.read_csv('crossval_log/preds.csv', sep=';')
 
         path_list = [i for i in df[df['class_id'] != df['target']]['path']]
-        length = len(path_list) if len(path_list) <= state.hparams['stages']['stage']['callbacks']['custom_mlflow']['logging_image_number'] \
-            else state.hparams['stages']['stage']['callbacks']['custom_mlflow']['logging_image_number']
+        if(len(df[df['class_id'] != df['target']]) <= self.logging_image_number):
+            length = len(df[df['class_id'] != df['target']])
+        else:
+            length = self.logging_image_number
 
         class_id = [i for i in df[df['class_id'] != df['target']]['class_id']]
         target = [i for i in df[df['class_id'] != df['target']]['target']]
@@ -44,7 +46,9 @@ class TensorboardMulticlassLoggingCallback(Callback):
 
 @Registry
 class TensorboardMultilabelLoggingCallback(Callback):
-    def __init__(self, **kwargs):
+    def __init__(self, logging_image_number, threshold=0.5, experiment_name=''):
+        self.logging_image_number = logging_image_number
+        self.threshold = threshold
         super().__init__(CallbackOrder.ExternalExtra)
 
     def on_experiment_end(self, state: IRunner):
@@ -61,11 +65,13 @@ class TensorboardMultilabelLoggingCallback(Callback):
             lambda x: [1.0 if i > 0.5 else 0.0 for i in x])
 
         paths_list = df[df['class_id'] != df['target']]['path']
-        length = len(df[df['class_id'] != df['target']]) if len(df[df['class_id'] != df['target']]) <= state.hparams['stages']['stage']['callbacks'][
-            'custom_mlflow']['logging_image_number'] else state.hparams['stages']['stage']['callbacks']['custom_mlflow']['logging_image_number']
+        if(len(df[df['class_id'] != df['target']]) <= self.logging_image_number):
+            length = len(df[df['class_id'] != df['target']])
+        else:
+            length = self.logging_image_number
 
         df['class_id'] = df['class_id'].apply(
-            lambda x: np.array([1.0 if i > 0.5 else 0.0 for i in x]))
+            lambda x: np.array([1.0 if i > self.threshold else 0.0 for i in x]))
 
         df['class_id'] = df['class_id'].apply(
             lambda x: np.array(x))
