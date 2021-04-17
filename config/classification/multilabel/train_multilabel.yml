@@ -48,8 +48,8 @@ stages: # Словарь всех стадий Catalyst, для обучения
       _key_value: False
 
       _target_: CustomScheduler
-      delay_epochs: 30
-      total_epochs: 90
+      delay_epochs: 5
+      total_epochs: 10
       eta_min: 0.0000001
 
     callbacks:
@@ -88,10 +88,10 @@ stages: # Словарь всех стадий Catalyst, для обучения
         subm_file: "./crossval_log/preds.csv"
       custom_mlflow: # Логирование ошибочных фотографий в mlflow
         _target_: MLFlowMultilabelLoggingCallback
-        logging_image_number: 30 # Кол-во фотографий, которые надо логнуть
+        logging_image_number: 10 # Кол-во фотографий, которые надо логнуть
       custom_tensorboard: # Логирование ошибочных фотографий в tensorboard
         _target_: TensorboardMultilabelLoggingCallback
-        logging_image_number: 30 # Кол-во фотографий, которые надо логнуть
+        logging_image_number: 10 # Кол-во фотографий, которые надо логнуть
 
     data: # Подключение данных и параметров обучения
       shuffle: false
@@ -104,7 +104,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
     loaders: &loaders
       batch_size: 32 # Размер батча для всех стейджей
       num_workers: 3 # Для локальной поставить 0
-    num_epochs: 90 # Количество эпох эксперимента
+    num_epochs: 10 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: multi_label_accuracy
     minimize_metric: False
