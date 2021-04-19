@@ -5,7 +5,7 @@
 - [User guide](#user-guide)
   * [Структура репозитория](#структура-репозитория)
   * [Инструкция по использования репозитория](#инструкция-по-использования-репозитория)
-  * [.env file example](#пример-.env-файла)
+  * [.env file example](#пример-env-файла)
 - [Training run](#training-run)
 - [Train in docker](#train-in-docker)
 # User guide
