@@ -49,6 +49,7 @@ class MLFlowMulticlassLoggingCallback(Callback):
                 f"{class_names[target[i]]}/{class_id[i]} - {target[i]} error number {i}.png")
 
         mlflow.log_artifact('logs/checkpoints/best.pth', 'model')
+        mlflow.pytorch.log_model(state.model, artifact_path=state.hparams['model']['_target_'])
         mlflow.end_run()
 
 
@@ -95,3 +96,4 @@ class MLFlowMultilabelLoggingCallback(Callback):
 
         mlflow.log_artifact('logs/checkpoints/best.pth', 'model')
         mlflow.pytorch.log_model(state.model, artifact_path=state.hparams['model']['_target_'])
+        mlflow.end_run()
