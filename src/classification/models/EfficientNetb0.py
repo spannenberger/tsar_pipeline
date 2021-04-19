@@ -5,7 +5,8 @@ from torch import nn
 class EfficientNetb0(nn.Module):
     def __init__(self, num_classes=10):
         super().__init__()
-        self.backbone = torch.hub.load("rwightman/gen-efficientnet-pytorch", 'tf_efficientnet_b0', pretrained=True)
+        self.backbone = torch.hub.load("narumiruna/efficientnet-pytorch",
+                                       'efficientnet_b0', pretrained=True)
         # replace classifier
         classifier_name, old_classifier = self.backbone._modules.popitem()
         if isinstance(old_classifier, nn.Sequential):

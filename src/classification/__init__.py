@@ -3,9 +3,9 @@ from SupervisedRunner import MultilabelSupervisedRunner
 
 # Импорт моделей
 from models.ResNet18 import ResNet18  # converter True
-from models.ResNet34 import ResNet34
-from models.ResNet50 import ResNet50
-from models.ResNet101 import ResNet101
+from models.ResNet34 import ResNet34  # converter True
+from models.ResNet50 import ResNet50  # converter True
+from models.ResNet101 import ResNet101  # converter True
 from models.EfficientNetb0 import EfficientNetb0  # converter onnx: False
 from models.EfficientNetb3 import EfficientNetb3  # converter onnx: False
 from models.EfficientNetb6 import EfficientNetb6  # converter onnx: False
@@ -16,12 +16,12 @@ from models.Densenet161 import Densenet161  # converter True
 from models.Resnest50 import Resnest50  # False
 from models.Resnext50_32x4d import Resnext50_32x4d  # converter True
 from models.Resnext101_32x8d import Resnext101_32x8d  # converter True
-from models.WideResnet50_2 import WideResnet50_2
-from models.WideResnet101_2 import WideResnet101_2
-from models.MobilenetV2 import MobilenetV2
-from models.MobilenetV3Large import MobilenetV3Large
-from models.MobilenetV3Small import MobilenetV3Small
-from models.ResNet18_swsl import ResNet18_swsl
+from models.WideResnet50_2 import WideResnet50_2  # converter True
+from models.WideResnet101_2 import WideResnet101_2  # converter True
+from models.MobilenetV2 import MobilenetV2  # converter True
+from models.MobilenetV3Large import MobilenetV3Large  # converter onnx: False
+from models.MobilenetV3Small import MobilenetV3Small  # converter onnx: False
+from models.ResNet18_swsl import ResNet18_swsl  # converter True
 
 # Импорт колбэков
 from callbacks.custom_scheduler import CustomScheduler

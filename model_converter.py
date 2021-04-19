@@ -56,20 +56,31 @@ def get_model_params(config_file: str):
 
 
 def torchscript(model: torch.nn.Module, checkpoint: str, input_dir: Path, output_dir: Path):
+    device = 'cpu:0'
+    if torch.cuda.is_available():
+        device = 'cuda:0'
     model.load_state_dict(torch.load(input_dir/(checkpoint+'.pth'))['model_state_dict'])
     model.eval()
+    model.to(device)
     x = torch.rand(1, 3, 512, 512)
+    x.to(device)
     scripted = torch.jit.script(model, x)
     output = output_dir / (checkpoint + '.pt')
     torch.jit.save(scripted, str(output))
     loaded = torch.jit.load(str(output))
+    loaded.to(device)
     print(loaded(x) == model(x))
 
 
 def onnx(model: torch.nn.Module, checkpoint: str, input_dir: Path, output_dir: Path):
+    device = 'cpu:0'
+    if torch.cuda.is_available():
+        device = 'cuda:0'
     model.load_state_dict(torch.load(input_dir / (checkpoint + '.pth'))['model_state_dict'])
     model.eval()
+    model.to(device)
     x = torch.randn(1, 3, 224, 224, requires_grad=True)
+    x.to(device)
     path = output_dir / (checkpoint+'.onnx')
     torch.onnx.export(model,               # model being run
                       x,                         # model input (or a tuple for multiple inputs)
@@ -82,14 +93,13 @@ def onnx(model: torch.nn.Module, checkpoint: str, input_dir: Path, output_dir: P
                       dynamic_axes={'input': {0: 'batch_size'},    # variable lenght axes
                                     'output': {0: 'batch_size'}})
 
-    onnx_input = x.detach().clone().numpy()
+    onnx_input = x.cpu().detach().clone().numpy()
     preds_torch = model(x)
 
     session = rt.InferenceSession(str(path))
     inputs_name = session.get_inputs()[0].name
     outputs_name = session.get_outputs()[0].name
     preds_onx = session.run([outputs_name], {inputs_name: onnx_input})[0]
-    print()
     print(preds_torch.detach())
     print(torch.Tensor(preds_onx))
 

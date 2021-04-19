@@ -21,8 +21,6 @@ class Resnext101_32x8d(nn.Module):
         self.backbone.add_module(classifier_name, old_classifier)
         # end
 
-        print(classifier_name)
-
     def forward(self, X):
         return self.backbone(X)
 
