@@ -92,6 +92,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       custom_tensorboard: # Логирование ошибочных фотографий в tensorboard
         _target_: TensorboardMultilabelLoggingCallback
         logging_image_number: 20 # Кол-во фотографий, которые надо логнуть
+        threshold: 0.5
 
     data: # Подключение данных и параметров обучения
       shuffle: false

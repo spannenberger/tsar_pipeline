@@ -1,5 +1,5 @@
 model:
-  _target_: WideResnet101_2 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: Densenet121 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
   num_classes: &num_classes 2
 
 args: # Различные аргументы для Catalyst
@@ -29,8 +29,9 @@ loggers:
   console:
     _target_: ConsoleLogger
   mlflow:
-    _target_: MLflowLogger
+    _target_: CustomMLflowLogger
     experiment: 'sigi'
+    class_names: *class_names
     # tracking_uri: http://mlflow.ddc.itnap.ru:5000/
     # registry_uri: https://storage.yandexcloud.net/
 
@@ -50,8 +51,8 @@ stages: # Словарь всех стадий Catalyst, для обучения
       _key_value: False
 
       _target_: CustomScheduler
-      delay_epochs: 30
-      total_epochs: 90
+      delay_epochs: 20
+      total_epochs: 50
       eta_min: 0.00001
     callbacks:
       # Подключение колбэков каталиста
@@ -84,10 +85,10 @@ stages: # Словарь всех стадий Catalyst, для обучения
         subm_file: "./crossval_log/preds.csv"
       custom_mlflow: # Логирование ошибочных фотографий в mlflow
         _target_: MLFlowMulticlassLoggingCallback
-        logging_image_number: 0
+        logging_image_number: 10
       custom_tensorboard: # Логирование ошибочных фотографий в tensorboard
         _target_: TensorboardMulticlassLoggingCallback
-        logging_image_number: 0
+        logging_image_number: 10
 
     data: # Подключение данных и параметров обучения
       shuffle: false
@@ -98,9 +99,9 @@ stages: # Словарь всех стадий Catalyst, для обучения
       test_meta: "test_metadata.csv"
       transform_path: "config/classification/augmentations/light.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
     loaders: &loaders
-      batch_size: 1 # Размер батча для всех стейджей
-      num_workers: 1 #для локальной поставить 0
-    num_epochs: 3 # Количество эпох эксперимента
+      batch_size: 16 # Размер батча для всех стейджей
+      num_workers: 3 #для локальной поставить 0
+    num_epochs: 50 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: accuracy01
     minimize_metric: False

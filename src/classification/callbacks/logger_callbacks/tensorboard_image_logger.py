@@ -14,7 +14,8 @@ class TensorboardMulticlassLoggingCallback(Callback):
 
     def __init__(self, logging_image_number, **kwargs):
         self.logging_image_number = logging_image_number
-
+        super().__init__(CallbackOrder.ExternalExtra)
+        
     def on_experiment_end(self, state: IRunner):
         """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок,
         которые соответствуют class_names в нашем конфиге
@@ -46,7 +47,7 @@ class TensorboardMulticlassLoggingCallback(Callback):
 
 @Registry
 class TensorboardMultilabelLoggingCallback(Callback):
-    def __init__(self, logging_image_number, threshold=0.5, experiment_name=''):
+    def __init__(self, logging_image_number, threshold=0.5):
         self.logging_image_number = logging_image_number
         self.threshold = threshold
         super().__init__(CallbackOrder.ExternalExtra)

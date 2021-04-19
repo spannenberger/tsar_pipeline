@@ -6,7 +6,6 @@ ALLOWED_PARAMS_EXPERIMENT = {
     'model._target_': 'model_name',
     'model.num_classes': 'num_classes',
     'args.seed': 'seed',
-    'args.threshold': 'threshold',
 }
 
 ALLOWED_PARAMS_STAGE = {
