@@ -55,7 +55,7 @@ class MLFlowMulticlassLoggingCallback(Callback):
 
 @Registry
 class MLFlowMultilabelLoggingCallback(Callback):
-    def __init__(self, logging_image_number, threshold=0.5, experiment_name=''):
+    def __init__(self, logging_image_number, threshold=0.5):
         self.logging_image_number = logging_image_number
         self.threshold = threshold
         super().__init__(CallbackOrder.ExternalExtra)
