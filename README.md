@@ -133,7 +133,7 @@ sh classification_shells/train_multilabel.sh
 # Run tensorflow for visualisation
 tensorboard --logdir=logs/ui # for our pipeline
 # Run mlflow 
-mlfwlow ui
+mlflow ui
 
 ```
 # Train in docker
