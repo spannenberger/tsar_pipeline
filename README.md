@@ -7,7 +7,6 @@
   * [Инструкция по использования репозитория](#инструкция-по-использования-репозитория)
 - [Training run](#training-run)
 - [Train in docker](#train-in-docker)
-  * [.env file example](#пример-env-файла)
 # User guide
 ### Структура репозитория
 - [classifications_shells](#training-run) - папка, содержащая скрипты запуска репозитория
@@ -61,6 +60,20 @@
        - Изменить в папке ```./config/multiclass/train_multiclass.yml``` файл, прописав новые пути до данных в блоке ```data:```
    - Изменение моделей обучения
        - Изменить в ```train_multiclass.yml``` файле название модели (доступные модели можно посмотреть в ```src/classification/__init__.py``` в ```Registry(some_model)```) в блоке ```model:```
+   - Логирование эксперимента в mlflow
+       - Создать .env файл
+       ```
+       USER=YourWorkEmail@napoleonit.ru
+       MLFLOW_TRACKING_URI=
+       MLFLOW_S3_ENDPOINT_URL=
+       AWS_ACCESS_KEY_ID=
+       AWS_SECRET_ACCESS_KEY=
+       ```
+       - Изменить в папке ```./config/multiclass/train_multiclass.yml``` файл, прописав новые url и название эксперимента до данных в блоке 
+       ```
+       loggers:
+            mlflow:
+       ```
 
 
  ### Запуск и изменение multilabel решения
@@ -114,8 +127,20 @@
        чтение данных во время эксперимента происходит в ```dataset.py```
    - Изменение моделей обучения
        - Изменить в ```train_multilabel.yml``` файле название модели (доступные модели можно посмотреть в ```src/classification/__init__.py``` в ```Registry(some_model)```) в блоке ```model:```
-
-
+   - Логирование эксперимента в mlflow
+       - Создать .env файл
+       ```
+       USER=YourWorkEmail@napoleonit.ru
+       MLFLOW_TRACKING_URI=
+       MLFLOW_S3_ENDPOINT_URL=
+       AWS_ACCESS_KEY_ID=
+       AWS_SECRET_ACCESS_KEY=
+       ```
+       - Изменить в папке ```./config/multiclass/train_multilabel.yml``` файл, прописав новые url и название эксперимента до данных в блоке 
+       ```
+       loggers:
+            mlflow:
+       ```
 # Training run 
 ```bash
 # To check multiclass pipeline
@@ -137,16 +162,6 @@ mlflow ui
 
 ```
 # Train in docker
-### Пример .env файла
-Для работы в докер контейнере необходимо создать .env файл
-```
-USER=YourWorkEmail@napoleonit.ru
-MLFLOW_TRACKING_URI=
-MLFLOW_S3_ENDPOINT_URL=
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-```
-Запуск докера
 ```
 # build ur project, u need to do this only once
 docker-compose build
