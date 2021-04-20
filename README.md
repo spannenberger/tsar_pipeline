@@ -69,7 +69,7 @@
        AWS_ACCESS_KEY_ID=
        AWS_SECRET_ACCESS_KEY=
        ```
-       - Изменить в папке ```./config/multiclass/train_multiclass.yml``` файл, прописав новые url и название эксперимента до данных в блоке 
+       - Изменить в папке ```./config/multiclass/train_multiclass.yml``` файл, прописав новые url и название эксперимента в блоке 
        ```
        loggers:
             mlflow:
@@ -136,7 +136,7 @@
        AWS_ACCESS_KEY_ID=
        AWS_SECRET_ACCESS_KEY=
        ```
-       - Изменить в папке ```./config/multiclass/train_multilabel.yml``` файл, прописав новые url и название эксперимента до данных в блоке 
+       - Изменить в папке ```./config/multiclass/train_multilabel.yml``` файл, прописав новые url и название эксперимента в блоке 
        ```
        loggers:
             mlflow:
