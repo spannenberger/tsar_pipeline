@@ -1,5 +1,5 @@
 model:
-  _target_: Densenet121 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: ResNet18 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
   num_classes: &num_classes 18
 
 args: # Различные аргументы для Catalyst
@@ -20,7 +20,7 @@ runner: # Параметры для инициализации Runner
 
 engine: # Параметры для distributed training и NVIDIA Apex
   _target_: DeviceEngine
-  device: cuda:0
+  # device: cuda:0
 class_names: &class_names ['anti-aerosol', 'cap', 'hood', 'face', 'gas-aerosol', 'helmet', 'screen', 'panoram', 'glasses_open', 'glasses_close','screen_yellow', 'anti_aerosol_error', 'glasses_open_error', 'gas_aerosol_error','glasses_close_error', 'helmet_error', 'screen_error', 'screen_yellow_error']
 loggers:
 # Встроенные логеры каталиста
@@ -29,8 +29,8 @@ loggers:
     _target_: CustomMLflowLogger
     experiment: 'kcm'
     class_names: *class_names
-    tracking_uri: http://mlflow.ddc.itnap.ru:5000/
-    registry_uri: https://storage.yandexcloud.net/
+    # tracking_uri: http://mlflow.ddc.itnap.ru:5000/
+    # registry_uri: https://storage.yandexcloud.net/
 
   tensorboard:
     _target_: TensorboardLogger
@@ -82,7 +82,14 @@ stages: # Словарь всех стадий Catalyst, для обучения
 
       # Подключение кастомных колбэков
       #(Возможные колбэки: ./src_multilabel/callbacks/)
-
+      onnx_saver: # Конвертация в onnx формат
+        _target_: OnnxSaveCallback
+        out_dir: "./logs/onnx"
+        checkpoint_names: ["best", "best_full"]
+      torchscript_saver: # Конвертация в torchscript формат
+        _target_: TorchscriptSaveCallback
+        out_dir: "./logs/torchsript"
+        checkpoint_names: ["best", "best_full"]
       infer: #
         _target_: MultilabelInerCallback
         subm_file: "./crossval_log/preds.csv"
@@ -103,8 +110,8 @@ stages: # Словарь всех стадий Catalyst, для обучения
       test_meta: "test_metadata.csv"
       transform_path: "config/classification/augmentations/medium.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
     loaders: &loaders
-      batch_size: 16 # Размер батча для всех стейджей
-      num_workers: 3 # Для локальной поставить 0
+      batch_size: 1 # Размер батча для всех стейджей
+      num_workers: 1 # Для локальной поставить 0
     num_epochs: 50 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: multi_label_accuracy

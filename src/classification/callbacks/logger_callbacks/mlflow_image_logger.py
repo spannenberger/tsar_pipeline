@@ -48,7 +48,12 @@ class MLFlowMulticlassLoggingCallback(Callback):
                 image,
                 f"{class_names[target[i]]}/{class_id[i]} - {target[i]} error number {i}.png")
 
-        mlflow.log_artifact('logs/checkpoints/best.pth', 'model')
+        mlflow.log_artifact('logs/logs/torchsript/best_full.pt', 'torchscript_models')
+        mlflow.log_artifact('logs/logs/torchsript/best.pt', 'torchscript_models')
+        
+        mlflow.log_artifact('logs/logs/onnx/best_full.onnx', 'onnx_models')
+        mlflow.log_artifact('logs/logs/onnx/best.onnx', 'onnx_models')
+
         mlflow.pytorch.log_model(state.model, artifact_path=state.hparams['model']['_target_'])
         mlflow.end_run()
 
@@ -94,6 +99,11 @@ class MLFlowMultilabelLoggingCallback(Callback):
                     image,
                     f"{class_names[ind]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png")
 
-        mlflow.log_artifact('logs/checkpoints/best.pth', 'model')
+        mlflow.log_artifact('logs/logs/torchsript/best_full.pt', 'torchscript_models')
+        mlflow.log_artifact('logs/logs/torchsript/best.pt', 'torchscript_models')
+
+        mlflow.log_artifact('logs/logs/onnx/best_full.onnx', 'onnx_models')
+        mlflow.log_artifact('logs/logs/onnx/best.onnx', 'onnx_models')
+
         mlflow.pytorch.log_model(state.model, artifact_path=state.hparams['model']['_target_'])
         mlflow.end_run()
