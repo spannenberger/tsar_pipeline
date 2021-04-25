@@ -7,7 +7,6 @@
   * [Инструкция по использования репозитория](#инструкция-по-использования-репозитория)
 - [Training run](#training-run)
 - [Train in docker](#train-in-docker)
-  * [.env file example](#пример-env-файла)
 # User guide
 ### Структура репозитория
 - [classifications_shells](#training-run) - папка, содержащая скрипты запуска репозитория
@@ -61,6 +60,20 @@
        - Изменить в папке ```./config/multiclass/train_multiclass.yml``` файл, прописав новые пути до данных в блоке ```data:```
    - Изменение моделей обучения
        - Изменить в ```train_multiclass.yml``` файле название модели (доступные модели можно посмотреть в ```src/classification/__init__.py``` в ```Registry(some_model)```) в блоке ```model:```
+   - Логирование эксперимента в mlflow
+       - Создать .env файл
+       ```
+       USER=YourWorkEmail@napoleonit.ru
+       MLFLOW_TRACKING_URI=
+       MLFLOW_S3_ENDPOINT_URL=
+       AWS_ACCESS_KEY_ID=
+       AWS_SECRET_ACCESS_KEY=
+       ```
+       - Изменить в папке ```./config/multiclass/train_multiclass.yml``` файл, прописав новые url и название эксперимента в блоке 
+       ```
+       loggers:
+            mlflow:
+       ```
 
 
  ### Запуск и изменение multilabel решения
@@ -94,28 +107,40 @@
           ...
           train_image_name_N.jpg,
         "class_0":
-          1.0, 0.0, 1.0,
-          0.0, 0.0, 1.0,
+          1.0,
+          0.0,
           ...
-          1.0, 1.0, 1.0,
+          1.0
         "class_1":
-          1.0, 0.0, 1.0,
-          0.0, 0.0, 1.0,
+          1.0,
+          0.0,
           ...
-          1.0, 1.0, 1.0,
+          1.0
         "class_2":
-          1.0, 0.0, 1.0,
-          0.0, 0.0, 1.0,
+          1.0,
+          0.0,
           ...
-          1.0, 1.0, 1.0,
+          1.0
         ```
        - Изменить в папке ```./config/multilabel/train_multilabel.yml``` файл, прописав новые пути до данных в блоке ```data:```
        - Подготовка данных к эксперименту происходит в ```./src/multilabel/TTASupervisedRunner.py``` в методе get_datasets,
        чтение данных во время эксперимента происходит в ```dataset.py```
    - Изменение моделей обучения
        - Изменить в ```train_multilabel.yml``` файле название модели (доступные модели можно посмотреть в ```src/classification/__init__.py``` в ```Registry(some_model)```) в блоке ```model:```
-
-
+   - Логирование эксперимента в mlflow
+       - Создать .env файл
+       ```
+       USER=YourWorkEmail@napoleonit.ru
+       MLFLOW_TRACKING_URI=
+       MLFLOW_S3_ENDPOINT_URL=
+       AWS_ACCESS_KEY_ID=
+       AWS_SECRET_ACCESS_KEY=
+       ```
+       - Изменить в папке ```./config/multiclass/train_multilabel.yml``` файл, прописав новые url и название эксперимента в блоке 
+       ```
+       loggers:
+            mlflow:
+       ```
 # Training run 
 ```bash
 # To check multiclass pipeline
@@ -133,20 +158,10 @@ sh classification_shells/train_multilabel.sh
 # Run tensorflow for visualisation
 tensorboard --logdir=logs/ui # for our pipeline
 # Run mlflow 
-mlfwlow ui
+mlflow ui
 
 ```
 # Train in docker
-### Пример .env файла
-Для работы в докер контейнере необходимо создать .env файл
-```
-USER=YourWorkEmail@napoleonit.ru
-MLFLOW_TRACKING_URI=
-MLFLOW_S3_ENDPOINT_URL=
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-```
-Запуск докера
 ```
 # build ur project, u need to do this only once
 docker-compose build
