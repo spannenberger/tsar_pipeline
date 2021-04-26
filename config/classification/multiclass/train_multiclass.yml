@@ -1,8 +1,8 @@
 model:
-  _target_: Densenet121 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: WideResnet50_2 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
   num_classes: &num_classes 2
   path: 'our_models/best.pth' # Путь до расположения вашей локальной модели
-  is_local: True # True если обучаете локально загруженную модель
+  is_local: False # True если обучаете локально загруженную модель
   diff_classes_flag: True # Указать True, если есть разница в кол-ве классов
   old_num_classes: 18 # Если diff_classes_flag=True, то указать кол-во классов в предобученной модели
 

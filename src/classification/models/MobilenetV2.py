@@ -12,16 +12,16 @@ class MobilenetV2(nn.Module):
         if self.is_local:
             if self.diff_classes_flag:
                 self.backbone = vision.models.mobilenet_v2(pretrained=False)
-                new_classifier(self.backbone, old_num_classes)
+                replace_classifier(self.backbone, old_num_classes)
                 self.load_state_dict(torch.load(self.path)['model_state_dict'])
-                new_classifier(self.backbone, num_classes)
+                replace_classifier(self.backbone, num_classes)
             else:
                 self.backbone = vision.models.mobilenet_v2(pretrained=False)
-                new_classifier(self.backbone, num_classes)
+                replace_classifier(self.backbone, num_classes)
                 self.load_state_dict(torch.load(self.path)['model_state_dict'])
         else:
             self.backbone = vision.models.mobilenet_v2(pretrained=True)
-            new_classifier(self.backbone, num_classes)
+            replace_classifier(self.backbone, num_classes)
     def forward(self, X):
         return self.backbone(X)
 

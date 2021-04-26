@@ -12,7 +12,7 @@ class ResNet18(nn.Module):
         if self.is_local:
             if self.diff_classes_flag:
                 self.backbone = vision.models.resnet18(pretrained=False)
-                new_classifier(self.backbone, old_num_classes)
+                replace_classifier(self.backbone, old_num_classes)
                 self.load_state_dict(torch.load(self.path)['model_state_dict'])
                 replace_classifier(self.backbone, num_classes)
             else:
