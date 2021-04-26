@@ -37,7 +37,7 @@ class TensorboardMulticlassLoggingCallback(Callback):
         except KeyError:
             class_names = [x for x in range(
                 state.hparams['model']['num_classes'])]
-
+        print('We start logging images to tensorboard... please wait')
         for i in tqdm(range(length)):
             image = ToTensor()(Image.open(f"{path_list[i]}"))
             state.loggers['tensorboard'].loggers['valid'].add_image(
@@ -82,7 +82,7 @@ class TensorboardMultilabelLoggingCallback(Callback):
         except KeyError:
             class_names = [x for x in range(
                 state.hparams['model']['num_classes'])]
-
+        print('We start logging images to tensorboard... please wait')
         for i in tqdm(range(length)):
             error_ind = np.where(df['class_id'][i] != df['target'][i])[0]
             for ind in tqdm(error_ind):

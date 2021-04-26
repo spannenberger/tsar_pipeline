@@ -6,7 +6,7 @@ class EfficientNetb6(nn.Module):
     def __init__(self, num_classes=10):
         super().__init__()
         self.backbone = torch.hub.load("narumiruna/efficientnet-pytorch",
-                                       'efficientnet_b6_ns', pretrained=True)
+                                       'efficientnet_b6', pretrained=False)
         # replace classifier
         classifier_name, old_classifier = self.backbone._modules.popitem()
         if isinstance(old_classifier, nn.Sequential):

@@ -42,17 +42,24 @@ class MLFlowMulticlassLoggingCallback(Callback):
         except KeyError:
             class_names = [x for x in range(
                 state.hparams['model']['num_classes'])]
+        print('We start logging images to mlflow... please wait')
         for i in tqdm(range(length)):
             image = Image.open(f"{path_list[i]}")
             mlflow.log_image(
                 image,
                 f"{class_names[target[i]]}/{class_id[i]} - {target[i]} error number {i}.png")
 
-        mlflow.log_artifact('logs/logs/torchsript/best_full.pt', 'torchscript_models')
-        mlflow.log_artifact('logs/logs/torchsript/best.pt', 'torchscript_models')
-        
-        mlflow.log_artifact('logs/logs/onnx/best_full.onnx', 'onnx_models')
-        mlflow.log_artifact('logs/logs/onnx/best.onnx', 'onnx_models')
+        checkpoint_names = ['best_full', 'best']
+        print('We start logging convert models... please wait')
+        for model in tqdm(checkpoint_names):
+            try:
+                mlflow.log_artifact(f'logs/logs/torchsript/{model}.pt', 'torchscript_models')
+            except FileNotFoundError:
+                print(f'No such file {model}.pt, nothing to log...')
+            try:
+                mlflow.log_artifact(f'logs/logs/onnx/{model}.onnx', 'onnx_models')
+            except FileNotFoundError:
+                print(f'No such file {model}.onnx, nothing to log...')
 
         mlflow.pytorch.log_model(state.model, artifact_path=state.hparams['model']['_target_'])
         mlflow.end_run()
@@ -91,6 +98,7 @@ class MLFlowMultilabelLoggingCallback(Callback):
         except KeyError:
             class_names = [x for x in range(
                 state.hparams['model']['num_classes'])]
+        print('We start logging images to mlflow... please wait')
         for i in tqdm(range(length)):
             error_ind = np.where(df['class_id'][i] != df['target'][i])[0]
             for ind in tqdm(error_ind):
@@ -99,11 +107,18 @@ class MLFlowMultilabelLoggingCallback(Callback):
                     image,
                     f"{class_names[ind]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png")
 
-        mlflow.log_artifact('logs/logs/torchsript/best_full.pt', 'torchscript_models')
-        mlflow.log_artifact('logs/logs/torchsript/best.pt', 'torchscript_models')
+        checkpoint_names = ['best_full', 'best']
+        print('We start logging convert models... please wait')
+        for model in tqdm(checkpoint_names):
+            try:
+                mlflow.log_artifact(f'logs/logs/torchsript/{model}.pt', 'torchscript_models')
+            except FileNotFoundError:
+                print(f'No such file {model}.pt, nothing to log...')
+            try:
+                mlflow.log_artifact(f'logs/logs/onnx/{model}.onnx', 'onnx_models')
+            except FileNotFoundError:
+                print(f'No such file {model}.onnx, nothing to log...')
 
-        mlflow.log_artifact('logs/logs/onnx/best_full.onnx', 'onnx_models')
-        mlflow.log_artifact('logs/logs/onnx/best.onnx', 'onnx_models')
 
         mlflow.pytorch.log_model(state.model, artifact_path=state.hparams['model']['_target_'])
         mlflow.end_run()

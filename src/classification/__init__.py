@@ -13,14 +13,13 @@ from models.Densenet121 import Densenet121  # converter True
 from models.Densenet169 import Densenet169  # converter True
 from models.Densenet201 import Densenet201  # converter True
 from models.Densenet161 import Densenet161  # converter True
-from models.Resnest50 import Resnest50  # False
 from models.Resnext50_32x4d import Resnext50_32x4d  # converter True
 from models.Resnext101_32x8d import Resnext101_32x8d  # converter True
 from models.WideResnet50_2 import WideResnet50_2  # converter True
 from models.WideResnet101_2 import WideResnet101_2  # converter True
 from models.MobilenetV2 import MobilenetV2  # converter True
-from models.MobilenetV3Large import MobilenetV3Large  # converter onnx: False
-from models.MobilenetV3Small import MobilenetV3Small  # converter onnx: False
+from models.MobilenetV3Large import MobilenetV3Large  # False
+from models.MobilenetV3Small import MobilenetV3Small  # False
 from models.ResNet18_swsl import ResNet18_swsl  # converter True
 
 # Импорт колбэков
@@ -58,7 +57,6 @@ Registry(Densenet121)
 Registry(Densenet169)
 Registry(Densenet201)
 Registry(Densenet161)
-Registry(Resnest50)
 Registry(Resnext50_32x4d)
 Registry(Resnext101_32x8d)
 Registry(WideResnet50_2)
