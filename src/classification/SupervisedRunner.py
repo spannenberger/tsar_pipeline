@@ -7,6 +7,7 @@ import numpy as np
 from dataset import CustomDataset
 import torch
 
+
 class MulticlassRunner(IRunner):
     """Кастомный runner нашего эксперимента"""
 
@@ -90,14 +91,11 @@ class MultilabelRunner(IRunner):
 
         train_meta = pd.read_csv(train_path)
         test_meta = pd.read_csv(test_path)
-        train_meta['label'] = [i[0]
-                               for i in zip(train_meta.iloc[:, 1:].values)]
+        train_meta['label'] = [i[0] for i in zip(train_meta.iloc[:, 1:].values)]
         test_meta['label'] = [i[0] for i in zip(test_meta.iloc[:, 1:].values)]
 
-        train_image_paths = [train_images_dir.joinpath(
-            i) for i in train_meta["path"]]
-        test_image_paths = [test_images_dir.joinpath(
-            i) for i in test_meta["path"]]
+        train_image_paths = [train_images_dir.joinpath(i) for i in train_meta["path"]]
+        test_image_paths = [test_images_dir.joinpath(i) for i in test_meta["path"]]
 
         train_labels = train_meta["label"].tolist()
         train_labels = torch.Tensor(train_labels)
