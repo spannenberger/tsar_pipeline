@@ -6,14 +6,13 @@ from models.ResNet18 import ResNet18  # converter True
 from models.ResNet34 import ResNet34  # converter True
 from models.ResNet50 import ResNet50  # converter True
 from models.ResNet101 import ResNet101  # converter True
-from models.EfficientNetb0 import EfficientNetb0  # converter onnx: False
-from models.EfficientNetb3 import EfficientNetb3  # converter onnx: False
-from models.EfficientNetb6 import EfficientNetb6  # converter onnx: False
+from models.EfficientNetb0 import EfficientNetb0  # converter True
+from models.EfficientNetb3 import EfficientNetb3  # converter True
+from models.EfficientNetb4 import EfficientNetb4  # converter True
 from models.Densenet121 import Densenet121  # converter True
 from models.Densenet169 import Densenet169  # converter True
 from models.Densenet201 import Densenet201  # converter True
 from models.Densenet161 import Densenet161  # converter True
-from models.Resnest50 import Resnest50  # False
 from models.Resnext50_32x4d import Resnext50_32x4d  # converter True
 from models.Resnext101_32x8d import Resnext101_32x8d  # converter True
 from models.WideResnet50_2 import WideResnet50_2  # converter True
@@ -25,6 +24,8 @@ from models.ResNet18_swsl import ResNet18_swsl  # converter True
 
 # Импорт колбэков
 from callbacks.custom_scheduler import CustomScheduler
+from callbacks.convert_callbacks.torchscript_save_callback import TorchscriptSaveCallback
+from callbacks.convert_callbacks.onnx_save_callback import OnnxSaveCallback
 # Multiclass
 from callbacks.iner_callback import MulticlassInerCallback
 from callbacks.logger_callbacks.mlflow_image_logger import MLFlowMulticlassLoggingCallback
@@ -51,12 +52,11 @@ Registry(ResNet50)
 Registry(ResNet101)
 Registry(EfficientNetb0)
 Registry(EfficientNetb3)
-Registry(EfficientNetb6)
+Registry(EfficientNetb4)
 Registry(Densenet121)
 Registry(Densenet169)
 Registry(Densenet201)
 Registry(Densenet161)
-Registry(Resnest50)
 Registry(Resnext50_32x4d)
 Registry(Resnext101_32x8d)
 Registry(WideResnet50_2)
