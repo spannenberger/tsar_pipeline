@@ -5,6 +5,7 @@
 - [User guide](#user-guide)
   * [Структура репозитория](#структура-репозитория)
   * [Инструкция по использования репозитория](#инструкция-по-использования-репозитория)
+- [Информация о конвертации моделей](#информация-о-конвертации-моделей)
 - [Training run](#training-run)
 - [Train in docker](#train-in-docker)
 # User guide
@@ -61,6 +62,8 @@
    - Изменение моделей обучения
        - Изменить в ```train_multiclass.yml``` файле название модели (доступные модели можно посмотреть в ```src/classification/__init__.py``` в ```Registry(some_model)```) в блоке ```model:```
    - Логирование эксперимента в mlflow
+   - Для отключения колбэков достаточно их закомментировать в config файле
+    - Для дообучения на своих моделях:
        - Создать .env файл
        ```
        USER=YourWorkEmail@napoleonit.ru
@@ -72,10 +75,22 @@
        - Изменить в папке ```./config/multiclass/train_multiclass.yml``` файл, прописав новые url и название эксперимента в блоке 
        ```
        loggers:
-            mlflow:
-       ```
-
-
+            mlflow:```
+   - Для отключения колбэков достаточно их закомментировать в config файле
+   - Для дообучения на своих моделях:
+     - Проверить, что данная модель реализована в пайплайне
+     - Создать в корне проекта папку ```our_models```
+     - Загрузить в данную папку вашу модель в формате .pth с названием файла ```best.pth```
+     - Пример:
+     ```
+     model:
+        _target_: Densenet121 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+        num_classes: &num_classes 2
+        path: 'our_models/best.pth' # Путь до расположения вашей локальной модели
+        is_local: True # True если обучаете локально загруженную модель
+        diff_classes_flag: True # True, если есть разница в кол-ве классов
+        old_num_classes: 18 # Если diff_classes_flag=True, то указать кол-во классов в предобученной модели
+     ```
  ### Запуск и изменение multilabel решения
    - Склонировать репозиторий
    - Запустить команду ```pip install -r requirements.txt```
@@ -141,6 +156,44 @@
        loggers:
             mlflow:
        ```
+   - Для отключения колбэков достаточно их закомментировать в config файле
+   - Для дообучения на своих моделях:
+     - Проверить, что данная модель реализована в пайплайне
+     - Создать в корне проекта папку ```our_models```
+     - Загрузить в данную папку вашу модель в формате .pth с названием файла ```best.pth```
+     - Поставть True в нужных пунктах конфига
+     - Пример:
+     ```
+     model:
+        _target_: Densenet121 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+        num_classes: &num_classes 18
+        path: 'our_models/best.pth' # Путь до расположения вашей локальной модели
+        is_local: True # True если обучаете локально загруженную модель
+        diff_classes_flag: True # True, если есть разница в кол-ве классов
+        old_num_classes: 2 # Если diff_classes_flag=True, то указать кол-во классов в предобученной модели
+     ```
+# Информация о конвертации моделей     
+| model | onnx  | torchscript  |
+| :---: | :-: | :-: |
+| Densenet121 | True  | True  |
+| Densenet161 | True  | True  |
+| Densenet169 | True  | True  |
+| Densenet201 | True  | True  |
+| EfficientNetb0 | True  | True  |
+| EfficientNetb3 | True  | True  |
+| EfficientNetb4 | True  | True  |
+| MobilenetV2 | True  | True  |
+| MobilenetV3Large | False  | True  |
+| MobilenetV3Small | False  | True  |
+| ResNet18_swsl | True  | True  |
+| ResNet18 | True  | True  |
+| ResNet34 | True  | True  |
+| ResNet50 | True  | True  |
+| ResNet101 | True  | True  |
+| Resnext50_32x4d | True  | True  |
+| Resnext101_32x8d | True  | True  |
+| WideResnet50_2 | True  | True  |
+| WideResnet101_2 | True  | True  |
 # Training run 
 ```bash
 # To check multiclass pipeline
