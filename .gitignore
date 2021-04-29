@@ -102,7 +102,7 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+.env/
 .venv
 env/
 venv/
@@ -129,8 +129,11 @@ dmypy.json
 .pyre/
 
 # Project temp files
+ui/
 train_dataset_kcm/
 train_dataset/
+dataset_classif_0804/
+train_dataset_sigi/
 logs/
 mlruns/
 .vscode
@@ -139,6 +142,7 @@ ngrok
 notebooks/src
 notebooks/*.txt
 notebooks/config
+our_models/
 cassava-leaf-disease-classification
 .DS_Store
 crossval_log/

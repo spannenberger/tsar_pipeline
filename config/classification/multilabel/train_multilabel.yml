@@ -1,9 +1,13 @@
 model:
-  _target_: ResNet34 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
-  num_classes: &num_classes 13
+  _target_: Densenet121 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  num_classes: &num_classes 18
+  path: 'our_models/best.pth' # Путь до расположения вашей локальной модели
+  is_local: False # True если обучаете локально загруженную модель
+  diff_classes_flag: True # Указать True, если есть разница в кол-ве классов
+  old_num_classes: 2 # Если diff_classes_flag=True, то указать кол-во классов в предобученной модели
 
 args: # Различные аргументы для Catalyst
-  expdir: src/multilabel # Путь до нашего эксперимента, с файлом `__init__`, в котором импортируется Runner, и, опционально, регистрируются все дополнительные сущности: model, callback, criterion, etc
+  expdir: src/classification # Путь до нашего эксперимента, с файлом `__init__`, в котором импортируется Runner, и, опционально, регистрируются все дополнительные сущности: model, callback, criterion, etc
   logdir: logs # Путь в который будут сохранятся логи
   verbose: True # Нужно ли выводить на консоль информацию об обучении
   seed: 42 # сид обучения для PyTorch, Numpy, Python и Tensorflow
@@ -12,7 +16,7 @@ args: # Различные аргументы для Catalyst
   threshold: &threshold 0.5
 
 runner: # Параметры для инициализации Runner
-   _target_: TTASupervisedRunner
+   _target_: MultilabelSupervisedRunner
    input_key: &model_input "features"
    output_key: &model_output "logits"
    target_key: &model_target "targets"
@@ -20,15 +24,18 @@ runner: # Параметры для инициализации Runner
 
 engine: # Параметры для distributed training и NVIDIA Apex
   _target_: DeviceEngine
-
-class_names: &class_names ["/anti-aerosol", "/anti_aerosol_error", "/cap", "/face", "/gas-aerosol", "/glasses_close", "/glasses_open", "/glasses_open_error", "/helmet", "/hood", "/panoram", "/screen", "/screen_yellow"]
-
+  device: cuda:0
+class_names: &class_names ['anti-aerosol', 'cap', 'hood', 'face', 'gas-aerosol', 'helmet', 'screen', 'panoram', 'glasses_open', 'glasses_close','screen_yellow', 'anti_aerosol_error', 'glasses_open_error', 'gas_aerosol_error','glasses_close_error', 'helmet_error', 'screen_error', 'screen_yellow_error']
 loggers:
 # Встроенные логеры каталиста
 #(Возможные логеры: https://github.com/catalyst-team/catalyst/tree/master/catalyst/loggers)
   mlflow:
-    _target_: MLflowLogger
+    _target_: CustomMLflowLogger
     experiment: 'kcm'
+    class_names: *class_names
+    tracking_uri: http://mlflow.ddc.itnap.ru:5000/
+    registry_uri: https://storage.yandexcloud.net/
+
   tensorboard:
     _target_: TensorboardLogger
     logdir: "./logs/ui"
@@ -40,14 +47,14 @@ stages: # Словарь всех стадий Catalyst, для обучения
 
     optimizer: # Параметры оптимизатора
       _target_: Adam
-      lr: 0.0001
+      lr: 0.001
     scheduler: # Подключение кастомного шедулера
       _key_value: False
 
       _target_: CustomScheduler
-      delay_epochs: 2
-      total_epochs: 5
-      eta_min: 0.00001
+      delay_epochs: 10
+      total_epochs: 50
+      eta_min: 0.0000001
 
     callbacks:
     # Подключение колбэков каталиста
@@ -79,31 +86,37 @@ stages: # Словарь всех стадий Catalyst, для обучения
 
       # Подключение кастомных колбэков
       #(Возможные колбэки: ./src_multilabel/callbacks/)
-
+      torchscript_saver: # Конвертация в torchscript формат
+        _target_: TorchscriptSaveCallback
+        out_dir: "./logs/torchsript"
+        checkpoint_names: ["best", "best_full"]
+      onnx_saver: # Конвертация в onnx формат
+        _target_: OnnxSaveCallback
+        out_dir: "./logs/onnx"
+        checkpoint_names: ["best", "best_full"]
       infer: #
-        _target_: InerCallback
+        _target_: MultilabelInerCallback
         subm_file: "./crossval_log/preds.csv"
-        loss: BCEloss
-        accuracy: Multilabel
-        activation: Sigmoid
       custom_mlflow: # Логирование ошибочных фотографий в mlflow
-        _target_: MLFlowloggingCallback
+        _target_: MLFlowMultilabelLoggingCallback
+        logging_image_number: 20 # Кол-во фотографий, которые надо логнуть
       custom_tensorboard: # Логирование ошибочных фотографий в tensorboard
-        _target_: TensorboardImageCustomLogger
+        _target_: TensorboardMultilabelLoggingCallback
+        logging_image_number: 20 # Кол-во фотографий, которые надо логнуть
+        threshold: 0.5
 
     data: # Подключение данных и параметров обучения
-      tta: 1
       shuffle: false
-      train_dir: "./train_dataset_kcm/"
+      train_dir: "./dataset_classif_0804/"
       train_image_dir: "images"
       test_image_dir: "images"
       train_meta: "train_metadata.csv"
       test_meta: "test_metadata.csv"
-      transform_path: "config/classification/augmentations/light.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
+      transform_path: "config/classification/augmentations/medium.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
     loaders: &loaders
       batch_size: 1 # Размер батча для всех стейджей
-      num_workers: 2 # Для локальной поставить 0
-    num_epochs: 1 # Количество эпох эксперимента
+      num_workers: 1 # Для локальной поставить 0
+    num_epochs: 50 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: multi_label_accuracy
     minimize_metric: False

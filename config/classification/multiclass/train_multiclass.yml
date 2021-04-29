@@ -1,53 +1,68 @@
 model:
-  _target_: ResNet18_swsl
-  num_classes: &num_classes 5
+  _target_: WideResnet50_2 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  num_classes: &num_classes 2
+  path: 'our_models/best.pth' # Путь до расположения вашей локальной модели
+  is_local: False # True если обучаете локально загруженную модель
+  diff_classes_flag: True # Указать True, если есть разница в кол-ве классов
+  old_num_classes: 18 # Если diff_classes_flag=True, то указать кол-во классов в предобученной модели
 
-args:
-  expdir: src/multiclass
-  logdir: logs
-  verbose: True
-  seed: 42
-  deterministic: True
-  benchmark: True
-runner:
-   _target_: TTASupervisedRunner
+args: # Различные аргументы для Catalyst
+  expdir: src/classification # Путь до нашего эксперимента, с файлом `__init__`, в котором импортируется Runner, и, опционально, регистрируются все дополнительные сущности: model, callback, criterion, etc
+  logdir: logs # Путь в который будут сохранятся логи
+  verbose: True # Нужно ли выводить на консоль информацию об обучении
+  seed: 42 # сид обучения для PyTorch, Numpy, Python и Tensorflow
+  deterministic: True # Нужно ли использовать deterministic CuDNN
+  benchmark: True # Нужно ли использовать CuDNN benchmark
+
+runner: # Параметры для инициализации Runner
+   _target_: MulticlassSupervisedRunner
    input_key: &model_input "features"
    output_key: &model_output "logits"
    target_key: &model_target "targets"
    loss_key: &model_loss "loss"
-engine:
+
+engine: # Параметры для distributed training и NVIDIA Apex
   _target_: DeviceEngine
-class_names: &class_names ["Cassava Bacterial Blight (CBB)", "Cassava Brown Streak Disease (CBSD)", "Cassava Green Mottle (CGM)", "Cassava Mosaic Disease (CMD)", "Healthy"]
+  # device: cuda:0
+
+class_names: &class_names ["sigi", "other"]
+
 loggers:
+# Встроенные логеры каталиста
+#(Возможные логеры: https://github.com/catalyst-team/catalyst/tree/master/catalyst/loggers)
   console:
     _target_: ConsoleLogger
   mlflow:
-    _target_: MLflowLogger
-    experiment: 'cassava'
+    _target_: CustomMLflowLogger
+    experiment: 'sigi'
+    class_names: *class_names
+    # tracking_uri: http://mlflow.ddc.itnap.ru:5000/
+    # registry_uri: https://storage.yandexcloud.net/
+
   tensorboard:
     _target_: TensorboardLogger
     logdir: "./logs/ui"
 
-stages:
+stages: # Словарь всех стадий Catalyst, для обучения и/или инфера. Содержат ключевые слова с параметрами, которые применятся ко всем стейджам, так и сами имена стейджей
   stage:
-    criterion:
+    criterion: # Параметры для лосс-функции
       _target_: CrossEntropyLoss
 
-    optimizer:
+    optimizer: # Параметры оптимизатора
       _target_: Adam
       lr: 0.0001
-    scheduler:
+    scheduler: # Подключение кастомного шедулера
       _key_value: False
 
       _target_: CustomScheduler
-      delay_epochs: 2
-      total_epochs: 5
+      delay_epochs: 20
+      total_epochs: 50
       eta_min: 0.00001
     callbacks:
-      infer:
-        _target_: InerCallback
-        subm_file: "./crossval_log/preds.csv"
-      optimizer:
+      # Подключение колбэков каталиста
+      # (Возможные колбэки: https://github.com/catalyst-team/catalyst/tree/master/catalyst/callbacks)
+
+      optimizer: # Параметры для оптимизатора
         _target_: OptimizerCallback
         metric_key: *model_loss
       accuracy:
@@ -61,26 +76,43 @@ stages:
         metric_key: *model_loss
       verbose:
         _target_: TqdmCallback
-      custom_mlflow:
-        _target_: MLFlowloggingCallback
-      saver:
+      saver: # Сохранение 3-х лучших моделей эксперимента
         _target_: CheckpointCallback
         logdir: "logs/checkpoints"
         save_n_best: 3
-      custom_tensorboard:
-        _target_: TensorboardImageCustomLogger
 
-    data:
+      # Подключение кастомных колбэков
+      #(Возможные колбэки: ./src_multilabel/callbacks/)
+      onnx_saver: # Конвертация в onnx формат
+        _target_: OnnxSaveCallback
+        out_dir: "./logs/onnx"
+        checkpoint_names: ["best", "best_full"]
+      torchscript_saver: # Конвертация в torchscript формат
+        _target_: TorchscriptSaveCallback
+        out_dir: "./logs/torchsript"
+        checkpoint_names: ["best", "best_full"]
+      infer:
+        _target_: MulticlassInerCallback
+        subm_file: "./crossval_log/preds.csv"
+      custom_mlflow: # Логирование ошибочных фотографий в mlflow
+        _target_: MLFlowMulticlassLoggingCallback
+        logging_image_number: 10
+      custom_tensorboard: # Логирование ошибочных фотографий в tensorboard
+        _target_: TensorboardMulticlassLoggingCallback
+        logging_image_number: 10
+
+    data: # Подключение данных и параметров обучения
       shuffle: false
-      train_dir: "./train_dataset"
-      train_image_dir: "train_images"
-      train_meta: "train.csv"
-      transform_path: "config/classification/augmentations/light.yml"
-      valid_size: 0.2
+      train_dir: "./train_dataset_sigi/"
+      train_image_dir: "images/train"
+      test_image_dir: "images/test"
+      train_meta: "train_metadata.csv"
+      test_meta: "test_metadata.csv"
+      transform_path: "config/classification/augmentations/light.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
     loaders: &loaders
-      batch_size: 1
-      num_workers: 0 #для локальной поставить 0
-    num_epochs: 5
+      batch_size: 1 # Размер батча для всех стейджей
+      num_workers: 1 #для локальной поставить 0
+    num_epochs: 50 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: accuracy01
     minimize_metric: False
