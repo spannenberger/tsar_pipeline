@@ -3,7 +3,7 @@ model:
   num_classes: &num_classes 2
   path: 'our_models/best.pth' # Путь до расположения вашей локальной модели
   is_local: False # True если обучаете локально загруженную модель
-  diff_classes_flag: True # Указать True, если есть разница в кол-ве классов
+  diff_classes_flag: False # Указать True, если есть разница в кол-ве классов
   old_num_classes: 18 # Если diff_classes_flag=True, то указать кол-во классов в предобученной модели
 
 args: # Различные аргументы для Catalyst
@@ -23,7 +23,7 @@ runner: # Параметры для инициализации Runner
 
 engine: # Параметры для distributed training и NVIDIA Apex
   _target_: DeviceEngine
-  device: cuda:0
+  # device: cuda:0
 
 class_names: &class_names ["sigi", "other"]
 
@@ -36,8 +36,8 @@ loggers:
     _target_: CustomMLflowLogger
     experiment: 'sigi'
     class_names: *class_names
-    tracking_uri: http://mlflow.ddc.itnap.ru:5000/
-    registry_uri: https://storage.yandexcloud.net/
+    # tracking_uri: http://mlflow.ddc.itnap.ru:5000/
+    # registry_uri: https://storage.yandexcloud.net/
 
   tensorboard:
     _target_: TensorboardLogger
@@ -80,7 +80,14 @@ stages: # Словарь всех стадий Catalyst, для обучения
         _target_: CheckpointCallback
         logdir: "logs/checkpoints"
         save_n_best: 3
-
+      prunning:
+        _target_: PruningCallback
+        pruning_fn: l1_unstructured
+        prune_on_stage_end: True
+        amount: 0.001
+      quantization:
+        _target_: QuantizationCallback
+        logdir: "./logs"
       # Подключение кастомных колбэков
       #(Возможные колбэки: ./src_multilabel/callbacks/)
       onnx_saver: # Конвертация в onnx формат

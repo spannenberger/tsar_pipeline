@@ -48,7 +48,11 @@ class MLFlowMulticlassLoggingCallback(Callback):
             mlflow.log_image(
                 image,
                 f"{class_names[target[i]]}/{class_id[i]} - {target[i]} error number {i}.png")
-
+        try:
+            mlflow.log_artifact('logs/quantized.pth', 'quantized_model')
+        except FileNotFoundError:
+            print('No such file quantized.pth')
+            
         checkpoint_names = ['last', 'best_full']
         print('We start logging convert models... please wait')
         for model in tqdm(checkpoint_names):
@@ -106,6 +110,11 @@ class MLFlowMultilabelLoggingCallback(Callback):
                 mlflow.log_image(
                     image,
                     f"{class_names[ind]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png")
+
+        try:
+            mlflow.log_artifact('logs/quantized.pth', 'quantized_model')
+        except FileNotFoundError:
+            print('No such file quantized.pth')
 
         checkpoint_names = ['last', 'best_full']
         print('We start logging convert models... please wait')
