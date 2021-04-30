@@ -80,14 +80,14 @@ stages: # Словарь всех стадий Catalyst, для обучения
         _target_: CheckpointCallback
         logdir: "logs/checkpoints"
         save_n_best: 3
-      prunning:
+      prunning: # коллбэк для прунинга модели
         _target_: PruningCallback
-        pruning_fn: l1_unstructured
-        prune_on_stage_end: True
-        amount: 0.001
+        pruning_fn: l1_unstructured # функция из модуля torch.nn.utils.prune или ваш на основе BasePruningMethod. Может быть строкой, например. " l1_unstructured ". Подробнее см. В документации по pytorch.
+        prune_on_stage_end: True # флаг для прунинга в конце стэйджа
+        amount: 0.001 # количество параметров для обрезки. Если с плавающей точкой, должно быть от 0,0 до 1,0 и представляют собой часть параметров, подлежащих сокращению. Если int, он представляет собой абсолютное число параметров для обрезки.
       quantization:
         _target_: QuantizationCallback
-        logdir: "./logs"
+        logdir: "./logs" # Путь для сохранение модели после квантизации
       # Подключение кастомных колбэков
       #(Возможные колбэки: ./src_multilabel/callbacks/)
       onnx_saver: # Конвертация в onnx формат
