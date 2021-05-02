@@ -91,12 +91,6 @@ stages: # Словарь всех стадий Catalyst, для обучения
       quantization:
         _target_: QuantizationCallback
         logdir: "./logs" # Путь для сохранение модели после квантизации
-      # optuna:
-      #   _target_: OptunaPruningCallback
-      #   minimize: True
-      #   loader_key: valid
-      #   metric_key: multi_label_accuracy
-      #   min_delta: 0.001
       # Подключение кастомных колбэков
       #(Возможные колбэки: ./src_multilabel/callbacks/)
       torchscript_saver: # Конвертация в torchscript формат
