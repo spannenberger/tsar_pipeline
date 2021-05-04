@@ -49,7 +49,7 @@ class MLFlowMulticlassLoggingCallback(Callback):
                 image,
                 f"{class_names[target[i]]}/{class_id[i]} - {target[i]} error number {i}.png")
 
-        checkpoint_names = ['last', 'best']
+        checkpoint_names = ['last', 'best_full']
         print('We start logging convert models... please wait')
         for model in tqdm(checkpoint_names):
             try:
@@ -107,7 +107,7 @@ class MLFlowMultilabelLoggingCallback(Callback):
                     image,
                     f"{class_names[ind]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png")
 
-        checkpoint_names = ['last', 'best']
+        checkpoint_names = ['last', 'best_full']
         print('We start logging convert models... please wait')
         for model in tqdm(checkpoint_names):
             try:
