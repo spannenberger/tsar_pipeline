@@ -216,12 +216,9 @@ mlflow ui
 ```
 # Train in docker
 ```
-# build ur project, u need to do this only once
-docker-compose build
+# запуск multilabel решения
+docker-compose up -d --build multilabel
 
-# run docker ur container
-docker-compose up
-
-# shutdown ur container
-docker-compose stop
+# запуск multiclass решения
+docker-compose up -d --build multiclass
 ```
