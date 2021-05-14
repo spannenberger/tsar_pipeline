@@ -1,5 +1,5 @@
 model:
-  _target_: WideResnet50_2 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: ResNet18 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
   num_classes: &num_classes 2
   path: 'our_models/best.pth' # Путь до расположения вашей локальной модели
   is_local: False # True если обучаете локально загруженную модель
@@ -100,7 +100,9 @@ stages: # Словарь всех стадий Catalyst, для обучения
       custom_tensorboard: # Логирование ошибочных фотографий в tensorboard
         _target_: TensorboardMulticlassLoggingCallback
         logging_image_number: 10
-
+      triton:
+        _target_: TritonConfigCreator
+        conf_path: './logs/triton/config.pbtxt'
     data: # Подключение данных и параметров обучения
       shuffle: false
       train_dir: "./train_dataset_sigi/"

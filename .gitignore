@@ -130,6 +130,7 @@ dmypy.json
 
 # Project temp files
 ui/
+models/
 train_dataset_kcm/
 train_dataset/
 dataset_classif_0804/
