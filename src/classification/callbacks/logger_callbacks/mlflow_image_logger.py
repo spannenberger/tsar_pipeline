@@ -23,6 +23,7 @@ class MLFlowMulticlassLoggingCallback(Callback):
         mlflow.log_artifact(
             state.hparams['stages']['stage']['data']['transform_path'], 'config')
         mlflow.log_artifact(state.hparams['args']['configs'][0], 'config')
+        mlflow.log_artifact(state.hparams['stages']['stage']['callbacks']['triton']['conf_path'], 'config/triton')
 
     def on_experiment_end(self, state: IRunner):
         """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок,
@@ -60,7 +61,7 @@ class MLFlowMulticlassLoggingCallback(Callback):
                 mlflow.log_artifact(f'logs/logs/onnx/{model}.onnx', 'onnx_models')
             except FileNotFoundError:
                 print(f'No such file {model}.onnx, nothing to log...')
-
+        
         mlflow.pytorch.log_model(state.model, artifact_path=state.hparams['model']['_target_'])
         mlflow.end_run()
 
@@ -71,6 +72,14 @@ class MLFlowMultilabelLoggingCallback(Callback):
         self.logging_image_number = logging_image_number
         self.threshold = threshold
         super().__init__(CallbackOrder.ExternalExtra)
+
+    def on_stage_start(self, state: IRunner):
+        """Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа"""
+
+        mlflow.log_artifact(
+            state.hparams['stages']['stage']['data']['transform_path'], 'config')
+        mlflow.log_artifact(state.hparams['args']['configs'][0], 'config')
+        mlflow.log_artifact(state.hparams['stages']['stage']['callbacks']['triton']['conf_path'], 'config/triton')
 
     def on_experiment_end(self, state: IRunner):
         """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок,

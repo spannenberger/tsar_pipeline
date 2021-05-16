@@ -104,6 +104,11 @@ stages: # Словарь всех стадий Catalyst, для обучения
         _target_: TensorboardMultilabelLoggingCallback
         logging_image_number: 20 # Кол-во фотографий, которые надо логнуть
         threshold: 0.5
+      triton:
+        _target_: TritonConfigCreator
+        conf_path: "./logs/triton/config.pbtxt"
+        aug_path: "config/classification/augmentations/medium.yml"
+        num_classes: 18
 
     data: # Подключение данных и параметров обучения
       shuffle: false

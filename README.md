@@ -4,7 +4,8 @@
 ### Содержание
 - [User guide](#user-guide)
   * [Структура репозитория](#структура-репозитория)
-  * [Инструкция по использования репозитория](#инструкция-по-использования-репозитория)
+  * [Инструкция по использованию репозитория](#инструкция-по-использованию-репозитория)
+- [Использование тритона после обучения](#использование-тритона-после-обучения)
 - [Информация о конвертации моделей](#информация-о-конвертации-моделей)
 - [Training run](#training-run)
 - [Train in docker](#train-in-docker)
@@ -19,7 +20,7 @@
 - [model_converter.py](/model_converter.py) - файл для конвертации моделей в форматы torchscript, onnx и проверки корректности преобразованных файлов
 - [requirements.txt](/requirements.txt) - файл с библиотеками и инструментами, которые нам нужны в проектах
 ---
-### Инструкция по использования репозитория
+### Инструкция по использованию репозитория
 - [Multiclass](#запуск-и-изменение-multiclass-решения)
 - [Multilabel](#запуск-и-изменение-multilabel-решения)
  ### Запуск и изменение multiclass решения
@@ -172,28 +173,38 @@
         diff_classes_flag: True # True, если есть разница в кол-ве классов
         old_num_classes: 2 # Если diff_classes_flag=True, то указать кол-во классов в предобученной модели
      ```
+# Использование тритона после обучения
+В репозитории реализован колбэк для создания минимального тритон конфига модели, который автоматически логируется в mlflow:
+```
+triton:
+  _target_: TritonConfigCreator
+  conf_path: "./logs/triton/config.pbtxt" # Путь создания конфига
+  aug_path: "config/classification/augmentations/light.yml" # Путь до применяемого в обучении конфига аугментаций
+  num_classes: 2 # Количество классов модели
+```
+Также в таблице([Информация о конвертации моделей](#информация-о-конвертации-моделей)) можно посмотреть возможность использования модели в тритоне
 # Информация о конвертации моделей     
-| model | onnx  | torchscript  |
-| :---: | :-: | :-: |
-| Densenet121 | True  | True  |
-| Densenet161 | True  | True  |
-| Densenet169 | True  | True  |
-| Densenet201 | True  | True  |
-| EfficientNetb0 | True  | True  |
-| EfficientNetb3 | True  | True  |
-| EfficientNetb4 | True  | True  |
-| MobilenetV2 | True  | True  |
-| MobilenetV3Large | False  | True  |
-| MobilenetV3Small | False  | True  |
-| ResNet18_swsl | True  | True  |
-| ResNet18 | True  | True  |
-| ResNet34 | True  | True  |
-| ResNet50 | True  | True  |
-| ResNet101 | True  | True  |
-| Resnext50_32x4d | True  | True  |
-| Resnext101_32x8d | True  | True  |
-| WideResnet50_2 | True  | True  |
-| WideResnet101_2 | True  | True  |
+| model | onnx  | torchscript  | Triton |
+| :---: | :-: | :-: | :-: |
+| Densenet121 | True  | True  | True  |
+| Densenet161 | True  | True  | True  |
+| Densenet169 | True  | True  | True  |
+| Densenet201 | True  | True  | True  |
+| EfficientNetb0 | True  | True  | True  |
+| EfficientNetb3 | True  | True  | True  |
+| EfficientNetb4 | True  | True  | True  |
+| MobilenetV2 | True  | True  | True  |
+| MobilenetV3Large | False  | True  | False  |
+| MobilenetV3Small | False  | True  | False  |
+| ResNet18_swsl | True  | True  | True  |
+| ResNet18 | True  | True  | True  |
+| ResNet34 | True  | True  | True  |
+| ResNet50 | True  | True  | True  |
+| ResNet101 | True  | True  | True  |
+| Resnext50_32x4d | True  | True  | True  |
+| Resnext101_32x8d | True  | True  | True  |
+| WideResnet50_2 | True  | True  | True  |
+| WideResnet101_2 | True  | True  | True  |
 # Training run 
 ```bash
 # To check multiclass pipeline
