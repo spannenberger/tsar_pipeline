@@ -1,12 +1,21 @@
 import torch
 from torch import nn
-from catalyst.contrib import models
+import torchvision as vision
 
 
 class ResNet50(nn.Module):
-    def __init__(self, out_features=16):
+    def __init__(self, path='', is_local=False):
         super().__init__()
-        self.backbone = models.MnistSimpleNet(out_features=out_features)
+        self.path = path
+        self.is_local = is_local
+        if self.is_local:
+            self.backbone = torch.nn.Sequential(
+                *(list(vision.models.resnet18(pretrained=False).children())[:-1]))
+            self.load_state_dict(torch.load(self.path)['model_state_dict'])
+        else:
+            self.backbone = torch.nn.Sequential(
+                *(list(vision.models.resnet18(pretrained=True).children())[:-1]))
 
     def forward(self, X):
-        return self.backbone(X)
+        tmp = self.backbone(X)
+        return tmp.view(tmp.size()[:2])

@@ -3,8 +3,11 @@ from catalyst.runners import SupervisedConfigRunner
 from collections import OrderedDict
 from catalyst.contrib import datasets
 import os
-from catalyst.data.transforms import Compose, Normalize, ToTensor
 from catalyst import data
+import dataset
+import cv2
+import albumentations as A
+from albumentations.pytorch.transforms import ToTensor
 
 
 class MertricLearningRunner(IRunner):
@@ -23,14 +26,15 @@ class MertricLearningRunner(IRunner):
 
     def get_datasets(self, stage: str, **kwargs):
         """Работа с данными, формирование train и valid"""
-        transforms = Compose([ToTensor(), Normalize((0.1307,), (0.3081,))])
+        transforms = A.Compose([A.Normalize((0.1307,), (0.3081,)),
+                                A.Resize(height=224, width=224), ToTensor()])
         datasetss = OrderedDict()
-        train_dataset = datasets.MnistMLDataset(
-            root=os.getcwd(), download=True, transform=transforms)
+        train_dataset = dataset.TrainMLDataset(
+            "metric_learning_dataset/train/", loader=cv2.imread, transform=lambda x: transforms(image=x)['image'])
         sampler = data.BalanceBatchSampler(labels=train_dataset.get_labels(), p=5, k=10)
-        valid_dataset = datasets.MnistQGDataset(
-            root=os.getcwd(), transform=transforms, gallery_fraq=0.2)
-
+        valid_dataset = dataset.ValidMLDataset("metric_learning_dataset/base/",
+                                               "metric_learning_dataset/val/", loader=cv2.imread, transform=lambda x: transforms(image=x)['image'])
+        print(sampler.batch_size)
         datasetss["train"] = {'dataset': train_dataset,
                               'sampler': sampler,
                               'batch_size': sampler.batch_size

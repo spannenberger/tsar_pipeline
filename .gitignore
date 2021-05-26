@@ -132,6 +132,7 @@ dmypy.json
 ui/
 train_dataset_kcm/
 train_dataset/
+*_dataset/
 dataset_classif_0804/
 train_dataset_sigi/
 mnist*/
