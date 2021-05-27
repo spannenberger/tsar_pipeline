@@ -19,7 +19,7 @@ class MLFlowMulticlassLoggingCallback(Callback):
 
     def on_stage_start(self, state: IRunner):
         """Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа"""
-
+        mlflow.pytorch.log_model(state.model, 'casual_model')
         mlflow.log_artifact(
             state.hparams['stages']['stage']['data']['transform_path'], 'config')
         mlflow.log_artifact(state.hparams['args']['configs'][0], 'config')
@@ -65,7 +65,7 @@ class MLFlowMulticlassLoggingCallback(Callback):
             except FileNotFoundError:
                 print(f'No such file {model}.onnx, nothing to log...')
 
-        mlflow.pytorch.log_model(state.model, artifact_path=state.hparams['model']['_target_'])
+        mlflow.pytorch.log_model(state.model, 'prun_model')
         mlflow.end_run()
 
 

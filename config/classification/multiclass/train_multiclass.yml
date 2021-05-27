@@ -1,5 +1,5 @@
 model:
-  _target_: WideResnet50_2 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: ResNet18 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
   num_classes: &num_classes 2
   path: 'our_models/best.pth' # Путь до расположения вашей локальной модели
   is_local: False # True если обучаете локально загруженную модель
@@ -83,7 +83,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       prunning: # коллбэк для прунинга модели
         _target_: PruningCallback
         pruning_fn: l1_unstructured # функция из модуля torch.nn.utils.prune или ваш на основе BasePruningMethod. Может быть строкой, например. " l1_unstructured ". Подробнее см. В документации по pytorch.
-        prune_on_stage_end: True # флаг для прунинга в конце стэйджа
+        prune_on_epoch_end: True # флаг для прунинга в конце стэйджа
         amount: 0.001 # количество параметров для обрезки. Если с плавающей точкой, должно быть от 0,0 до 1,0 и представляют собой часть параметров, подлежащих сокращению. Если int, он представляет собой абсолютное число параметров для обрезки.
       quantization:
         _target_: QuantizationCallback
