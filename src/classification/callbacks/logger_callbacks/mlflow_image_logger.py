@@ -76,6 +76,13 @@ class MLFlowMultilabelLoggingCallback(Callback):
         self.threshold = threshold
         super().__init__(CallbackOrder.ExternalExtra)
 
+    def on_stage_start(self, state: IRunner):
+        """Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа"""
+        mlflow.pytorch.log_model(state.model, 'casual_model')
+        mlflow.log_artifact(
+            state.hparams['stages']['stage']['data']['transform_path'], 'config')
+        mlflow.log_artifact(state.hparams['args']['configs'][0], 'config')
+        
     def on_experiment_end(self, state: IRunner):
         """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок,
         которые соответствуют class_names в нашем конфиге
