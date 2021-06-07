@@ -1,5 +1,5 @@
 # tsar_pipeline
-Данный репозиторий содержит решение мультикласс и мультилейбл классификации
+Данный репозиторий содержит решение мультикласс, мультилейбл классификации и Metric Learning 
 ----
 ### Содержание
 - [User guide](#user-guide)
@@ -10,10 +10,12 @@
 - [Train in docker](#train-in-docker)
 # User guide
 ### Структура репозитория
-- [classifications_shells](#training-run) - папка, содержащая скрипты запуска репозитория
+- [classifications_shells](#training-run) - папка, содержащая скрипты запуска решений задач классификации
+- [metric_learning_shells](#training-run) - папка, содержащая скрипты запуска решений задач metric learning
 - [config](./config) - папка с конфигами эксперимента, в которых мы можем изменять: модель, путь до данных, шедулеры, коллбэки и тд
     * [Multiclass](config/classification/multiclass/train_multiclass.yml) - конфиг мультикласс классификации
     * [Multilabel](config/classification/multilabel/train_multilabel.yml) - конфиг мультилейбл класификаци
+    * [MetricLearning](config/metric_learning/train_metric_learning.yml) - конфиг metric learning
 - [src](src/) - папка с основными файлами проекта, в которую добавляются новые шедулеры, модели, коллбэки и тд
 - [docker-compose.yml](#test-in-docker) - конфиг файл для докера
 - [model_converter.py](/model_converter.py) - файл для конвертации моделей в форматы torchscript, onnx и проверки корректности преобразованных файлов
@@ -22,6 +24,7 @@
 ### Инструкция по использования репозитория
 - [Multiclass](#запуск-и-изменение-multiclass-решения)
 - [Multilabel](#запуск-и-изменение-multilabel-решения)
+- [MetricLearing](#запуск-и-изменение-metric-learning-решения)
  ### Запуск и изменение multiclass решения
    - Склонировать репозиторий
    -  Запустить команду ```pip install -r requirements.txt```
@@ -172,6 +175,10 @@
         diff_classes_flag: True # True, если есть разница в кол-ве классов
         old_num_classes: 2 # Если diff_classes_flag=True, то указать кол-во классов в предобученной модели
      ```
+ ### Запуск и изменение metric learning решения
+   - Склонировать репозиторий
+   - Запустить команду ```pip install -r requirements.txt```
+   - @TODO: docs
 # Информация о конвертации моделей     
 | model | onnx  | torchscript  |
 | :---: | :-: | :-: |
@@ -206,6 +213,11 @@ sh classification_shells/train_multiclass.sh
 sh classification_shells/check_multilabel.sh
 # To usual multilabel train pipeline
 sh classification_shells/train_multilabel.sh
+
+# To check metric_learning pipeline
+sh metric_learning_shells/check.sh
+# To usual multilabel train pipeline
+sh metric_learning_shells/train.sh
 
 
 # Run tensorflow for visualisation
