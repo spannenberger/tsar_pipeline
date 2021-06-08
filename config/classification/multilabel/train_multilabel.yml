@@ -85,11 +85,10 @@ stages: # Словарь всех стадий Catalyst, для обучения
         save_n_best: 3
       prunning: # коллбэк для прунинга модели
         _target_: PruningCallback
-        pruning_fn: ln_structured # функция из модуля torch.nn.utils.prune или ваш на основе BasePruningMethod. Может быть строкой, например. " l1_unstructured ". Подробнее см. В документации по pytorch.
-        prune_on_stage_end: True # флаг для прунинга в конце стэйджа
+        pruning_fn: random_unstructured # функция из модуля torch.nn.utils.prune или ваш на основе BasePruningMethod. Может быть строкой, например. " l1_unstructured ". Подробнее см. В документации по pytorch.
+        prune_on_epoch_end: True # флаг для прунинга в конце стэйджа
         amount: 0.5 # количество параметров для обрезки. Если с плавающей точкой, должно быть от 0,0 до 1,0 и представляют собой часть параметров, подлежащих сокращению. Если int, он представляет собой абсолютное число параметров для обрезки.
-        layers_to_prune: "weight"
-        dim: 0
+        # layers_to_prune: "weight"
         l_norm: 2
       quantization:
         _target_: QuantizationCallback
