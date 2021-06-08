@@ -107,8 +107,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       triton:
         _target_: TritonConfigCreator
         conf_path: "./logs/triton/config.pbtxt"
-        aug_path: "config/classification/augmentations/medium.yml"
-        num_classes: 18
+        mode: multilabel
 
     data: # Подключение данных и параметров обучения
       shuffle: false
