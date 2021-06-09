@@ -22,6 +22,7 @@ class ResNet18(nn.Module):
         else:
             self.backbone = vision.models.resnet18(pretrained=True)
             replace_classifier(self.backbone, num_classes)
+        print(self.backbone.state_dict().keys())
     def forward(self, X):
         return self.backbone(X)
 
