@@ -23,7 +23,7 @@ runner: # Параметры для инициализации Runner
 
 engine: # Параметры для distributed training и NVIDIA Apex
   _target_: DeviceEngine
-  # device: cuda:0
+  device: cuda:0
 
 class_names: &class_names ["sigi", "other"]
 
@@ -36,8 +36,8 @@ loggers:
     _target_: CustomMLflowLogger
     experiment: 'sigi'
     class_names: *class_names
-    # tracking_uri: http://mlflow.ddc.itnap.ru:5000/
-    # registry_uri: https://storage.yandexcloud.net/
+    tracking_uri: http://mlflow.ddc.itnap.ru:5000/
+    registry_uri: https://storage.yandexcloud.net/
 
   tensorboard:
     _target_: TensorboardLogger
@@ -116,9 +116,9 @@ stages: # Словарь всех стадий Catalyst, для обучения
       test_meta: "test_metadata.csv"
       transform_path: "config/classification/augmentations/light.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
     loaders: &loaders
-      batch_size: 1 # Размер батча для всех стейджей
-      num_workers: 1 #для локальной поставить 0
-    num_epochs: 50 # Количество эпох эксперимента
+      batch_size: 28 # Размер батча для всех стейджей
+      num_workers: 4 #для локальной поставить 0
+    num_epochs: 15 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: accuracy01
     minimize_metric: False
