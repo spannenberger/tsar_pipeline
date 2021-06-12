@@ -50,6 +50,8 @@ stages: # Словарь всех стадий Catalyst, для обучения
         loaders: valid
       criterion:
         _target_: CustomTrainCriterion
+        in_features: 512
+        out_features: 102
         input_key: *model_output
         target_key: *model_target
         metric_key: *model_loss
