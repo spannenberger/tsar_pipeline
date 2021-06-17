@@ -26,7 +26,7 @@ from models.ResNet18_swsl import ResNet18_swsl  # converter True
 from callbacks.custom_scheduler import CustomScheduler
 from callbacks.convert_callbacks.torchscript_save_callback import TorchscriptSaveCallback
 from callbacks.convert_callbacks.onnx_save_callback import OnnxSaveCallback
-from callbacks.quantization import QuantizationCallback
+from callbacks.convert_callbacks.quantization import QuantizationCallback
 # Multiclass
 from callbacks.iner_callback import MulticlassInerCallback
 from callbacks.logger_callbacks.mlflow_image_logger import MLFlowMulticlassLoggingCallback
