@@ -1,5 +1,5 @@
 model:
-  _target_: ResNet50 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: EfficientNetB0 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
 args: # Различные аргументы для Catalyst
   expdir: src/metric_learning # Путь до нашего эксперимента, с файлом `__init__`, в котором импортируется Runner, и, опционально, регистрируются все дополнительные сущности: model, callback, criterion, etc
   logdir: logs # Путь в который будут сохранятся логи
@@ -17,16 +17,18 @@ runner: # Параметры для инициализации Runner
 
 engine: # Параметры для distributed training и NVIDIA Apex
   _target_: DeviceEngine
-
+  # device: cuda:0
 loggers:
 # Встроенные логеры каталиста
 #(Возможные логеры: https://github.com/catalyst-team/catalyst/tree/master/catalyst/loggers)
   console:
     _target_: ConsoleLogger
+  mlflow:
+    _target_: MLflowLogger
+    experiment: 'metric_learning'
 
 stages: # Словарь всех стадий Catalyst, для обучения и/или инфера. Содержат ключевые слова с параметрами, которые применятся ко всем стейджам, так и сами имена стейджей
   stage:
-
     optimizer: # Параметры оптимизатора
       _target_: Adam
       lr: 0.001
@@ -41,7 +43,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
         _target_: SchedulerCallback
       # Подключение колбэков каталиста
       # (Возможные колбэки: https://github.com/catalyst-team/catalyst/tree/master/catalyst/callbacks)
-      metr:
+      metr: # метрика
         _target_: CustomCMC
         embeddings_key: *model_output
         labels_key: *model_target
@@ -50,8 +52,8 @@ stages: # Словарь всех стадий Catalyst, для обучения
         loaders: valid
       criterion:
         _target_: CustomTrainCriterion
-        in_features: 512
-        out_features: 102
+        embeding_size: 576 # размерность последнего слоя модели
+        num_classes: 102 # количество классов
         input_key: *model_output
         target_key: *model_target
         metric_key: *model_loss
@@ -68,7 +70,13 @@ stages: # Словарь всех стадий Catalyst, для обучения
 
       # Подключение кастомных колбэков
       #(Возможные колбэки: ./src_multilabel/callbacks/)
-
+    data:
+      dataset_path: metric_learning_dataset # путь до датасета
+      train_path: train # путь до папки с тренировочными фотографиями
+      base_path: base # путь до папки с фотографиями галлереи
+      val_path: val # путь до папки с фотографиями валидации(запроса/query)
+      transforms_path: config/metric_learning/augmentations/light.yml
+      # путь до файла с трансформациями
     loaders: &loaders
       batch_size: 50 # Размер батча для всех стейджей
       num_workers: 0 #для локальной поставить 0

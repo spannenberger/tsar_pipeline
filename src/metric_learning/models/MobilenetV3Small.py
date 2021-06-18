@@ -3,18 +3,21 @@ from torch import nn
 import torchvision as vision
 
 
-class ResNet50(nn.Module):
+# embeding_size = 576
+class MobilenetV3Small(nn.Module):
     def __init__(self, path='', is_local=False):
         super().__init__()
         self.path = path
         self.is_local = is_local
         if self.is_local:
+            model = vision.models.mobilenet_v3_small(pretrained=False)
             self.backbone = torch.nn.Sequential(
-                *(list(vision.models.resnet18(pretrained=False).children())[:-1]))
+                *(list(model.children())[:-1]))
             self.load_state_dict(torch.load(self.path)['model_state_dict'])
         else:
+            model = vision.models.mobilenet_v3_small(pretrained=True)
             self.backbone = torch.nn.Sequential(
-                *(list(vision.models.resnet18(pretrained=True).children())[:-1]))
+                *(list(model.children())[:-1]))
 
     def forward(self, X):
         tmp = self.backbone(X)

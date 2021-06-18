@@ -1,13 +1,16 @@
 from typing import Any, Callable, Dict, List, Optional
-import torch
-import os
-from torch.utils.data import Dataset
 from catalyst.data.dataset.metric_learning import MetricLearningTrainDataset, QueryGalleryDataset
 from torchvision.datasets import ImageFolder
-import cv2
+from transform import CustomAugmentator
 
 
+# добавить трансформации сюда
 class TrainMLDataset(MetricLearningTrainDataset, ImageFolder):
+    def __init__(self, *args, transforms_path: str, **kwargs):
+        self.transforms_path = transforms_path
+        transforms = CustomAugmentator().transforms(self.transforms_path, aug_mode='train')
+
+        super().__init__(transform=lambda x: transforms(image=x)['image'], *args, **kwargs)
 
     def get_labels(self) -> List[int]:
         """
@@ -18,13 +21,17 @@ class TrainMLDataset(MetricLearningTrainDataset, ImageFolder):
 
 
 class ValidMLDataset(QueryGalleryDataset):
-
+    # Возможно надо разделить аугментации галлереи и запроса
     def __init__(
         self, root_gallery: str, root_query: str, loader: Callable,
-        transform: Optional[Callable] = None
+        transforms_path: str
     ) -> None:
-        self._gallery = ImageFolder(root_gallery, loader=loader, transform=transform)
-        self._query = ImageFolder(root_query, loader=loader, transform=transform)
+        self.transforms_path = transforms_path
+        self.transforms = CustomAugmentator().transforms(self.transforms_path, aug_mode='valid')
+        self._gallery = ImageFolder(root_gallery, loader=loader,
+                                    transform=lambda x: self.transforms(image=x)['image'])
+        self._query = ImageFolder(root_query, loader=loader,
+                                  transform=lambda x: self.transforms(image=x)['image'])
         self._gallery_size = len(self._gallery)
         self._query_size = len(self._query)
 

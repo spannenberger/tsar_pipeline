@@ -1,13 +1,9 @@
 from catalyst.core import IRunner
 from catalyst.runners import SupervisedConfigRunner
 from collections import OrderedDict
-from catalyst.contrib import datasets
-import os
 from catalyst import data
 import dataset
 import cv2
-import albumentations as A
-from albumentations.pytorch.transforms import ToTensor
 
 
 class MertricLearningRunner(IRunner):
@@ -26,15 +22,18 @@ class MertricLearningRunner(IRunner):
 
     def get_datasets(self, stage: str, **kwargs):
         """Работа с данными, формирование train и valid"""
-        transforms = A.Compose([A.Normalize((0.1307,), (0.3081,)),
-                                A.Resize(height=224, width=224), ToTensor()])
         datasetss = OrderedDict()
+        data_params = self._stage_config[stage]["data"]
+        dataset_path = data_params["dataset_path"]
+        trainsforms_path = data_params["transforms_path"]
+        train_path = f'{dataset_path}/{data_params["train_path"]}/'
+        base_path = f'{dataset_path}/{data_params["base_path"]}/'
+        val_path = f'{dataset_path}/{data_params["val_path"]}/'
         train_dataset = dataset.TrainMLDataset(
-            "metric_learning_dataset/train/", loader=cv2.imread, transform=lambda x: transforms(image=x)['image'])
+            train_path, loader=cv2.imread, transforms_path=trainsforms_path)
         sampler = data.BalanceBatchSampler(labels=train_dataset.get_labels(), p=5, k=10)
-        valid_dataset = dataset.ValidMLDataset("metric_learning_dataset/base/",
-                                               "metric_learning_dataset/val/", loader=cv2.imread, transform=lambda x: transforms(image=x)['image'])
-        print(sampler.batch_size)
+        valid_dataset = dataset.ValidMLDataset(base_path,
+                                               val_path, loader=cv2.imread, transforms_path=trainsforms_path)
         datasetss["train"] = {'dataset': train_dataset,
                               'sampler': sampler,
                               'batch_size': sampler.batch_size
