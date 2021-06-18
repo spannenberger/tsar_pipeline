@@ -1,5 +1,5 @@
 model:
-  _target_: EfficientNetB0 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: ResNet18 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
 args: # Различные аргументы для Catalyst
   expdir: src/metric_learning # Путь до нашего эксперимента, с файлом `__init__`, в котором импортируется Runner, и, опционально, регистрируются все дополнительные сущности: model, callback, criterion, etc
   logdir: logs # Путь в который будут сохранятся логи
@@ -52,7 +52,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
         loaders: valid
       criterion:
         _target_: CustomTrainCriterion
-        embeding_size: 576 # размерность последнего слоя модели
+        embeding_size: 512 # размерность последнего слоя модели
         num_classes: 102 # количество классов
         input_key: *model_output
         target_key: *model_target
