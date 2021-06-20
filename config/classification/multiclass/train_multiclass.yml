@@ -1,5 +1,5 @@
 model:
-  _target_: WideResnet50_2 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: ResNet18 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
   num_classes: &num_classes 2
   path: 'our_models/best.pth' # Путь до расположения вашей локальной модели
   is_local: False # True если обучаете локально загруженную модель
@@ -108,7 +108,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       test_image_dir: "images/test"
       train_meta: "train_metadata.csv"
       test_meta: "test_metadata.csv"
-      transform_path: "config/classification/augmentations/light.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
+      transform_path: "config/augmentations/light.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
     loaders: &loaders
       batch_size: 1 # Размер батча для всех стейджей
       num_workers: 1 #для локальной поставить 0

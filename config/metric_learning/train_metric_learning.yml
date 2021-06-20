@@ -75,11 +75,11 @@ stages: # Словарь всех стадий Catalyst, для обучения
       train_path: train # путь до папки с тренировочными фотографиями
       base_path: base # путь до папки с фотографиями галлереи
       val_path: val # путь до папки с фотографиями валидации(запроса/query)
-      transforms_path: config/metric_learning/augmentations/light.yml
+      transforms_path: config/augmentations/light.yml
       # путь до файла с трансформациями
     loaders: &loaders
-      batch_size: 50 # Размер батча для всех стейджей
-      num_workers: 0 #для локальной поставить 0
+      batch_size: 5 # Размер батча для всех стейджей
+      num_workers: 3 #для локальной поставить 0
     num_epochs: 5 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: cmc01
