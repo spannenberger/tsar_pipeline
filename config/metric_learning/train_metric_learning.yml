@@ -53,6 +53,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       criterion:
         _target_: CustomTrainCriterion
         embeding_size: 512 # размерность последнего слоя модели
+        loss_type: arcface # Три 'loss_types' возможны: 'arcface', 'sphereface', 'cosface'
         num_classes: 102 # количество классов
         input_key: *model_output
         target_key: *model_target
@@ -79,7 +80,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       # путь до файла с трансформациями
     loaders: &loaders
       batch_size: 5 # Размер батча для всех стейджей
-      num_workers: 3 #для локальной поставить 0
+      num_workers: 0 #для локальной поставить 0
     num_epochs: 5 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: cmc01
