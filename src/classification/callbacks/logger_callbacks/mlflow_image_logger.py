@@ -41,19 +41,20 @@ class MLFlowMulticlassLoggingCallback(Callback):
         except KeyError:
             class_names = [x for x in range(
                 state.hparams['model']['num_classes'])]
-        print('We start logging images to mlflow... please wait')
+        print('Starting logging images to mlflow... please wait')
         for i in tqdm(range(length)):
             image = Image.open(f"{path_list[i]}")
             mlflow.log_image(
                 image,
                 f"{class_names[target[i]]}/{class_id[i]} - {target[i]} error number {i}.png")
-        try:
+
+        if 'quantization' in state.hparams['stages']['stage']['callbacks']:
             mlflow.log_artifact('logs/quantized.pth', 'quantized_model')
-        except FileNotFoundError:
-            print('No such file quantized.pth')
+        else:
+            print('No such file quantized.pth, because quantization callback is disabled')
             
         checkpoint_names = ['last_full', 'best_full']
-        print('We start logging convert models... please wait')
+        print('Starting logging convert models... please wait')
         for model in tqdm(checkpoint_names):
             try:
                 mlflow.log_artifact(f'logs/logs/torchsript/{model}.pt', 'torchscript_models')
@@ -83,6 +84,7 @@ class MLFlowMultilabelLoggingCallback(Callback):
 
     def on_stage_start(self, state: IRunner):
         """Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа"""
+        
         mlflow.log_artifact(
             state.hparams['stages']['stage']['data']['transform_path'], 'config')
         mlflow.log_artifact(state.hparams['args']['configs'][0], 'config')
@@ -113,7 +115,7 @@ class MLFlowMultilabelLoggingCallback(Callback):
         except KeyError:
             class_names = [x for x in range(
                 state.hparams['model']['num_classes'])]
-        print('We start logging images to mlflow... please wait')
+        print('Starting logging images to mlflow... please wait')
         for i in tqdm(range(length)):
             error_ind = np.where(df['class_id'][i] != df['target'][i])[0]
             for ind in tqdm(error_ind):
@@ -122,13 +124,13 @@ class MLFlowMultilabelLoggingCallback(Callback):
                     image,
                     f"{class_names[ind]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png")
 
-        try:
+        if 'quantization' in state.hparams['stages']['stage']['callbacks']:
             mlflow.log_artifact('logs/quantized.pth', 'quantized_model')
-        except FileNotFoundError:
-            print('No such file quantized.pth')
+        else:
+            print('No such file quantized.pth, because quantization callback is disabled')
 
         checkpoint_names = ['last_full', 'best_full']
-        print('We start logging convert models... please wait')
+        print('Starting logging convert models... please wait')
         for model in tqdm(checkpoint_names):
             try:
                 mlflow.log_artifact(f'logs/logs/torchsript/{model}.pt', 'torchscript_models')
