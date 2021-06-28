@@ -179,8 +179,11 @@
 triton:
   _target_: TritonConfigCreator
   conf_path: "./logs/triton/config.pbtxt" # Путь создания конфига
-  aug_path: "config/classification/augmentations/light.yml" # Путь до применяемого в обучении конфига аугментаций
-  num_classes: 2 # Количество классов модели
+  mode: multilabel # Выбрать один из режимов multiclass, multilabel
+  # instance_group params
+  count: 1 # Кол-во используемых gpu
+  kind: None # Читай доку тритона
+  gpus: [ 0 ] # номера используемых gpu
 ```
 Также в таблице([Информация о конвертации моделей](#информация-о-конвертации-моделей)) можно посмотреть возможность использования модели в тритоне
 # Информация о конвертации моделей     
