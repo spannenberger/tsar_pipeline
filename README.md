@@ -5,7 +5,7 @@
 - [User guide](#user-guide)
   * [Структура репозитория](#структура-репозитория)
   * [Инструкция по использования репозитория](#инструкция-по-использования-репозитория)
-- [Информация о конвертации моделей](#информация-о-конвертации-моделей)
+- [Информация о моделях](#информация-о-моделях)
 - [Training run](#training-run)
 - [Train in docker](#train-in-docker)
 # User guide
@@ -188,8 +188,17 @@
        ```
    - Изменение моделей обучения
      - Изменить в ```train_metric_learning.yml``` файле название модели (доступные модели можно посмотреть в ```src/metric_learning/__init__.py``` в ```Registry(some_model)```) в блоке ```model:```
+     - Изменить в ```train_metric_learning.yml``` файле значение последнего слоя в 
+     ```
+     stages:
+      stage:
+        callbacks:
+          criterion:
+            embeding_size: 576 # Здесь должно быть конкретное значение для каждой модели (см. таблицу "Информация о моделях" в блоке "Для задач metric learning")
+     ```     
    - Для отключения колбэков достаточно их закомментировать в config файле
-# Информация о конвертации моделей     
+# Информация о моделях
+### Для задач multilabel и multiclass
 | model | onnx  | torchscript  |
 | :---: | :-: | :-: |
 | Densenet121 | True  | True  |
@@ -211,6 +220,13 @@
 | Resnext101_32x8d | True  | True  |
 | WideResnet50_2 | True  | True  |
 | WideResnet101_2 | True  | True  |
+
+### Для моделей metric learning
+| model | onnx  | torchscript  | embedding_size |
+| :---: | :-: | :-: | :-: |
+| ResNet18 | True  | True  | 512 |
+| ResNext50 | True  | True  | 2048 |
+| MobilenetV3Small | False  | True  | 576 |
 # Training run 
 ```bash
 # To check multiclass pipeline

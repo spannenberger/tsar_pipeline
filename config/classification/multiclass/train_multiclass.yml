@@ -108,7 +108,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       test_image_dir: "images/test"
       train_meta: "train_metadata.csv"
       test_meta: "test_metadata.csv"
-      transform_path: "config/augmentations/light.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
+      transform_path: "config/augmentations/light.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/augmentations/))
     loaders: &loaders
       batch_size: 1 # Размер батча для всех стейджей
       num_workers: 1 #для локальной поставить 0
