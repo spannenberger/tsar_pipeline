@@ -173,8 +173,8 @@
         diff_classes_flag: True # True, если есть разница в кол-ве классов
         old_num_classes: 2 # Если diff_classes_flag=True, то указать кол-во классов в предобученной модели
      ```
-### Использование prunning callback в пайплайне
-Этот callback прунит параметры во время и/или после обучения.
+### Использование prunning и quantization callbacks в пайплайне
+- prunning callback прунит параметры во время и/или после обучения.
 :neutral_face:**Стоит отметить, что при использовании данного колбэка при обучении не будет работать конвертация моделей в onnx и torchscript**:neutral_face:
   ```
     Args:
@@ -203,6 +203,17 @@
         dim: если вы используете structured pruning method вы должны
             указать dimension.
         l_norm: если вы используете ln_structured вы должны указать l_norm.
+  ```
+
+- quantization callback квантизирует модель :neutral_face:
+  ```
+    Args:
+      logdir: путь до папки модели после квантизации
+      qconfig_spec (Dict, optional): конфиг квантизации в PyTorch формате.
+          Defaults to None.
+      dtype (Union[str, Optional[torch.dtype]], optional):
+          Тип весов после квантизации.
+          Defaults to "qint8".
   ```
 # Информация о конвертации моделей     
 | model | onnx  | torchscript  |

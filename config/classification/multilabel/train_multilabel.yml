@@ -83,17 +83,17 @@ stages: # Словарь всех стадий Catalyst, для обучения
         _target_: CheckpointCallback
         logdir: "logs/checkpoints"
         save_n_best: 3
-      # prunning: # коллбэк для прунинга модели. Смотри документацию в Readme
-      #   _target_: PruningCallback
-      #   pruning_fn: random_unstructured # функция из модуля torch.nn.utils.prune или ваш на основе BasePruningMethod. Может быть строкой, например. " l1_unstructured ". Подробнее см. В документации по pytorch.
-      #   prune_on_epoch_end: True # флаг для прунинга в конце стэйджа
-      #   amount: 0.5 # количество параметров для обрезки. Если с плавающей точкой, должно быть от 0,0 до 1,0 и представляют собой часть параметров, подлежащих сокращению. Если int, он представляет собой абсолютное число параметров для обрезки.
-      #   l_norm: 2
-      # quantization:
-      #   _target_: QuantizationCallback
-      #   logdir: "./logs" # Путь для сохранение модели после квантизации
-      # Подключение кастомных колбэков
-      #(Возможные колбэки: ./src_multilabel/callbacks/)
+      prunning: # коллбэк для прунинга модели. Смотри документацию в Readme
+        _target_: PruningCallback
+        pruning_fn: random_unstructured # функция из модуля torch.nn.utils.prune или ваш на основе BasePruningMethod. Может быть строкой, например. " l1_unstructured ". Подробнее см. В документации по pytorch.
+        prune_on_epoch_end: True # флаг для прунинга в конце стэйджа
+        amount: 0.5 # количество параметров для обрезки. Если с плавающей точкой, должно быть от 0,0 до 1,0 и представляют собой часть параметров, подлежащих сокращению. Если int, он представляет собой абсолютное число параметров для обрезки.
+        l_norm: 2
+      quantization:
+        _target_: QuantizationCallback
+        logdir: "./logs" # Путь для сохранение модели после квантизации
+      Подключение кастомных колбэков
+      (Возможные колбэки: ./src_multilabel/callbacks/)
       torchscript_saver: # Конвертация в torchscript формат
         _target_: TorchscriptSaveCallback
         out_dir: "./logs/torchsript"
