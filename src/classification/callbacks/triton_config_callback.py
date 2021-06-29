@@ -21,12 +21,17 @@ class TritonConfigCreator(Callback):
             with open('config/classification/multilabel/train_multilabel.yml', encoding="utf8") as config_yaml:
                 params = yaml.safe_load(config_yaml)
                 self.aug_path = params['stages']['stage']['data']['transform_path']
-                self.num_classes = params['model']['num_classes']
+                self.output_size = params['model']['num_classes']
         elif self.mode == 'multiclass':
             with open('config/classification/multiclass/train_multiclass.yml', encoding="utf8") as config_yaml:
                 params = yaml.safe_load(config_yaml)
                 self.aug_path = params['stages']['stage']['data']['transform_path']
-                self.num_classes = params['model']['num_classes']
+                self.output_size = params['model']['num_classes']
+        elif self.mode == 'metric_learning':
+            with open('config/metric_learning/train_metric_learning.yml', encoding="utf8") as config_yaml:
+                params = yaml.safe_load(config_yaml)
+                self.aug_path = params['stages']['stage']['data']['transform_path']
+                self.output_size = params['stages']['stage']['callbacks']['criterion']['embeding_size']
 
         self.conf_path = Path(conf_path)
         self.conf_path.parent.mkdir(parents=True, exist_ok=True)
@@ -44,7 +49,7 @@ class TritonConfigCreator(Callback):
                 triton_config.write('}\n]\n')
                 triton_config.write('output [\n')
                 triton_config.write('{\n')
-                triton_config.write(f'\tname: "output"\n\tdata_type: TYPE_FP32\n\tdims: [-1, {self.num_classes}]\n')
+                triton_config.write(f'\tname: "output"\n\tdata_type: TYPE_FP32\n\tdims: [-1, {self.output_size}]\n')
                 triton_config.write('}\n]\n')
                 triton_config.write('instance_group [\n')
                 triton_config.write('{\n')
