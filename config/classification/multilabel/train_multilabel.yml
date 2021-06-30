@@ -92,7 +92,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       quantization:
         _target_: QuantizationCallback
         logdir: "./logs" # Путь для сохранение модели после квантизации
-      Подключение кастомных колбэков
+      # Подключение кастомных колбэков
       (Возможные колбэки: ./src_multilabel/callbacks/)
       torchscript_saver: # Конвертация в torchscript формат
         _target_: TorchscriptSaveCallback
