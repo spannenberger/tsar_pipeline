@@ -34,10 +34,7 @@ class MertricLearningRunner(IRunner):
         sampler = data.BalanceBatchSampler(labels=train_dataset.get_labels(), p=5, k=10)
         valid_dataset = dataset.ValidMLDataset(base_path,
                                                val_path, loader=cv2.imread, transforms_path=trainsforms_path)
-        datasetss["train"] = {'dataset': train_dataset,
-                              'sampler': sampler,
-                              'batch_size': sampler.batch_size
-                              }
+        datasetss["train"] = {'dataset': train_dataset, 'sampler': sampler}
         datasetss["valid"] = {'dataset': valid_dataset}
 
         return datasetss

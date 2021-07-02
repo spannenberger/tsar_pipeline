@@ -67,6 +67,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
         target_key: *model_target
         metric_key: *model_loss
         loaders: train
+        # Имеется возможность указать параметры scale и margin
       optimizer: # Параметры для оптимизатора
         _target_: OptimizerCallback
         metric_key: *model_loss

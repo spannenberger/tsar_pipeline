@@ -5,7 +5,7 @@ import torch
 
 class AngularPenaltySMLoss(nn_torch.Module):
 
-    def __init__(self, in_features, out_features, loss_type='arcface', eps=1e-7, s=None, m=None):
+    def __init__(self, in_features, out_features, loss_type='arcface', eps=1e-7, scale=None, margin=None):
         '''
         Angular Penalty Softmax Loss
         Three 'loss_types' available: ['arcface', 'sphereface', 'cosface']
@@ -19,14 +19,14 @@ class AngularPenaltySMLoss(nn_torch.Module):
         loss_type = loss_type.lower()
         assert loss_type in ['arcface', 'sphereface', 'cosface']
         if loss_type == 'arcface':
-            self.s = 64.0 if not s else s
-            self.m = 0.5 if not m else m
+            self.scale = 64.0 if not scale else scale
+            self.margin = 0.5 if not margin else margin
         if loss_type == 'sphereface':
-            self.s = 64.0 if not s else s
-            self.m = 1.35 if not m else m
+            self.scale = 64.0 if not scale else scale
+            self.margin = 1.35 if not margin else margin
         if loss_type == 'cosface':
-            self.s = 30.0 if not s else s
-            self.m = 0.4 if not m else m
+            self.scale = 30.0 if not scale else scale
+            self.margin = 0.4 if not margin else margin
         self.loss_type = loss_type
         self.in_features = in_features
         self.out_features = out_features
@@ -46,20 +46,20 @@ class AngularPenaltySMLoss(nn_torch.Module):
 
         x = F.normalize(x, p=2, dim=1)
 
-        wf = self.fc(x)
+        wf = self.fc(x)  # Выход слоя классификации
         if self.loss_type == 'cosface':
-            numerator = self.s * (torch.diagonal(wf.transpose(0, 1)[labels]) - self.m)
+            numerator = self.scale * (torch.diagonal(wf.transpose(0, 1)[labels]) - self.margin)
         if self.loss_type == 'arcface':
-            numerator = self.s * \
+            numerator = self.scale * \
                 torch.cos(torch.acos(torch.clamp(torch.diagonal(
-                    wf.transpose(0, 1)[labels]), -1.+self.eps, 1-self.eps)) + self.m)
+                    wf.transpose(0, 1)[labels]), -1.+self.eps, 1-self.eps)) + self.margin)
         if self.loss_type == 'sphereface':
-            numerator = self.s * \
+            numerator = self.scale * \
                 torch.cos(
-                    self.m * torch.acos(torch.clamp(torch.diagonal(wf.transpose(0, 1)[labels]), -1.+self.eps, 1-self.eps)))
+                    self.margin * torch.acos(torch.clamp(torch.diagonal(wf.transpose(0, 1)[labels]), -1.+self.eps, 1-self.eps)))
 
         excl = torch.cat([torch.cat((wf[i, :y], wf[i, y+1:])).unsqueeze(0)
                           for i, y in enumerate(labels)], dim=0)
-        denominator = torch.exp(numerator) + torch.sum(torch.exp(self.s * excl), dim=1)
+        denominator = torch.exp(numerator) + torch.sum(torch.exp(self.scale * excl), dim=1)
         L = numerator - torch.log(denominator)
         return -torch.mean(L)
