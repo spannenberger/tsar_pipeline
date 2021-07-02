@@ -1,5 +1,5 @@
 model:
-  _target_: MobilenetV3Small # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: ResNext50 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
 args: # Различные аргументы для Catalyst
   expdir: src/metric_learning # Путь до нашего эксперимента, с файлом `__init__`, в котором импортируется Runner, и, опционально, регистрируются все дополнительные сущности: model, callback, criterion, etc
   logdir: logs # Путь в который будут сохранятся логи
@@ -43,7 +43,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
         _target_: SchedulerCallback
       # Подключение колбэков каталиста
       # (Возможные колбэки: https://github.com/catalyst-team/catalyst/tree/master/catalyst/callbacks)
-      metr: # метрика
+      metric: # метрика
         _target_: CustomCMC
         embeddings_key: *model_output
         labels_key: *model_target
@@ -60,7 +60,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
         checkpoint_names: ["last", "best_full"]
       criterion:
         _target_: CustomTrainCriterion
-        embeding_size: 576 # размерность последнего слоя модели
+        embeding_size: 2048 # размерность последнего слоя модели
         loss_type: arcface # Три 'loss_types' возможны: 'arcface', 'sphereface', 'cosface'
         num_classes: 102 # количество классов
         input_key: *model_output
