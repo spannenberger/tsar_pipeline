@@ -63,6 +63,8 @@ stages: # Словарь всех стадий Catalyst, для обучения
         embeding_size: 2048 # размерность последнего слоя модели
         loss_type: arcface # Три 'loss_types' возможны: 'arcface', 'sphereface', 'cosface'
         num_classes: 102 # количество классов
+        scale: 70
+        margin: 1.5
         input_key: *model_output
         target_key: *model_target
         metric_key: *model_loss
