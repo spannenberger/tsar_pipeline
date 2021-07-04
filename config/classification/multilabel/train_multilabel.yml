@@ -109,9 +109,10 @@ stages: # Словарь всех стадий Catalyst, для обучения
         conf_path: "./logs/triton/config.pbtxt"
         mode: multilabel
         # instance_group params
-        count: 1 # Кол-во используемых gpu
-        kind: None # Читай доку тритона
-        gpus: [ 0 ] # номера используемых gpu
+        # Читай доку Тритона (https://github.com/bytedance/triton-inference-server/blob/master/docs/model_configuration.md#instance-groups)
+        count: 1
+        kind: None
+        gpus: [ 0 ]
 
     data: # Подключение данных и параметров обучения
       shuffle: false
