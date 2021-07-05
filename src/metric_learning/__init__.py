@@ -5,6 +5,7 @@ from models.ResNet18 import ResNet18
 from models.ResNext50 import ResNext50
 from models.MobilenetV3Small import MobilenetV3Small
 
+from callbacks.logger_callbacks.mlflow_logger_callback import MetricLearningLogger
 from callbacks.convert_callbacks.onnx_save_callback import OnnxSaveCallback
 from callbacks.convert_callbacks.torchscript_save_callback import TorchscriptSaveCallback
 from callbacks.criterion import CustomTrainCriterion

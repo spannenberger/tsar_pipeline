@@ -50,6 +50,8 @@ stages: # Словарь всех стадий Catalyst, для обучения
         is_query_key: "is_query"
         topk_args: [1]
         loaders: valid
+      mlflow_logger:
+        _target_: MetricLearningLogger
       onnx_saver:
         _target_: OnnxSaveCallback
         out_dir: "./logs/onnx"
