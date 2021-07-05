@@ -20,9 +20,9 @@ class MLFlowMulticlassLoggingCallback(Callback):
     def on_stage_start(self, state: IRunner):
         """Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа"""
 
-        mlflow.log_artifact(
-            state.hparams['stages']['stage']['data']['transform_path'], 'config')
         mlflow.log_artifact(state.hparams['args']['configs'][0], 'config')
+        mlflow.log_artifact(
+            state.hparams['stages']['stage']['data']['transform_path'], 'config/aug_config')
         try:
             mlflow.log_artifact(state.hparams['stages']['stage']['callbacks']['triton']['conf_path'], 'config/triton')
         except FileNotFoundError:
@@ -80,9 +80,9 @@ class MLFlowMultilabelLoggingCallback(Callback):
     def on_stage_start(self, state: IRunner):
         """Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа"""
 
-        mlflow.log_artifact(
-            state.hparams['stages']['stage']['data']['transform_path'], 'config')
         mlflow.log_artifact(state.hparams['args']['configs'][0], 'config')
+        mlflow.log_artifact(
+            state.hparams['stages']['stage']['data']['transform_path'], 'config/aug_config')
         try:
             mlflow.log_artifact(state.hparams['stages']['stage']['callbacks']['triton']['conf_path'], 'config/triton')
         except FileNotFoundError:
