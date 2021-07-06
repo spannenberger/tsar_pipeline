@@ -19,7 +19,6 @@ class MLFlowMulticlassLoggingCallback(Callback):
 
     def on_stage_start(self, state: IRunner):
         """Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа"""
-
         mlflow.log_artifact(
             state.hparams['stages']['stage']['data']['transform_path'], 'config')
         mlflow.log_artifact(state.hparams['args']['configs'][0], 'config')
@@ -42,15 +41,20 @@ class MLFlowMulticlassLoggingCallback(Callback):
         except KeyError:
             class_names = [x for x in range(
                 state.hparams['model']['num_classes'])]
-        print('We start logging images to mlflow... please wait')
+        print('Starting logging images to mlflow... please wait')
         for i in tqdm(range(length)):
             image = Image.open(f"{path_list[i]}")
             mlflow.log_image(
                 image,
                 f"{class_names[target[i]]}/{class_id[i]} - {target[i]} error number {i}.png")
 
-        checkpoint_names = ['last', 'best_full']
-        print('We start logging convert models... please wait')
+        if 'quantization' in state.hparams['stages']['stage']['callbacks']:
+            mlflow.log_artifact('logs/quantized.pth', 'quantized_model')
+        else:
+            print('No such file quantized.pth, because quantization callback is disabled')
+            
+        checkpoint_names = ['last_full', 'best_full']
+        print('Starting logging convert models... please wait')
         for model in tqdm(checkpoint_names):
             try:
                 mlflow.log_artifact(f'logs/logs/torchsript/{model}.pt', 'torchscript_models')
@@ -60,6 +64,12 @@ class MLFlowMulticlassLoggingCallback(Callback):
                 mlflow.log_artifact(f'logs/logs/onnx/{model}.onnx', 'onnx_models')
             except FileNotFoundError:
                 print(f'No such file {model}.onnx, nothing to log...')
+                
+        try:
+            mlflow.log_artifact('logs/checkpoints/last.pth', 'prunned_models')
+            mlflow.log_artifact('logs/checkpoints/best.pth', 'prunned_models')
+        except FileNotFoundError:
+            print('No prunned models to log')
 
         mlflow.pytorch.log_model(state.model, artifact_path=state.hparams['model']['_target_'])
         mlflow.end_run()
@@ -72,6 +82,13 @@ class MLFlowMultilabelLoggingCallback(Callback):
         self.threshold = threshold
         super().__init__(CallbackOrder.ExternalExtra)
 
+    def on_stage_start(self, state: IRunner):
+        """Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа"""
+        
+        mlflow.log_artifact(
+            state.hparams['stages']['stage']['data']['transform_path'], 'config')
+        mlflow.log_artifact(state.hparams['args']['configs'][0], 'config')
+        
     def on_experiment_end(self, state: IRunner):
         """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок,
         которые соответствуют class_names в нашем конфиге
@@ -98,7 +115,7 @@ class MLFlowMultilabelLoggingCallback(Callback):
         except KeyError:
             class_names = [x for x in range(
                 state.hparams['model']['num_classes'])]
-        print('We start logging images to mlflow... please wait')
+        print('Starting logging images to mlflow... please wait')
         for i in tqdm(range(length)):
             error_ind = np.where(df['class_id'][i] != df['target'][i])[0]
             for ind in tqdm(error_ind):
@@ -107,8 +124,13 @@ class MLFlowMultilabelLoggingCallback(Callback):
                     image,
                     f"{class_names[ind]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png")
 
-        checkpoint_names = ['last', 'best_full']
-        print('We start logging convert models... please wait')
+        if 'quantization' in state.hparams['stages']['stage']['callbacks']:
+            mlflow.log_artifact('logs/quantized.pth', 'quantized_model')
+        else:
+            print('No such file quantized.pth, because quantization callback is disabled')
+
+        checkpoint_names = ['last_full', 'best_full']
+        print('Starting logging convert models... please wait')
         for model in tqdm(checkpoint_names):
             try:
                 mlflow.log_artifact(f'logs/logs/torchsript/{model}.pt', 'torchscript_models')
@@ -118,7 +140,11 @@ class MLFlowMultilabelLoggingCallback(Callback):
                 mlflow.log_artifact(f'logs/logs/onnx/{model}.onnx', 'onnx_models')
             except FileNotFoundError:
                 print(f'No such file {model}.onnx, nothing to log...')
-
+        try:
+            mlflow.log_artifact('logs/checkpoints/last.pth', 'prunned_models')
+            mlflow.log_artifact('logs/checkpoints/best.pth', 'prunned_models')
+        except FileNotFoundError:
+            print('No prunned models to log')
 
         mlflow.pytorch.log_model(state.model, artifact_path=state.hparams['model']['_target_'])
         mlflow.end_run()

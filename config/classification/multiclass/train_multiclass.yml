@@ -1,9 +1,9 @@
 model:
-  _target_: WideResnet50_2 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: ResNet18 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
   num_classes: &num_classes 2
   path: 'our_models/best.pth' # Путь до расположения вашей локальной модели
   is_local: False # True если обучаете локально загруженную модель
-  diff_classes_flag: True # Указать True, если есть разница в кол-ве классов
+  diff_classes_flag: False # Указать True, если есть разница в кол-ве классов
   old_num_classes: 18 # Если diff_classes_flag=True, то указать кол-во классов в предобученной модели
 
 args: # Различные аргументы для Catalyst
@@ -80,17 +80,25 @@ stages: # Словарь всех стадий Catalyst, для обучения
         _target_: CheckpointCallback
         logdir: "logs/checkpoints"
         save_n_best: 3
-
+      prunning: # коллбэк для прунинга модели. Смотри документацию в Readme
+        _target_: PruningCallback
+        pruning_fn: random_unstructured # функция из модуля torch.nn.utils.prune или ваш на основе BasePruningMethod. Может быть строкой, например. " l1_unstructured ". Подробнее см. В документации по pytorch.
+        prune_on_epoch_end: True # флаг для прунинга в конце стэйджа
+        amount: 0.5 # количество параметров для обрезки. Если с плавающей точкой, должно быть от 0,0 до 1,0 и представляют собой часть параметров, подлежащих сокращению. Если int, он представляет собой абсолютное число параметров для обрезки.
+        l_norm: 2
+      quantization:
+        _target_: QuantizationCallback
+        logdir: "./logs" # Путь для сохранение модели после квантизации
       # Подключение кастомных колбэков
       #(Возможные колбэки: ./src_multilabel/callbacks/)
       onnx_saver: # Конвертация в onnx формат
         _target_: OnnxSaveCallback
         out_dir: "./logs/onnx"
-        checkpoint_names: ["best", "best_full"]
+        checkpoint_names: ["last_full", "best_full"]
       torchscript_saver: # Конвертация в torchscript формат
         _target_: TorchscriptSaveCallback
         out_dir: "./logs/torchsript"
-        checkpoint_names: ["best", "best_full"]
+        checkpoint_names: ["last_full", "best_full"]
       infer:
         _target_: MulticlassInerCallback
         subm_file: "./crossval_log/preds.csv"
@@ -111,8 +119,8 @@ stages: # Словарь всех стадий Catalyst, для обучения
       transform_path: "config/classification/augmentations/light.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/classification/augmentations/))
     loaders: &loaders
       batch_size: 1 # Размер батча для всех стейджей
-      num_workers: 1 #для локальной поставить 0
-    num_epochs: 50 # Количество эпох эксперимента
+      num_workers: 3 #для локальной поставить 0
+    num_epochs: 15 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: accuracy01
     minimize_metric: False

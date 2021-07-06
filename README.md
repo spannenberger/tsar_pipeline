@@ -22,6 +22,7 @@
 ### Инструкция по использования репозитория
 - [Multiclass](#запуск-и-изменение-multiclass-решения)
 - [Multilabel](#запуск-и-изменение-multilabel-решения)
+- [PrunningCallback](#использование-prunning-callback-в-пайплайне)
  ### Запуск и изменение multiclass решения
    - Склонировать репозиторий
    -  Запустить команду ```pip install -r requirements.txt```
@@ -172,6 +173,48 @@
         diff_classes_flag: True # True, если есть разница в кол-ве классов
         old_num_classes: 2 # Если diff_classes_flag=True, то указать кол-во классов в предобученной модели
      ```
+### Использование prunning и quantization callbacks в пайплайне
+- prunning callback прунит параметры во время и/или после обучения.
+:neutral_face:**Стоит отметить, что при использовании данного колбэка при обучении не будет работать конвертация моделей в onnx и torchscript**:neutral_face:
+  ```
+    Args:
+        pruning_fn: функция из torch.nn.utils.prune module.
+            Возможные prunning_fn в пайплайне: 'l1_unstructured', 'random_unstructured', 
+            'ln_structured', 'random_structured'
+            Смотри документацию pytorch: 
+            https://pytorch.org/tutorials/intermediate/pruning_tutorial.html
+        amount: количество параметров для обрезки.
+            Если с плавающей точкой, должно быть от 0,0 до 1,0 и
+            представляют собой долю параметров, подлежащих сокращению.
+            Если int, он представляет собой абсолютное число
+            параметров для обрезки.
+        keys_to_prune: Cписок строк. Определяет
+            какой тензор в модулях будет обрезан.
+        prune_on_epoch_end: флаг bool определяет вызвать или нет
+            pruning_fn в конце эпохи.
+        prune_on_stage_end: флаг bool определяет вызвать или нет
+            pruning_fn в конце стейджа.
+        remove_reparametrization_on_stage_end: если True тогда вся
+            перепараметризация pre-hooks и tensors с маской
+            будет удален в конце стейджа.
+        layers_to_prune: список строк - имена модулей, которые нужно удалить.
+            Если не указано ни одного, то будет обрезан каждый модуль в
+            модели.
+        dim: если вы используете structured pruning method вы должны
+            указать dimension.
+        l_norm: если вы используете ln_structured вы должны указать l_norm.
+  ```
+
+- quantization callback квантизирует модель :neutral_face:
+  ```
+    Args:
+      logdir: путь до папки модели после квантизации
+      qconfig_spec (Dict, optional): конфиг квантизации в PyTorch формате.
+          Defaults to None.
+      dtype (Union[str, Optional[torch.dtype]], optional):
+          Тип весов после квантизации.
+          Defaults to "qint8".
+  ```
 # Информация о конвертации моделей     
 | model | onnx  | torchscript  |
 | :---: | :-: | :-: |
