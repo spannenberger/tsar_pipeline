@@ -46,19 +46,19 @@ class AngularPenaltySMLoss(nn_torch.Module):
 
         x = F.normalize(x, p=2, dim=1)
 
-        wf = self.fc(x)  # Выход слоя классификации
+        layer_output = self.fc(x)  # Выход слоя классификации
         if self.loss_type == 'cosface':
-            numerator = self.scale * (torch.diagonal(wf.transpose(0, 1)[labels]) - self.margin)
+            numerator = self.scale * (torch.diagonal(layer_output.transpose(0, 1)[labels]) - self.margin)
         if self.loss_type == 'arcface':
             numerator = self.scale * \
                 torch.cos(torch.acos(torch.clamp(torch.diagonal(
-                    wf.transpose(0, 1)[labels]), -1.+self.eps, 1-self.eps)) + self.margin)
+                    layer_output.transpose(0, 1)[labels]), -1.+self.eps, 1-self.eps)) + self.margin)
         if self.loss_type == 'sphereface':
             numerator = self.scale * \
                 torch.cos(
-                    self.margin * torch.acos(torch.clamp(torch.diagonal(wf.transpose(0, 1)[labels]), -1.+self.eps, 1-self.eps)))
+                    self.margin * torch.acos(torch.clamp(torch.diagonal(layer_output.transpose(0, 1)[labels]), -1.+self.eps, 1-self.eps)))
 
-        excl = torch.cat([torch.cat((wf[i, :y], wf[i, y+1:])).unsqueeze(0)
+        excl = torch.cat([torch.cat((layer_output[i, :y], layer_output[i, y+1:])).unsqueeze(0)
                           for i, y in enumerate(labels)], dim=0)
         denominator = torch.exp(numerator) + torch.sum(torch.exp(self.scale * excl), dim=1)
         L = numerator - torch.log(denominator)

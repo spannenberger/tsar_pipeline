@@ -9,15 +9,12 @@ class MobilenetV3Small(nn.Module):
         super().__init__()
         self.path = path
         self.is_local = is_local
+        model = vision.models.mobilenet_v3_small(pretrained=True)
+        self.backbone = torch.nn.Sequential(
+                *(list(model.children())[:-1]))
+                
         if self.is_local:
-            model = vision.models.mobilenet_v3_small(pretrained=False)
-            self.backbone = torch.nn.Sequential(
-                *(list(model.children())[:-1]))
             self.load_state_dict(torch.load(self.path)['model_state_dict'])
-        else:
-            model = vision.models.mobilenet_v3_small(pretrained=True)
-            self.backbone = torch.nn.Sequential(
-                *(list(model.children())[:-1]))
 
     def forward(self, X):
         tmp = self.backbone(X)
