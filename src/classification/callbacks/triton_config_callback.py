@@ -21,7 +21,6 @@ class TritonConfigCreator(Callback):
 
     def on_stage_start(self, state: IRunner):
 
-        print(os.path.abspath(state.hparams['args']['configs'][0]))
         with open(os.path.abspath(state.hparams['args']['configs'][0]), encoding="utf-8") as config_yaml:
             params = yaml.safe_load(config_yaml)
             self.aug_path = params['stages']['stage']['data']['transform_path']
@@ -53,12 +52,9 @@ class TritonConfigCreator(Callback):
             triton_config.write('{\n')
             if self.count != 'None':
                 triton_config.write(f'\tcount: {self.count}\n\t')
-            else: pass
             if self.kind != 'None':
                 triton_config.write(f'kind: {self.kind}\n\t')
-            else: pass
             if self.gpus != 'None':
                 triton_config.write(f'gpus: {self.gpus}\n')
-            else: pass
             triton_config.write('}\n')
             triton_config.write(']\n')
