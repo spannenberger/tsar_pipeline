@@ -1,6 +1,6 @@
 from catalyst.callbacks.criterion import CriterionCallback
 from catalyst import dl
-from .arcface_loss import AngularPenaltySMLoss
+from arcface_loss import AngularPenaltySMLoss
 
 
 class CustomCriterion(CriterionCallback):
