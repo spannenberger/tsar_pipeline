@@ -8,12 +8,11 @@ import os
 @Registry
 class TritonConfigCreator(Callback):
 
-    def __init__(self, conf_path='', count=0, kind='', gpus=[], mode=''):
+    def __init__(self, conf_path='', count=0, kind='', gpus=[]):
 
         super().__init__(CallbackOrder.Internal)
         self.conf_path = Path(conf_path)
         self.conf_path.parent.mkdir(parents=True, exist_ok=True)
-        self.mode = mode
         self.count = count
         self.kind = kind
         self.gpus = gpus
@@ -23,22 +22,21 @@ class TritonConfigCreator(Callback):
 
         with open(os.path.abspath(state.hparams['args']['configs'][0]), encoding="utf-8") as config_yaml:
             params = yaml.safe_load(config_yaml)
-            self.aug_path = params['stages']['stage']['data']['transform_path']
-            try:
+            mode_name = state.hparams['args']['configs'][0].split("/")[1]
+            if mode_name == "classification":
                 self.output_size = params['model']['num_classes']
-            except KeyError:
-                pass
-            try:
+            elif mode_name == "metric_learning":
                 self.output_size = params['stages']['stage']['callbacks']['criterion']['embeding_size']
-            except KeyError:
-                pass
+            else: 
+                raise Exception("")
+            self.aug_path = params['stages']['stage']['data']['transform_path']
             
         with open(self.aug_path, encoding="utf8") as aug_yaml:
             params = yaml.safe_load(aug_yaml)
             height = params['train']['transforms'][1]['height']
             width = params['train']['transforms'][1]['width']
         
-        with open(self.conf_path, "a") as triton_config:
+        with open(self.conf_path, "w") as triton_config:
             triton_config.write('platform: "onnxruntime_onnx"\n')
             triton_config.write('input [\n')
             triton_config.write('{\n')

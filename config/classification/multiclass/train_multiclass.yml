@@ -103,7 +103,6 @@ stages: # Словарь всех стадий Catalyst, для обучения
       triton:
         _target_: TritonConfigCreator
         conf_path: "./logs/triton/config.pbtxt"
-        mode: multiclass
         # instance_group params
         # Читай доку Тритона (https://github.com/bytedance/triton-inference-server/blob/master/docs/model_configuration.md#instance-groups)
         count: 1 # Количество запущенных инстансов модели на каждом gpu
