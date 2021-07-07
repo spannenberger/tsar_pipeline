@@ -28,7 +28,7 @@ class TritonConfigCreator(Callback):
             elif mode_name == "metric_learning":
                 self.output_size = params['stages']['stage']['callbacks']['criterion']['embeding_size']
             else: 
-                raise Exception("Возможно вы переименовали папку с конфигами, либо нарушили структуру самих конфигов.")
+                raise Exception("Perhaps you renamed the folder with configs, or broke the structure of the configs themselves.")
             self.aug_path = params['stages']['stage']['data']['transform_path']
             
         with open(self.aug_path, encoding="utf8") as aug_yaml:
