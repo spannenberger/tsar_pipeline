@@ -39,6 +39,9 @@ stages: # Словарь всех стадий Catalyst, для обучения
       total_epochs: 5
       eta_min: 0.0001
     callbacks:
+      iner:
+        _target_: MLInerCallback
+        subm_file: asd.text
       scheduler:
         _target_: SchedulerCallback
       # Подключение колбэков каталиста

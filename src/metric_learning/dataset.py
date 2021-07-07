@@ -9,7 +9,6 @@ class TrainMLDataset(MetricLearningTrainDataset, ImageFolder):
     def __init__(self, *args, transforms_path: str, **kwargs):
         self.transforms_path = transforms_path
         transforms = CustomAugmentator().transforms(self.transforms_path, aug_mode='train')
-
         super().__init__(transform=lambda x: transforms(image=x)['image'], *args, **kwargs)
 
     def get_labels(self) -> List[int]:
@@ -45,9 +44,12 @@ class ValidMLDataset(QueryGalleryDataset):
         """
         if idx < self._gallery_size:
             image, label = self._gallery[idx]
+            image_name = self._gallery.imgs[idx][0]
         else:
             image, label = self._query[idx - self._gallery_size]
+            image_name = self._query.imgs[idx - self._gallery_size][0]
         return {
+            "image_name": image_name,
             "features": image,
             "targets": label,
             "is_query": idx >= self._gallery_size,

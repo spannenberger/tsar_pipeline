@@ -18,7 +18,8 @@ class MertricLearningRunner(IRunner):
             images, targets, is_query = \
                 batch["features"].float(), batch["targets"].long(), batch["is_query"].bool()
             features = self.model(images)
-            self.batch = {"embeddings": features, "targets": targets, "is_query": is_query}
+            self.batch = {"embeddings": features, "targets": targets,
+                          "is_query": is_query, "image_name": batch["image_name"]}
 
     def get_datasets(self, stage: str, **kwargs):
         """Работа с данными, формирование train и valid"""

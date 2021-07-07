@@ -10,6 +10,7 @@ from callbacks.convert_callbacks.onnx_save_callback import OnnxSaveCallback
 from callbacks.convert_callbacks.torchscript_save_callback import TorchscriptSaveCallback
 from callbacks.criterion import CustomTrainCriterion
 from callbacks.cmc_valid import CustomCMC
+from callbacks.iner_callback import MLInerCallback
 from callbacks.custom_scheduler import CustomScheduler
 
 Registry(ResNext50)
