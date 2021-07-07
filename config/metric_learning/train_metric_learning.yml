@@ -62,7 +62,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
         checkpoint_names: ["last", "best_full"]
       criterion:
         _target_: CustomTrainCriterion
-        embeding_size: 576 # размерность последнего слоя модели
+        embedding_size: 576 # размерность последнего слоя модели
         loss_type: arcface # Три 'loss_types' возможны: 'arcface', 'sphereface', 'cosface'
         num_classes: 102 # количество классов
         scale: 70

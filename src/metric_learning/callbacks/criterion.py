@@ -4,9 +4,9 @@ from arcface_loss import AngularPenaltySMLoss
 
 
 class CustomCriterion(CriterionCallback):
-    def __init__(self, embeding_size, num_classes, loss_type='arcface', scale=None, margin=None, *args, **kwargs):
+    def __init__(self, embedding_size, num_classes, loss_type='arcface', scale=None, margin=None, *args, **kwargs):
         self.loss_type = loss_type
-        self.embeding_size = embeding_size
+        self.embedding_size = embedding_size
         self.num_classes = num_classes
         self.scale = scale
         self.margin = margin
@@ -14,7 +14,7 @@ class CustomCriterion(CriterionCallback):
 
     def on_stage_start(self, runner):
         self.criterion = AngularPenaltySMLoss(
-            self.embeding_size, self.num_classes, scale=self.scale, margin=self.margin, loss_type=self.loss_type)
+            self.embedding_size, self.num_classes, scale=self.scale, margin=self.margin, loss_type=self.loss_type)
 
 
 class CustomTrainCriterion(dl.ControlFlowCallback):
