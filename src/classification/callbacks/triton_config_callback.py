@@ -28,7 +28,7 @@ class TritonConfigCreator(Callback):
             elif mode_name == "metric_learning":
                 self.output_size = params['stages']['stage']['callbacks']['criterion']['embeding_size']
             else: 
-                raise Exception("Invalid mod")
+                raise Exception("Invalid mode")
             self.aug_path = params['stages']['stage']['data']['transform_path']
             
         with open(self.aug_path, encoding="utf8") as aug_yaml:
