@@ -1,5 +1,5 @@
 model:
-  _target_: Densenet121 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: ResNet50 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
   num_classes: &num_classes 18
   path: 'our_models/best.pth' # Путь до расположения вашей локальной модели
   is_local: False # True если обучаете локально загруженную модель
@@ -112,6 +112,14 @@ stages: # Словарь всех стадий Catalyst, для обучения
         _target_: TensorboardMultilabelLoggingCallback
         logging_image_number: 20 # Кол-во фотографий, которые надо логнуть
         threshold: 0.5
+      triton:
+        _target_: TritonConfigCreator
+        conf_path: "./logs/triton/config.pbtxt"
+        # instance_group params
+        # Читай доку Тритона (https://github.com/bytedance/triton-inference-server/blob/master/docs/model_configuration.md#instance-groups)
+        count: 1 # Количество запущенных инстансов модели на каждом gpu/cpu
+        kind: KIND_GPU # Есть два возможных параметра - KIND_CPU (для работы на CPU) и KIND_GPU (для работы на GPU)
+        gpus: [ 0 ] # Если kind: KIND_GPU, то нужно указать какие именно GPU будут использоваться
 
     data: # Подключение данных и параметров обучения
       shuffle: false

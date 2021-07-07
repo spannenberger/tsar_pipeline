@@ -27,6 +27,7 @@ from callbacks.custom_scheduler import CustomScheduler
 from callbacks.convert_callbacks.torchscript_save_callback import TorchscriptSaveCallback
 from callbacks.convert_callbacks.onnx_save_callback import OnnxSaveCallback
 from callbacks.convert_callbacks.quantization import QuantizationCallback
+from callbacks.triton_config_callback import TritonConfigCreator
 # Multiclass
 from callbacks.iner_callback import MulticlassInerCallback
 from callbacks.logger_callbacks.mlflow_image_logger import MLFlowMulticlassLoggingCallback

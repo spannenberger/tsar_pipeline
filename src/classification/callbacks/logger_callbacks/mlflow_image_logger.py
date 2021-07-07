@@ -19,9 +19,14 @@ class MLFlowMulticlassLoggingCallback(Callback):
 
     def on_stage_start(self, state: IRunner):
         """Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа"""
-        mlflow.log_artifact(
-            state.hparams['stages']['stage']['data']['transform_path'], 'config')
         mlflow.log_artifact(state.hparams['args']['configs'][0], 'config')
+        mlflow.log_artifact(
+            state.hparams['stages']['stage']['data']['transform_path'], 'config/aug_config')
+        try:
+            mlflow.log_artifact(state.hparams['stages']['stage']['callbacks']['triton']['conf_path'], 'config/triton')
+        except FileNotFoundError:
+            print('Сant find triton config, because you disabled this callback')
+            print('\n'*3)
 
     def on_experiment_end(self, state: IRunner):
         """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок,
@@ -41,7 +46,7 @@ class MLFlowMulticlassLoggingCallback(Callback):
         except KeyError:
             class_names = [x for x in range(
                 state.hparams['model']['num_classes'])]
-        print('Starting logging images to mlflow... please wait')
+        print('Start logging images to mlflow... please wait')
         for i in tqdm(range(length)):
             image = Image.open(f"{path_list[i]}")
             mlflow.log_image(
@@ -68,14 +73,10 @@ class MLFlowMulticlassLoggingCallback(Callback):
         try:
             mlflow.log_artifact('logs/checkpoints/last.pth', 'prunned_models')
             mlflow.log_artifact('logs/checkpoints/best.pth', 'prunned_models')
-        except FileNotFoundError:
             print('No prunned models to log')
 
-        mlflow.pytorch.log_model(state.model, artifact_path=state.hparams['model']['_target_'])
+=======
         mlflow.end_run()
-
-
-@Registry
 class MLFlowMultilabelLoggingCallback(Callback):
     def __init__(self, logging_image_number, threshold=0.5):
         self.logging_image_number = logging_image_number
@@ -84,11 +85,16 @@ class MLFlowMultilabelLoggingCallback(Callback):
 
     def on_stage_start(self, state: IRunner):
         """Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа"""
-        
-        mlflow.log_artifact(
-            state.hparams['stages']['stage']['data']['transform_path'], 'config')
+
         mlflow.log_artifact(state.hparams['args']['configs'][0], 'config')
-        
+        mlflow.log_artifact(
+            state.hparams['stages']['stage']['data']['transform_path'], 'config/aug_config')
+        try:
+            mlflow.log_artifact(state.hparams['stages']['stage']['callbacks']['triton']['conf_path'], 'config/triton')
+        except FileNotFoundError:
+            print('Сant find triton config, because you disabled this callback')
+            print('\n'*3)
+
     def on_experiment_end(self, state: IRunner):
         """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок,
         которые соответствуют class_names в нашем конфиге
@@ -115,15 +121,11 @@ class MLFlowMultilabelLoggingCallback(Callback):
         except KeyError:
             class_names = [x for x in range(
                 state.hparams['model']['num_classes'])]
-        print('Starting logging images to mlflow... please wait')
+        print('Start logging images to mlflow... please wait')
         for i in tqdm(range(length)):
             error_ind = np.where(df['class_id'][i] != df['target'][i])[0]
             for ind in tqdm(error_ind):
-                image = Image.open(f"{paths_list[i]}")
-                mlflow.log_image(
-                    image,
                     f"{class_names[ind]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png")
-
         if 'quantization' in state.hparams['stages']['stage']['callbacks']:
             mlflow.log_artifact('logs/quantized.pth', 'quantized_model')
         else:

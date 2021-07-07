@@ -131,6 +131,7 @@ dmypy.json
 # Project temp files
 ui/
 face/
+models/
 metric_learning_dataset/
 train_dataset_kcm/
 train_dataset/
