@@ -11,8 +11,8 @@ class MobilenetV3Small(nn.Module):
         self.is_local = is_local
         model = vision.models.mobilenet_v3_small(pretrained=True)
         self.backbone = torch.nn.Sequential(
-                *(list(model.children())[:-1]))
-                
+            *(list(model.children())[:-1]))
+
         if self.is_local:
             self.load_state_dict(torch.load(self.path)['model_state_dict'])
 

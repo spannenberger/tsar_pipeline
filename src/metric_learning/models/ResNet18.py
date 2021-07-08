@@ -10,7 +10,7 @@ class ResNet18(nn.Module):
         self.path = path
         self.is_local = is_local
         self.backbone = torch.nn.Sequential(
-                *(list(vision.models.resnet18(pretrained=False).children())[:-1]))
+            *(list(vision.models.resnet18(pretrained=False).children())[:-1]))
         if self.is_local:
             self.load_state_dict(torch.load(self.path)['model_state_dict'])
 

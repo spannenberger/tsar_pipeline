@@ -21,11 +21,17 @@ class MLInerCallback(Callback):
     """
 
     def __init__(self,
-                 subm_file,
+                 incorrect_file,
+                 uncoordinated_file,
+                 threshold,
                  **kwargs):
         super().__init__(CallbackOrder.Internal)
-        self.subm_file = Path(subm_file)
-        self.subm_file.parent.mkdir(parents=True, exist_ok=True)
+        self.incorrect_file = Path(incorrect_file)
+        self.uncoordinated_file = Path(uncoordinated_file)
+        self.incorrect_file.parent.mkdir(parents=True, exist_ok=True)
+        self.uncoordinated_file.parent.mkdir(parents=True, exist_ok=True)
+        self.threshold = threshold
+        self.ac = -1
 
     def on_loader_start(self, _):
         self.preds = None
@@ -35,23 +41,41 @@ class MLInerCallback(Callback):
         self.knn = KNeighborsClassifier(n_neighbors=1)
 
     def on_loader_end(self, state: IRunner):
-        print("\n"*5)
-        print(self.preds)
-        print(self.is_query)
-        # neigh.fit(X, y)
-        # cur_ac = self.ac_score_f(torch.Tensor(self.preds), torch.Tensor(self.targets))
-        # if state.is_valid_loader:
-        #     if cur_ac > self.ac:
-        #         self.ac = cur_ac
-        #         self.final = []
-        #         for path, pred, target, loss in zip(self.paths, self.preds, self.targets, self.losses):
-        #             self.final.append((path, pred, target, loss.tolist()))
+        if state.is_valid_loader:
+            X = self.preds[self.is_query == False]
+            Y = self.targets[self.is_query == False]
+            self.knn.fit(X, Y)
+            x = self.preds[self.is_query == True]
+            y = self.targets[self.is_query == True]
+            predicts = torch.Tensor(self.knn.predict(x))
+            cur_ac = accuracy_score(predicts, y)
+            if cur_ac > self.ac:
+                self.ac = cur_ac
+                dist, idx = self.knn.kneighbors(x, n_neighbors=1, return_distance=True)
+                uncoordinated = dist > self.threshold
+                uncoordinated = uncoordinated.reshape(-1)
+                incorrect = predicts != y
+                incorrect = (incorrect & ~uncoordinated).bool()
+                self.final = {'uncoordinated': [], 'incorrect': []}
+                self.final['uncoordinated'] = self.paths[self.is_query == True][uncoordinated]
+                incorrect_paths = self.paths[self.is_query == True]
+                incorrect_paths = incorrect_paths[incorrect]
+                couple_incorrect_paths = []
+                for i in idx:
+                    i = i[0]
+                    couple_incorrect_paths.append(self.paths[self.is_query == False][i])
+                self.final['incorrect'] = [[incorrect, couple]
+                                           for incorrect, couple in zip(incorrect_paths, couple_incorrect_paths)]
 
-    # def on_experiment_end(self, _):
-    #     subm = ["path;class_id;target;losses"]
-    #     subm += [f"{path};{cls};{tar};{los}" for path, cls, tar, los in self.final]
-    #     with self.subm_file.open(mode='w') as file:
-    #         file.write("\n".join(subm)+"\n")
+    def on_experiment_end(self, _):
+        subm = ["incorrect;couple"]
+        subm += [f"{incorrect};{couple}" for incorrect, couple in self.final['incorrect']]
+        with self.incorrect_file.open(mode='w') as file:
+            file.write("\n".join(subm)+"\n")
+        subm = ["incorrect;couple"]
+        subm += self.final['uncoordinated'].tolist()
+        with self.uncoordinated_file.open(mode='w') as file:
+            file.write("\n".join(subm)+"\n")
 
     def on_batch_end(self, state: IRunner):
         if state.is_valid_loader:
