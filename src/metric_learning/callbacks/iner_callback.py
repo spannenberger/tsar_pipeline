@@ -72,7 +72,7 @@ class MLInerCallback(Callback):
         subm += [f"{incorrect};{couple}" for incorrect, couple in self.final['incorrect']]
         with self.incorrect_file.open(mode='w') as file:
             file.write("\n".join(subm)+"\n")
-        subm = ["incorrect;couple"]
+        subm = ["uncoordinated"]
         subm += self.final['uncoordinated'].tolist()
         with self.uncoordinated_file.open(mode='w') as file:
             file.write("\n".join(subm)+"\n")

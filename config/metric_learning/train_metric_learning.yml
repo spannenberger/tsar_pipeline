@@ -43,7 +43,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
         _target_: MLInerCallback
         incorrect_file: incorrect.csv
         uncoordinated_file: uncoordinated.csv
-        threshold: 0.5
+        threshold: 10.
       scheduler:
         _target_: SchedulerCallback
       # Подключение колбэков каталиста
