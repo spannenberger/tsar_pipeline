@@ -1,5 +1,5 @@
 import torch.nn as nn_torch
-import torch.nn.functional as F
+from torch.nn import functional
 import torch
 
 
@@ -41,14 +41,15 @@ class AngularPenaltySMLoss(nn_torch.Module):
         assert torch.min(labels) >= 0
         assert torch.max(labels) < self.out_features
 
-        for parametrs in self.fc.parameters():
-            parametrs = F.normalize(parametrs, p=2, dim=1)
+        for parameters in self.fc.parameters():
+            parameters = functional.normalize(parameters, p=2, dim=1)
 
-        inputs = F.normalize(inputs, p=2, dim=1)
+        inputs = functional.normalize(inputs, p=2, dim=1)
 
         layer_output = self.fc(inputs)  # Выход слоя классификации
         if self.loss_type == 'cosface':
-            numerator = self.scale * (torch.diagonal(layer_output.transpose(0, 1)[labels]) - self.margin)
+            numerator = self.scale * \
+                (torch.diagonal(layer_output.transpose(0, 1)[labels]) - self.margin)
         if self.loss_type == 'arcface':
             numerator = self.scale * \
                 torch.cos(torch.acos(torch.clamp(torch.diagonal(
@@ -58,8 +59,8 @@ class AngularPenaltySMLoss(nn_torch.Module):
                 torch.cos(
                     self.margin * torch.acos(torch.clamp(torch.diagonal(layer_output.transpose(0, 1)[labels]), -1.+self.eps, 1-self.eps)))
 
-        excl = torch.cat([torch.cat((layer_output[i, :y], layer_output[i, y+1:])).unsqueeze(0)
-                          for i, y in enumerate(labels)], dim=0)
-        denominator = torch.exp(numerator) + torch.sum(torch.exp(self.scale * excl), dim=1)
-        L = numerator - torch.log(denominator)
-        return -torch.mean(L)
+        logits = torch.cat([torch.cat((layer_output[i, :y], layer_output[i, y+1:])).unsqueeze(0)
+                            for i, y in enumerate(labels)], dim=0)
+        denominator = torch.exp(numerator) + torch.sum(torch.exp(self.scale * logits), dim=1)
+        loss = numerator - torch.log(denominator)
+        return -torch.mean(loss)
