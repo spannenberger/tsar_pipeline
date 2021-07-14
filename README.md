@@ -214,11 +214,11 @@
 | WideResnet101_2 | True  | True  |
 
 ### Для моделей metric learning
-| model | onnx  | torchscript  |
-| :---: | :-: | :-: |
-| ResNet18 | True  | True  |
-| ResNext50 | True  | True  |
-| MobilenetV3Small | False  | True  |
+| model | onnx  | torchscript  | embedding_size |
+| :---: | :-: | :-: | :-: |
+| ResNet18 | True  | True  | 512 |
+| ResNext50 | True  | True  | 2048 |
+| MobilenetV3Small | False  | True  | 576 |
 # Training run 
 ```bash
 # To check multiclass pipeline
