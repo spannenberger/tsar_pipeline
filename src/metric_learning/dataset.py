@@ -42,17 +42,17 @@ class ValidMLDataset(QueryGalleryDataset):
         Returns:
             Dict with features, targets and is_query flag
         """
-        if idx < self._gallery_size:
-            image, label = self._gallery[idx]
-            image_name = self._gallery.imgs[idx][0]
+        if idx % 2 == 0:
+            image, label = self._gallery[idx//2]
+            image_name = self._gallery.imgs[idx//2][0]
         else:
-            image, label = self._query[idx - self._gallery_size]
-            image_name = self._query.imgs[idx - self._gallery_size][0]
+            image, label = self._query[idx//2]
+            image_name = self._query.imgs[idx//2][0]
         return {
             "image_name": image_name,
             "features": image,
             "targets": label,
-            "is_query": idx >= self._gallery_size,
+            "is_query": idx % 2 != 0,
         }
 
     def __len__(self) -> int:
