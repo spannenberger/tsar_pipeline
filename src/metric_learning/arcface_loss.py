@@ -33,20 +33,20 @@ class AngularPenaltySMLoss(nn_torch.Module):
         self.fc = nn_torch.Linear(in_features, out_features, bias=False)
         self.eps = eps
 
-    def forward(self, x, labels):
+    def forward(self, inputs, labels):
         '''
         input shape (N, in_features)
         '''
-        assert len(x) == len(labels)
+        assert len(inputs) == len(labels)
         assert torch.min(labels) >= 0
         assert torch.max(labels) < self.out_features
 
-        for W in self.fc.parameters():
-            W = F.normalize(W, p=2, dim=1)
+        for parametrs in self.fc.parameters():
+            parametrs = F.normalize(parametrs, p=2, dim=1)
 
-        x = F.normalize(x, p=2, dim=1)
+        inputs = F.normalize(inputs, p=2, dim=1)
 
-        layer_output = self.fc(x)  # Выход слоя классификации
+        layer_output = self.fc(inputs)  # Выход слоя классификации
         if self.loss_type == 'cosface':
             numerator = self.scale * (torch.diagonal(layer_output.transpose(0, 1)[labels]) - self.margin)
         if self.loss_type == 'arcface':

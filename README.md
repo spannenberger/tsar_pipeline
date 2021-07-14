@@ -187,15 +187,7 @@
           - val 
        ```
    - Изменение моделей обучения
-     - Изменить в ```train_metric_learning.yml``` файле название модели (доступные модели можно посмотреть в ```src/metric_learning/__init__.py``` в ```Registry(some_model)```) в блоке ```model:```
-     - Изменить в ```train_metric_learning.yml``` файле значение последнего слоя модели (см. таблицу "Информация о моделях" в блоке "Для задач metric learning")
-     ```
-     stages:
-      stage:
-        callbacks:
-          criterion:
-            embeding_size: 576 # Здесь должно быть конкретное значение для каждой модели
-     ```     
+     - Изменить в ```train_metric_learning.yml``` файле название модели (доступные модели можно посмотреть в ```src/metric_learning/__init__.py``` в ```Registry(some_model)```) в блоке ```model:```     
    - Для отключения колбэков достаточно их закомментировать в config файле
 # Информация о моделях
 ### Для задач multilabel и multiclass
@@ -222,11 +214,11 @@
 | WideResnet101_2 | True  | True  |
 
 ### Для моделей metric learning
-| model | onnx  | torchscript  | embedding_size |
-| :---: | :-: | :-: | :-: |
-| ResNet18 | True  | True  | 512 |
-| ResNext50 | True  | True  | 2048 |
-| MobilenetV3Small | False  | True  | 576 |
+| model | onnx  | torchscript  |
+| :---: | :-: | :-: |
+| ResNet18 | True  | True  |
+| ResNext50 | True  | True  |
+| MobilenetV3Small | False  | True  |
 # Training run 
 ```bash
 # To check multiclass pipeline
@@ -240,8 +232,7 @@ sh classification_shells/check_multilabel.sh
 # To usual multilabel train pipeline
 sh classification_shells/train_multilabel.sh
 
-# To check metric_learning pipeline
-sh metric_learning_shells/check.sh
+
 # To usual multilabel train pipeline
 sh metric_learning_shells/train.sh
 

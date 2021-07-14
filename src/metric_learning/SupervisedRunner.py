@@ -23,7 +23,7 @@ class MertricLearningRunner(IRunner):
 
     def get_datasets(self, stage: str, **kwargs):
         """Работа с данными, формирование train и valid"""
-        datasetss = OrderedDict()
+        datasets = OrderedDict()
         data_params = self._stage_config[stage]["data"]
         dataset_path = data_params["dataset_path"]
         trainsforms_path = data_params["transforms_path"]
@@ -35,10 +35,10 @@ class MertricLearningRunner(IRunner):
         sampler = data.BalanceBatchSampler(labels=train_dataset.get_labels(), p=5, k=10)
         valid_dataset = dataset.ValidMLDataset(base_path,
                                                val_path, loader=cv2.imread, transforms_path=trainsforms_path)
-        datasetss["train"] = {'dataset': train_dataset, 'sampler': sampler}
-        datasetss["valid"] = {'dataset': valid_dataset}
+        datasets["train"] = {'dataset': train_dataset, 'sampler': sampler}
+        datasets["valid"] = {'dataset': valid_dataset}
 
-        return datasetss
+        return datasets
 
 
 class MertricLearningSupervisedRunner(MertricLearningRunner, SupervisedConfigRunner):

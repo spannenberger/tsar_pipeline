@@ -41,8 +41,8 @@ stages: # Словарь всех стадий Catalyst, для обучения
     callbacks:
       iner:
         _target_: MLInerCallback
-        incorrect_file: incorrect.csv
-        uncoordinated_file: uncoordinated.csv
+        incorrect_file: logs/csv/incorrect.csv
+        uncoordinated_file: logs/csv/uncoordinated.csv
         threshold: 10.
       scheduler:
         _target_: SchedulerCallback
@@ -55,8 +55,10 @@ stages: # Словарь всех стадий Catalyst, для обучения
         is_query_key: "is_query"
         topk_args: [1]
         loaders: valid
-      mlflow_logger:
+      mlflow_logger: # Колбэк для логгирования фотографий, моделей, конфигов в mlflow
         _target_: MetricLearningLogger
+        logging_incorrect_image_number: 10 # Кол-во ошибочных фотографий и фотографий к которым модель отнесла ошибочные
+        logging_uncoordinated_image_number: 10 # Кол-во фотографий которые не прошли по расстоянию
       onnx_saver:
         _target_: OnnxSaveCallback
         out_dir: "./logs/onnx"
@@ -68,7 +70,6 @@ stages: # Словарь всех стадий Catalyst, для обучения
       criterion:
         # Имеется возможность указать параметры scale и margin
         _target_: CustomTrainCriterion
-        embedding_size: 576 # размерность последнего слоя модели
         loss_type: arcface # Три 'loss_types' возможны: 'arcface', 'sphereface', 'cosface'
         num_classes: 102 # количество классов
         input_key: *model_output
@@ -97,8 +98,8 @@ stages: # Словарь всех стадий Catalyst, для обучения
       # путь до файла с трансформациями
     loaders: &loaders
       batch_size: 50 # Размер батча для всех стейджей
-      num_workers: 4 #для локальной поставить 0
-    num_epochs: 5 # Количество эпох эксперимента
+      num_workers: 0 #для локальной поставить 0
+    num_epochs: 2 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: cmc01
     minimize_metric: False
