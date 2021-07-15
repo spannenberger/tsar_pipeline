@@ -60,7 +60,7 @@ class MetricLearningLogger(Callback):
                 f'uncoordinated/{uncoordinated_list[i].split("/")[2]}/{uncoordinated_list[i].split("/")[3]}.png'
             )
         checkpoint_names = ['last', 'best_full']
-        print('We start logging convert models... please wait')
+        print('Start logging convert models... please wait')
         for model in tqdm(checkpoint_names):
             try:
                 mlflow.log_artifact(f'logs/logs/torchsript/{model}.pt', 'torchscript_models')

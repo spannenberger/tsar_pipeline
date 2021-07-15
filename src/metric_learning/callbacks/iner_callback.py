@@ -31,7 +31,7 @@ class MLInerCallback(Callback):
         self.incorrect_file.parent.mkdir(parents=True, exist_ok=True)
         self.uncoordinated_file.parent.mkdir(parents=True, exist_ok=True)
         self.threshold = threshold
-        self.ac = -1
+        self.accuracy = -1
 
     def on_loader_start(self, _):
         self.preds = None
@@ -49,10 +49,10 @@ class MLInerCallback(Callback):
             y = self.targets[self.is_query == True]
             predicts = torch.Tensor(self.knn.predict(x))
             current_accuracy = accuracy_score(predicts, y)
-            if current_accuracy > self.ac:
-                self.ac = current_accuracy
-                dist, idx = self.knn.kneighbors(x, n_neighbors=1, return_distance=True)
-                uncoordinated = dist > self.threshold
+            if current_accuracy > self.accuracy:
+                self.accuracy = current_accuracy
+                distance, idx = self.knn.kneighbors(x, n_neighbors=1, return_distance=True)
+                uncoordinated = distance > self.threshold
                 uncoordinated = uncoordinated.reshape(-1)
                 incorrect = predicts != y
                 incorrect = (incorrect & ~uncoordinated).bool()
