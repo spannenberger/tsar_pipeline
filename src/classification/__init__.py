@@ -2,25 +2,24 @@ from SupervisedRunner import MulticlassSupervisedRunner
 from SupervisedRunner import MultilabelSupervisedRunner
 
 # Импорт моделей
-from models.ResNet18 import ResNet18  # converter True
-from models.ResNet34 import ResNet34  # converter True
-from models.ResNet50 import ResNet50  # converter True
-from models.ResNet101 import ResNet101  # converter True
-from models.EfficientNetb0 import EfficientNetb0  # converter True
-from models.EfficientNetb3 import EfficientNetb3  # converter True
-from models.EfficientNetb4 import EfficientNetb4  # converter True
-from models.Densenet121 import Densenet121  # converter True
-from models.Densenet169 import Densenet169  # converter True
-from models.Densenet201 import Densenet201  # converter True
-from models.Densenet161 import Densenet161  # converter True
-from models.Resnext50_32x4d import Resnext50_32x4d  # converter True
-from models.Resnext101_32x8d import Resnext101_32x8d  # converter True
-from models.WideResnet50_2 import WideResnet50_2  # converter True
-from models.WideResnet101_2 import WideResnet101_2  # converter True
-from models.MobilenetV2 import MobilenetV2  # converter True
-from models.MobilenetV3Large import MobilenetV3Large  # converter onnx: False
-from models.MobilenetV3Small import MobilenetV3Small  # converter onnx: False
-from models.ResNet18_swsl import ResNet18_swsl  # converter True
+from models.Classification_models import EfficientNetb0
+from models.Classification_models import EfficientNetb3
+from models.Classification_models import EfficientNetb4
+from models.Classification_models import Densenet121
+from models.Classification_models import Densenet201
+from models.Classification_models import Densenet169
+from models.Classification_models import Densenet161
+from models.Classification_models import Resnext50_32x4d
+from models.Classification_models import Resnext101_32x8d
+from models.Classification_models import WideResnet50_2
+from models.Classification_models import WideResnet101_2
+from models.Classification_models import MobilenetV2
+from models.Classification_models import MobilenetV3Large
+from models.Classification_models import MobilenetV3Small
+from models.Classification_models import ResNet50
+from models.Classification_models import ResNet34
+from models.Classification_models import ResNet18
+from models.Classification_models import ResNet101
 
 # Импорт колбэков
 from callbacks.custom_scheduler import CustomScheduler
@@ -64,5 +63,4 @@ Registry(WideResnet101_2)
 Registry(MobilenetV2)
 Registry(MobilenetV3Large)
 Registry(MobilenetV3Small)
-Registry(ResNet18_swsl)
 Registry(CustomMLflowLogger)

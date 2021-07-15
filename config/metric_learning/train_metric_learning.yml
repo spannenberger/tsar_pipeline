@@ -1,5 +1,5 @@
 model:
-  _target_: MobilenetV3Small # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: ResNext50 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
 args: # Различные аргументы для Catalyst
   expdir: src/metric_learning # Путь до нашего эксперимента, с файлом `__init__`, в котором импортируется Runner, и, опционально, регистрируются все дополнительные сущности: model, callback, criterion, etc
   logdir: logs # Путь в который будут сохранятся логи

@@ -1,9 +1,9 @@
 from catalyst.registry import Registry
 from SupervisedRunner import MertricLearningSupervisedRunner
 
-from models.ResNet18 import ResNet18
-from models.ResNext50 import ResNext50
-from models.MobilenetV3Small import MobilenetV3Small
+from models.MetricLearning_models import ResNet18
+from models.MetricLearning_models import MobilenetV3Small
+from models.MetricLearning_models import ResNext50
 
 from callbacks.logger_callbacks.mlflow_logger_callback import MetricLearningLogger
 from callbacks.convert_callbacks.onnx_save_callback import OnnxSaveCallback
