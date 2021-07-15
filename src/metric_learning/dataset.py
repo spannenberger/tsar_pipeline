@@ -23,8 +23,9 @@ class ValidMLDataset(QueryGalleryDataset):
     # Возможно надо разделить аугментации галлереи и запроса
     def __init__(
         self, root_gallery: str, root_query: str, loader: Callable,
-        transforms_path: str
+        transforms_path: str, is_check: bool = False
     ) -> None:
+        self.is_check = is_check
         self.transforms_path = transforms_path
         self.transforms = CustomAugmentator().transforms(self.transforms_path, aug_mode='valid')
         self._gallery = ImageFolder(root_gallery, loader=loader,
@@ -42,17 +43,25 @@ class ValidMLDataset(QueryGalleryDataset):
         Returns:
             Dict with features, targets and is_query flag
         """
-        if idx % 2 == 0:
-            image, label = self._gallery[idx//2]
-            image_name = self._gallery.imgs[idx//2][0]
+        if self.is_check:
+            if idx % 2 == 0:
+                image, label = self._gallery[idx//2]
+                image_name = self._gallery.imgs[idx//2][0]
+            else:
+                image, label = self._query[idx//2]
+                image_name = self._query.imgs[idx//2][0]
         else:
-            image, label = self._query[idx//2]
-            image_name = self._query.imgs[idx//2][0]
+            if idx < self._gallery_size:
+                image, label = self._gallery[idx]
+                image_name = self._gallery.imgs[idx][0]
+            else:
+                image, label = self._query[idx - self._gallery_size]
+                image_name = self._query.imgs[idx - self._gallery_size][0]
         return {
             "image_name": image_name,
             "features": image,
             "targets": label,
-            "is_query": idx % 2 != 0,
+            "is_query": idx % 2 == 0 if self.is_check else idx >= self._gallery_size,
         }
 
     def __len__(self) -> int:

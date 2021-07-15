@@ -48,9 +48,9 @@ class MLInerCallback(Callback):
             x = self.preds[self.is_query == True]
             y = self.targets[self.is_query == True]
             predicts = torch.Tensor(self.knn.predict(x))
-            cur_ac = accuracy_score(predicts, y)
-            if cur_ac > self.ac:
-                self.ac = cur_ac
+            current_accuracy = accuracy_score(predicts, y)
+            if current_accuracy > self.ac:
+                self.ac = current_accuracy
                 dist, idx = self.knn.kneighbors(x, n_neighbors=1, return_distance=True)
                 uncoordinated = dist > self.threshold
                 uncoordinated = uncoordinated.reshape(-1)
