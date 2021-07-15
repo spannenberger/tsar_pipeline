@@ -37,7 +37,7 @@ class MertricLearningRunner(IRunner):
                                                val_path,
                                                loader=cv2.imread,
                                                transforms_path=trainsforms_path,
-                                               is_check=self.hparams['args']['check'])
+                                               is_check=self.hparams['args'].get('check', False))
         datasets["train"] = {'dataset': train_dataset, 'sampler': sampler}
         datasets["valid"] = {'dataset': valid_dataset}
 
