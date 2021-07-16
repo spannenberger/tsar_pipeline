@@ -20,6 +20,7 @@ from models.Classification_models import ResNet50
 from models.Classification_models import ResNet34
 from models.Classification_models import ResNet18
 from models.Classification_models import ResNet101
+from models.ModelsFabrics import ResNet18Fabric
 
 # Импорт колбэков
 from callbacks.custom_scheduler import CustomScheduler
@@ -45,6 +46,7 @@ from catalyst.loggers.tensorboard import TensorboardLogger
 # Инициализаця
 Registry(MulticlassSupervisedRunner)
 Registry(MultilabelSupervisedRunner)
+Registry(ResNet18Fabric)
 Registry(ResNet18)
 Registry(ResNet34)
 Registry(ResNet50)
