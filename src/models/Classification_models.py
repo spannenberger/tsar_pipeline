@@ -15,6 +15,7 @@ def replace_classifier(model, num_classes):
         raise Exception("Uknown type of classifier {}".format(type(old_classifier)))
     model.add_module(classifier_name, old_classifier)
 
+
 class ClassificationModel(nn.Module):
     def __init__(self, model, num_classes=10, path='', is_local=False, diff_classes_flag=False, old_num_classes=10):
         super().__init__()
