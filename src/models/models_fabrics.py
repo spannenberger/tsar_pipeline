@@ -8,11 +8,13 @@ from models.metric_learning_models import MetricLearningModel
 class ModelsFabric:
 
     @staticmethod
-    def create_model(model, mode, **kwargs):
+    def create_model(model, mode, fabric=None, **kwargs):
+        if fabric is None:
+            fabric = ModelsFabric
         if mode == 'Classification':
-            return ModelsFabric.create_classification(model, **kwargs)
+            return fabric.create_classification(model, **kwargs)
         if mode == 'MetricLearning':
-            return ModelsFabric.create_metric_learning(model, **kwargs)
+            return fabric.create_metric_learning(model, **kwargs)
 
     @staticmethod
     def replace_classifier(model, num_classes):

@@ -2,6 +2,8 @@ from torch import nn
 import torch
 import torchvision as vision
 from models.models_fabrics import ModelsFabric
+from models.metric_learning_models import MetricLearningModel
+from models.classification_models import ClassificationModel
 
 
 class MobilenetV3Small(ModelsFabric):
@@ -23,15 +25,37 @@ class MobilenetV3Large(ModelsFabric):
 
 
 class MobilenetV2(ModelsFabric):
+    @staticmethod
+    def create_metric_learning(model, **kwargs):
+        path = kwargs.pop('path', '')
+        is_local = kwargs.pop('is_local', False)
+        model = torch.nn.Sequential(
+            *(list(model.children())[:-1]))
+        model.add_module("pool", torch.nn.MaxPool2d((7, 7)))
+        model = MetricLearningModel(model)
+        if is_local:
+            model.load_state_dict(torch.load(path)['model_state_dict'])
+        return model
 
     @staticmethod
     def get_from_params(mode, **kwargs):
         model = vision.models.mobilenet_v2(
             pretrained=not kwargs.get("is_local", False))
-        return MobilenetV2.create_model(model, mode, **kwargs)
+        return MobilenetV2.create_model(model, mode, fabric=MobilenetV2, **kwargs)
 
 
 class EfficientNetb4(ModelsFabric):
+    @staticmethod
+    def create_metric_learning(model, **kwargs):
+        path = kwargs.pop('path', '')
+        is_local = kwargs.pop('is_local', False)
+        model = torch.nn.Sequential(
+            *(list(model.children())[:-1]))
+        model.add_module("pool", torch.nn.MaxPool2d((7, 7)))
+        model = MetricLearningModel(model)
+        if is_local:
+            model.load_state_dict(torch.load(path)['model_state_dict'])
+        return model
 
     @staticmethod
     def get_from_params(mode, **kwargs):
@@ -41,6 +65,17 @@ class EfficientNetb4(ModelsFabric):
 
 
 class EfficientNetb3(ModelsFabric):
+    @staticmethod
+    def create_metric_learning(model, **kwargs):
+        path = kwargs.pop('path', '')
+        is_local = kwargs.pop('is_local', False)
+        model = torch.nn.Sequential(
+            *(list(model.children())[:-1]))
+        model.add_module("pool", torch.nn.MaxPool2d((7, 7)))
+        model = MetricLearningModel(model)
+        if is_local:
+            model.load_state_dict(torch.load(path)['model_state_dict'])
+        return model
 
     @staticmethod
     def get_from_params(mode, **kwargs):
@@ -50,6 +85,17 @@ class EfficientNetb3(ModelsFabric):
 
 
 class EfficientNetb0(ModelsFabric):
+    @staticmethod
+    def create_metric_learning(model, **kwargs):
+        path = kwargs.pop('path', '')
+        is_local = kwargs.pop('is_local', False)
+        model = torch.nn.Sequential(
+            *(list(model.children())[:-1]))
+        model.add_module("pool", torch.nn.MaxPool2d((7, 7)))
+        model = MetricLearningModel(model)
+        if is_local:
+            model.load_state_dict(torch.load(path)['model_state_dict'])
+        return model
 
     @staticmethod
     def get_from_params(mode, **kwargs):
@@ -61,37 +107,83 @@ class EfficientNetb0(ModelsFabric):
 class Densenet201(ModelsFabric):
 
     @staticmethod
+    def create_metric_learning(model, **kwargs):
+        path = kwargs.pop('path', '')
+        is_local = kwargs.pop('is_local', False)
+        model = torch.nn.Sequential(
+            *(list(model.children())[:-1]))
+        model.add_module("pool", torch.nn.MaxPool2d((7, 7)))
+        model = MetricLearningModel(model)
+        if is_local:
+            model.load_state_dict(torch.load(path)['model_state_dict'])
+        return model
+
+    @staticmethod
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('pytorch/vision:v0.6.0', 'densenet201',
                                pretrained=not kwargs.get("is_local", False))
-        return Densenet201.create_model(model, mode, **kwargs)
+        return Densenet201.create_model(model, mode, fabric=Densenet201, **kwargs)
 
 
 class Densenet169(ModelsFabric):
+    @staticmethod
+    def create_metric_learning(model, **kwargs):
+        path = kwargs.pop('path', '')
+        is_local = kwargs.pop('is_local', False)
+        model = torch.nn.Sequential(
+            *(list(model.children())[:-1]))
+        model.add_module("pool", torch.nn.MaxPool2d((7, 7)))
+        model = MetricLearningModel(model)
+        if is_local:
+            model.load_state_dict(torch.load(path)['model_state_dict'])
+        return model
 
     @staticmethod
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('pytorch/vision:v0.6.0', 'densenet169',
                                pretrained=not kwargs.get("is_local", False))
-        return Densenet169.create_model(model, mode, **kwargs)
+        return Densenet169.create_model(model, mode, fabric=Densenet169 ** kwargs)
 
 
 class Densenet161(ModelsFabric):
+    @staticmethod
+    def create_metric_learning(model, **kwargs):
+        path = kwargs.pop('path', '')
+        is_local = kwargs.pop('is_local', False)
+        model = torch.nn.Sequential(
+            *(list(model.children())[:-1]))
+        model.add_module("pool", torch.nn.MaxPool2d((7, 7)))
+        model = MetricLearningModel(model)
+        if is_local:
+            model.load_state_dict(torch.load(path)['model_state_dict'])
+        return model
 
     @staticmethod
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('pytorch/vision:v0.6.0', 'densenet161',
                                pretrained=not kwargs.get("is_local", False))
-        return Densenet161.create_model(model, mode, **kwargs)
+        return Densenet161.create_model(model, mode, fabric=Densenet161, **kwargs)
 
 
 class Densenet121(ModelsFabric):
 
     @staticmethod
+    def create_metric_learning(model, **kwargs):
+        path = kwargs.pop('path', '')
+        is_local = kwargs.pop('is_local', False)
+        model = torch.nn.Sequential(
+            *(list(model.children())[:-1]))
+        model.add_module("pool", torch.nn.MaxPool2d((7, 7)))
+        model = MetricLearningModel(model)
+        if is_local:
+            model.load_state_dict(torch.load(path)['model_state_dict'])
+        return model
+
+    @staticmethod
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('pytorch/vision:v0.6.0', 'densenet121',
                                pretrained=not kwargs.get("is_local", False))
-        return Densenet121.create_model(model, mode, **kwargs)
+        return Densenet121.create_model(model, mode, fabric=Densenet121, **kwargs)
 
 
 class ResNet18(ModelsFabric):
