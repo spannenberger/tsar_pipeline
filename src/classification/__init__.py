@@ -2,25 +2,24 @@ from SupervisedRunner import MulticlassSupervisedRunner
 from SupervisedRunner import MultilabelSupervisedRunner
 
 # Импорт моделей
-from models.Classification_models import EfficientNetb0
-from models.Classification_models import EfficientNetb3
-from models.Classification_models import EfficientNetb4
-from models.Classification_models import Densenet121
-from models.Classification_models import Densenet201
-from models.Classification_models import Densenet169
-from models.Classification_models import Densenet161
-from models.Classification_models import Resnext50_32x4d
-from models.Classification_models import Resnext101_32x8d
-from models.Classification_models import WideResnet50_2
-from models.Classification_models import WideResnet101_2
-from models.Classification_models import MobilenetV2
-from models.Classification_models import MobilenetV3Large
-from models.Classification_models import MobilenetV3Small
-from models.Classification_models import ResNet50
-from models.Classification_models import ResNet34
-from models.Classification_models import ResNet18
-from models.Classification_models import ResNet101
-from models.ModelsFabrics import ResNet18Fabric
+from models.Models import ResNet18
+from models.Models import MobilenetV3Small
+from models.Models import MobilenetV3Large
+from models.Models import MobilenetV2
+from models.Models import EfficientNetb4
+from models.Models import EfficientNetb3
+from models.Models import EfficientNetb0
+from models.Models import Densenet201
+from models.Models import Densenet169
+from models.Models import Densenet161
+from models.Models import Densenet121
+from models.Models import ResNet34
+from models.Models import ResNet50
+from models.Models import ResNet101
+from models.Models import ResNext50_32x4d
+from models.Models import ResNext101_32x8d
+from models.Models import WideResnet50_2
+from models.Models import WideResnet101_2
 
 # Импорт колбэков
 from callbacks.custom_scheduler import CustomScheduler
@@ -46,7 +45,6 @@ from catalyst.loggers.tensorboard import TensorboardLogger
 # Инициализаця
 Registry(MulticlassSupervisedRunner)
 Registry(MultilabelSupervisedRunner)
-Registry(ResNet18Fabric)
 Registry(ResNet18)
 Registry(ResNet34)
 Registry(ResNet50)
@@ -58,8 +56,8 @@ Registry(Densenet121)
 Registry(Densenet169)
 Registry(Densenet201)
 Registry(Densenet161)
-Registry(Resnext50_32x4d)
-Registry(Resnext101_32x8d)
+Registry(ResNext50_32x4d)
+Registry(ResNext101_32x8d)
 Registry(WideResnet50_2)
 Registry(WideResnet101_2)
 Registry(MobilenetV2)

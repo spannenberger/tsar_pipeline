@@ -28,26 +28,3 @@ class MetricLearningModel(nn.Module):
     def forward(self, X):
         tmp = self.backbone(X)
         return tmp.view(tmp.size()[:2])
-
-
-class MobilenetV3Small(MetricLearningModel):
-    def __init__(self, path='', is_local=False):
-        pretrained = False if is_local else True
-        model = vision.models.mobilenet_v3_small(pretrained=pretrained)
-        super().__init__(model, path, is_local)
-
-class ResNet18(MetricLearningModel):
-    def __init__(self, path='', is_local=False):
-        pretrained = False if is_local else True
-        model = vision.models.resnet18(pretrained=pretrained)
-        super().__init__(model, path, is_local)
-
-class ResNext50(MetricLearningModel):
-    def __init__(self, path='', is_local=False):
-        pretrained = False if is_local else True
-        model = torch.hub.load('pytorch/vision:v0.6.0', 'resnext50_32x4d', pretrained=pretrained)
-        super().__init__(model, path, is_local)
-
-if __name__ == '__main__':
-    model = ResNet18()
-    model.eval()

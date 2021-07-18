@@ -88,6 +88,7 @@
      ```
      model:
         _target_: Densenet121 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+        mode: Classification
         num_classes: &num_classes 2
         path: 'our_models/best.pth' # Путь до расположения вашей локальной модели
         is_local: True # True если обучаете локально загруженную модель
@@ -164,12 +165,13 @@
      - Проверить, что данная модель реализована в пайплайне
      - Создать в корне проекта папку ```our_models```
      - Загрузить в данную папку вашу модель в формате .pth с названием файла "best". Пример: ```best.pth```
-     - Поставть True в нужных пунктах конфига
+     - Поставить True в нужных пунктах конфига
      - Пример:
      ```
      model:
         _target_: Densenet121 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
         num_classes: &num_classes 18
+        mode: Classification
         path: 'our_models/best.pth' # Путь до расположения вашей локальной модели
         is_local: True # True если обучаете локально загруженную модель
         diff_classes_flag: True # True, если есть разница в кол-ве классов
@@ -187,8 +189,35 @@
           - val 
        ```
    - Изменение моделей обучения
-     - Изменить в ```train_metric_learning.yml``` файле название модели (доступные модели можно посмотреть в ```src/metric_learning/__init__.py``` в ```Registry(some_model)```) в блоке ```model:```     
+     - Изменить в ```train_metric_learning.yml``` файле название модели (доступные модели можно посмотреть в ```src/metric_learning/__init__.py``` в ```Registry(some_model)```) в блоке ```model:```    
    - Для отключения колбэков достаточно их закомментировать в config файле
+   - Логирование эксперимента в mlflow
+       - Создать .env файл
+       ```
+       USER=YourWorkEmail@napoleonit.ru
+       MLFLOW_TRACKING_URI=
+       MLFLOW_S3_ENDPOINT_URL=
+       AWS_ACCESS_KEY_ID=
+       AWS_SECRET_ACCESS_KEY=
+       ```
+       - Изменить в папке ```./config/multiclass/train_multilabel.yml``` файл, прописав новые url и название эксперимента в блоке 
+       ```
+       loggers:
+            mlflow:
+       ```
+   - Для дообучения на своих моделях:
+     - Проверить, что данная модель реализована в пайплайне
+     - Создать в корне проекта папку ```our_models```
+     - Загрузить в данную папку вашу модель в формате .pth с названием файла "best". Пример: ```best.pth```
+     - Поставить флаг True в ```is_local`` модели
+     - Пример:
+     ```
+      model:
+        _target_: MobilenetV3Small # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+        mode: MetricLearning
+        path: our_models/best.pth # Путь до расположения вашей локальной модели
+        is_local: False # True если обучаете локально загруженную модель
+     ```
 # Информация о моделях
 ### Для задач multilabel и multiclass
 | model | onnx  | torchscript  |
@@ -217,8 +246,15 @@
 | model | onnx  | torchscript  | embedding_size |
 | :---: | :-: | :-: | :-: |
 | ResNet18 | True  | True  | 512 |
-| ResNext50 | True  | True  | 2048 |
+| ResNet34 | True  | True  | 512 |
+| ResNet50 | True  | True  | 2048 |
+| ResNet101 | True  | True  | 2048 |
 | MobilenetV3Small | False  | True  | 576 |
+| MobilenetV3Large | False  | True  | 960 |
+| ResNext101_32x8d | True  | True  | 2048 |
+| ResNext50_32x4d | True  | True  | 2048 |
+| WideResnet50_2 | True  | True  | 2048 |
+| WideResnet101_2 | True  | True  | 2048 |
 # Training run 
 ```bash
 # To check multiclass pipeline
@@ -233,9 +269,10 @@ sh classification_shells/check_multilabel.sh
 sh classification_shells/train_multilabel.sh
 
 
-# To usual multilabel train pipeline
+# To train metric_learning pipeline
 sh metric_learning_shells/train.sh
-
+# To check metric_learning pipeline
+sh metric_learning_shells/check.sh
 
 # Run tensorflow for visualisation
 tensorboard --logdir=logs/ui # for our pipeline
@@ -250,4 +287,7 @@ docker-compose up -d --build multilabel
 
 # запуск multiclass решения
 docker-compose up -d --build multiclass
+
+# запуск metric learning решения
+docker-compose up -d --build metric_learning
 ```

@@ -1,7 +1,8 @@
+from torch import nn
+import torch
+import torchvision as vision
 from models.Classification_models import ClassificationModel
 from models.MetricLearning_models import MetricLearningModel
-import torchvision as vision
-
 
 class ModelsFabric:
 
@@ -19,11 +20,3 @@ class ModelsFabric:
     @staticmethod
     def CreateMetricLearning(model, **kwargs):
         return MetricLearningModel(model, **kwargs)
-
-
-class ResNet18Fabric(ModelsFabric):
-
-    @staticmethod
-    def get_from_params(mode, **kwargs):
-        model = vision.models.resnet18(pretrained=not kwargs.get("is_local", False))
-        return ModelsFabric.CreateModel(model, mode, **kwargs)
