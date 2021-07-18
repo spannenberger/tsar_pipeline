@@ -2,24 +2,24 @@ from SupervisedRunner import MulticlassSupervisedRunner
 from SupervisedRunner import MultilabelSupervisedRunner
 
 # Импорт моделей
-from models.Models import ResNet18
-from models.Models import MobilenetV3Small
-from models.Models import MobilenetV3Large
-from models.Models import MobilenetV2
-from models.Models import EfficientNetb4
-from models.Models import EfficientNetb3
-from models.Models import EfficientNetb0
-from models.Models import Densenet201
-from models.Models import Densenet169
-from models.Models import Densenet161
-from models.Models import Densenet121
-from models.Models import ResNet34
-from models.Models import ResNet50
-from models.Models import ResNet101
-from models.Models import ResNext50_32x4d
-from models.Models import ResNext101_32x8d
-from models.Models import WideResnet50_2
-from models.Models import WideResnet101_2
+from models.models import ResNet18
+from models.models import MobilenetV3Small
+from models.models import MobilenetV3Large
+from models.models import MobilenetV2
+from models.models import EfficientNetb4
+from models.models import EfficientNetb3
+from models.models import EfficientNetb0
+from models.models import Densenet201
+from models.models import Densenet169
+from models.models import Densenet161
+from models.models import Densenet121
+from models.models import ResNet34
+from models.models import ResNet50
+from models.models import ResNet101
+from models.models import ResNext50_32x4d
+from models.models import ResNext101_32x8d
+from models.models import WideResnet50_2
+from models.models import WideResnet101_2
 
 # Импорт колбэков
 from callbacks.custom_scheduler import CustomScheduler

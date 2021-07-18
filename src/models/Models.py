@@ -1,7 +1,7 @@
 from torch import nn
 import torch
 import torchvision as vision
-from models.ModelsFabrics import ModelsFabric
+from models.models_fabrics import ModelsFabric
 
 
 class MobilenetV3Small(ModelsFabric):

@@ -1,8 +1,8 @@
 from torch import nn
 import torch
 import torchvision as vision
-from models.Classification_models import ClassificationModel
-from models.MetricLearning_models import MetricLearningModel
+from models.classification_models import ClassificationModel
+from models.metricLearning_models import MetricLearningModel
 
 class ModelsFabric:
 
