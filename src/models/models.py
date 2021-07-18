@@ -10,7 +10,7 @@ class MobilenetV3Small(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = vision.models.mobilenet_v3_small(
             pretrained=not kwargs.get("is_local", False))
-        return ModelsFabric.CreateModel(model, mode, **kwargs)
+        return MobilenetV3Small.create_model(model, mode, **kwargs)
 
 
 class MobilenetV3Large(ModelsFabric):
@@ -19,7 +19,7 @@ class MobilenetV3Large(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = vision.models.mobilenet_v3_large(
             pretrained=not kwargs.get("is_local", False))
-        return ModelsFabric.CreateModel(model, mode, **kwargs)
+        return MobilenetV3Large.create_model(model, mode, **kwargs)
 
 
 class MobilenetV2(ModelsFabric):
@@ -28,7 +28,7 @@ class MobilenetV2(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = vision.models.mobilenet_v2(
             pretrained=not kwargs.get("is_local", False))
-        return ModelsFabric.CreateModel(model, mode, **kwargs)
+        return MobilenetV2.create_model(model, mode, **kwargs)
 
 
 class EfficientNetb4(ModelsFabric):
@@ -37,7 +37,7 @@ class EfficientNetb4(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('narumiruna/efficientnet-pytorch',
                                'efficientnet_b4', pretrained=not kwargs.get("is_local", False))
-        return ModelsFabric.CreateModel(model, mode, **kwargs)
+        return EfficientNetb4.create_model(model, mode, **kwargs)
 
 
 class EfficientNetb3(ModelsFabric):
@@ -46,7 +46,7 @@ class EfficientNetb3(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('narumiruna/efficientnet-pytorch',
                                'efficientnet_b3', pretrained=not kwargs.get("is_local", False))
-        return ModelsFabric.CreateModel(model, mode, **kwargs)
+        return EfficientNetb3.create_model(model, mode, **kwargs)
 
 
 class EfficientNetb0(ModelsFabric):
@@ -55,7 +55,7 @@ class EfficientNetb0(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('narumiruna/efficientnet-pytorch',
                                'efficientnet_b0', pretrained=not kwargs.get("is_local", False))
-        return ModelsFabric.CreateModel(model, mode, **kwargs)
+        return EfficientNetb0.create_model(model, mode, **kwargs)
 
 
 class Densenet201(ModelsFabric):
@@ -64,7 +64,7 @@ class Densenet201(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('pytorch/vision:v0.6.0', 'densenet201',
                                pretrained=not kwargs.get("is_local", False))
-        return ModelsFabric.CreateModel(model, mode, **kwargs)
+        return Densenet201.create_model(model, mode, **kwargs)
 
 
 class Densenet169(ModelsFabric):
@@ -73,7 +73,7 @@ class Densenet169(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('pytorch/vision:v0.6.0', 'densenet169',
                                pretrained=not kwargs.get("is_local", False))
-        return ModelsFabric.CreateModel(model, mode, **kwargs)
+        return Densenet169.create_model(model, mode, **kwargs)
 
 
 class Densenet161(ModelsFabric):
@@ -82,7 +82,7 @@ class Densenet161(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('pytorch/vision:v0.6.0', 'densenet161',
                                pretrained=not kwargs.get("is_local", False))
-        return ModelsFabric.CreateModel(model, mode, **kwargs)
+        return Densenet161.create_model(model, mode, **kwargs)
 
 
 class Densenet121(ModelsFabric):
@@ -91,7 +91,7 @@ class Densenet121(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('pytorch/vision:v0.6.0', 'densenet121',
                                pretrained=not kwargs.get("is_local", False))
-        return ModelsFabric.CreateModel(model, mode, **kwargs)
+        return Densenet121.create_model(model, mode, **kwargs)
 
 
 class ResNet18(ModelsFabric):
@@ -100,7 +100,7 @@ class ResNet18(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = vision.models.resnet18(
             pretrained=not kwargs.get("is_local", False))
-        return ModelsFabric.CreateModel(model, mode, **kwargs)
+        return ResNet18.create_model(model, mode, **kwargs)
 
 
 class ResNet34(ModelsFabric):
@@ -109,7 +109,7 @@ class ResNet34(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('pytorch/vision:v0.9.0', 'resnet34',
                                pretrained=not kwargs.get("is_local", False))
-        return ModelsFabric.CreateModel(model, mode, **kwargs)
+        return ResNet34.create_model(model, mode, **kwargs)
 
 
 class ResNet50(ModelsFabric):
@@ -118,7 +118,7 @@ class ResNet50(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('pytorch/vision:v0.9.0', 'resnet50',
                                pretrained=not kwargs.get("is_local", False))
-        return ModelsFabric.CreateModel(model, mode, **kwargs)
+        return ResNet50.create_model(model, mode, **kwargs)
 
 
 class ResNet101(ModelsFabric):
@@ -127,7 +127,7 @@ class ResNet101(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('pytorch/vision:v0.9.0', 'resnet101',
                                pretrained=not kwargs.get("is_local", False))
-        return ModelsFabric.CreateModel(model, mode, **kwargs)
+        return ResNet101.create_model(model, mode, **kwargs)
 
 
 class ResNext50_32x4d(ModelsFabric):
@@ -136,7 +136,7 @@ class ResNext50_32x4d(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('pytorch/vision:v0.6.0', 'resnext50_32x4d',
                                pretrained=not kwargs.get("is_local", False))
-        return ModelsFabric.CreateModel(model, mode, **kwargs)
+        return ResNext50_32x4d.create_model(model, mode, **kwargs)
 
 
 class ResNext101_32x8d(ModelsFabric):
@@ -145,7 +145,7 @@ class ResNext101_32x8d(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('pytorch/vision:v0.6.0', 'resnext101_32x8d',
                                pretrained=not kwargs.get("is_local", False))
-        return ModelsFabric.CreateModel(model, mode, **kwargs)
+        return ResNext101_32x8d.create_model(model, mode, **kwargs)
 
 
 class WideResnet50_2(ModelsFabric):
@@ -154,7 +154,7 @@ class WideResnet50_2(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('pytorch/vision:v0.9.0', 'wide_resnet50_2',
                                pretrained=not kwargs.get("is_local", False))
-        return ModelsFabric.CreateModel(model, mode, **kwargs)
+        return WideResnet50_2.create_model(model, mode, **kwargs)
 
 
 class WideResnet101_2(ModelsFabric):
@@ -163,4 +163,4 @@ class WideResnet101_2(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('pytorch/vision:v0.9.0', 'wide_resnet101_2',
                                pretrained=not kwargs.get("is_local", False))
-        return ModelsFabric.CreateModel(model, mode, **kwargs)
+        return WideResnet101_2.create_model(model, mode, **kwargs)

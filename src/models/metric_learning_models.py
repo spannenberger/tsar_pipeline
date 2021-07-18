@@ -2,15 +2,11 @@ import torch
 from torch import nn
 import torchvision as vision
 
+
 class MetricLearningModel(nn.Module):
-    def __init__(self, model, path='', is_local=False):
+    def __init__(self, model):
         super().__init__()
-        self.path = path
-        self.is_local = is_local
-        self.backbone = torch.nn.Sequential(
-            *(list(model.children())[:-1]))
-        if self.is_local:
-            self.load_state_dict(torch.load(self.path)['model_state_dict'])
+        self.backbone = model
 
     @property
     def embedding_size(self):
