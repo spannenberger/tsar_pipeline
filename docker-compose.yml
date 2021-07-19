@@ -1,56 +1,17 @@
 version: '3.4'
 
 services:
-  multilabel:
-    image: multilabel
-    # runtime: nvidia
-    # pid: "host"
-    # env_file:
-    #   - .env
+  cv:
+    image: cv
+    runtime: nvidia
+    pid: "host"
+    env_file:
+      - .env
     ports:
       - 5000:5000
       - 6006:6006
     stdin_open: true
     tty: true
-    command: sh classification_shells/train_multilabel.sh
-    volumes:
-      - .:/workspace/cv
-    build:
-      context: .
-      network: host
-      dockerfile: ./Dockerfile
-      
-  multiclass:
-    image: multiclass
-    # runtime: nvidia
-    # pid: "host"
-    # env_file:
-    #   - .env
-    ports:
-      - 5000:5000
-      - 6006:6006
-    stdin_open: true
-    tty: true
-    command: sh classification_shells/train_multiclass.sh
-    volumes:
-      - .:/workspace/cv
-    build:
-      context: .
-      network: host
-      dockerfile: ./Dockerfile
-
-  metric_learning:
-    image: metric_learning
-    # runtime: nvidia
-    # pid: "host"
-    # env_file:
-    #   - .env
-    ports:
-      - 5000:5000
-      - 6006:6006
-    stdin_open: true
-    tty: true
-    command: sh metric_learning_shells/train.sh
     volumes:
       - .:/workspace/cv
     build:
@@ -59,6 +20,4 @@ services:
       dockerfile: ./Dockerfile
 
 volumes:
-  multilabel:
-  multiclass:
-  metric_learning:
+  cv:
