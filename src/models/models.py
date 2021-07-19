@@ -61,7 +61,7 @@ class EfficientNetb4(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('narumiruna/efficientnet-pytorch',
                                'efficientnet_b4', pretrained=not kwargs.get("is_local", False))
-        return EfficientNetb4.create_model(model, mode, **kwargs)
+        return EfficientNetb4.create_model(model, mode, fabric=EfficientNetb4, **kwargs)
 
 
 class EfficientNetb3(ModelsFabric):
@@ -81,7 +81,7 @@ class EfficientNetb3(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('narumiruna/efficientnet-pytorch',
                                'efficientnet_b3', pretrained=not kwargs.get("is_local", False))
-        return EfficientNetb3.create_model(model, mode, **kwargs)
+        return EfficientNetb3.create_model(model, mode, fabric=EfficientNetb3, **kwargs)
 
 
 class EfficientNetb0(ModelsFabric):
@@ -101,7 +101,7 @@ class EfficientNetb0(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('narumiruna/efficientnet-pytorch',
                                'efficientnet_b0', pretrained=not kwargs.get("is_local", False))
-        return EfficientNetb0.create_model(model, mode, **kwargs)
+        return EfficientNetb0.create_model(model, mode, fabric=EfficientNetb0, **kwargs)
 
 
 class Densenet201(ModelsFabric):
@@ -142,7 +142,7 @@ class Densenet169(ModelsFabric):
     def get_from_params(mode, **kwargs):
         model = torch.hub.load('pytorch/vision:v0.6.0', 'densenet169',
                                pretrained=not kwargs.get("is_local", False))
-        return Densenet169.create_model(model, mode, fabric=Densenet169 ** kwargs)
+        return Densenet169.create_model(model, mode, fabric=Densenet169, ** kwargs)
 
 
 class Densenet161(ModelsFabric):

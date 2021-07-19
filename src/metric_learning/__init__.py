@@ -8,15 +8,17 @@ from models.models import MobilenetV2
 from models.models import ResNet34
 from models.models import ResNet50
 from models.models import ResNet101
-from models.models import Densenet121
-from models.models import Densenet161
+from models.models import Densenet121 
+from models.models import Densenet161 
 from models.models import Densenet169
 from models.models import Densenet201
 from models.models import ResNext50_32x4d
 from models.models import ResNext101_32x8d
 from models.models import WideResnet50_2
 from models.models import WideResnet101_2
-from models.models import EfficientNetb0
+from models.models import EfficientNetb0 
+from models.models import EfficientNetb4
+from models.models import EfficientNetb3
 
 
 from callbacks.logger_callbacks.mlflow_logger_callback import MetricLearningLogger
@@ -28,6 +30,8 @@ from callbacks.iner_callback import MLInerCallback
 from callbacks.custom_scheduler import CustomScheduler
 
 Registry(EfficientNetb0)
+Registry(EfficientNetb4)
+Registry(EfficientNetb3)
 Registry(ResNet34)
 Registry(ResNet50)
 Registry(ResNet101)

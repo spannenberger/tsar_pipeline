@@ -250,6 +250,7 @@
 | ResNet50 | True  | True  | 2048 |
 | ResNet101 | True  | True  | 2048 |
 | MobilenetV3Small | False  | True  | 576 |
+| MobilenetV2 | True  | True  | 576 |
 | MobilenetV3Large | False  | True  | 960 |
 | ResNext101_32x8d | True  | True  | 2048 |
 | ResNext50_32x4d | True  | True  | 2048 |
