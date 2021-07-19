@@ -219,30 +219,7 @@
         is_local: False # True если обучаете локально загруженную модель
      ```
 # Информация о моделях
-### Для задач multilabel и multiclass
-| model | onnx  | torchscript  |
-| :---: | :-: | :-: |
-| Densenet121 | True  | True  |
-| Densenet161 | True  | True  |
-| Densenet169 | True  | True  |
-| Densenet201 | True  | True  |
-| EfficientNetb0 | True  | True  |
-| EfficientNetb3 | True  | True  |
-| EfficientNetb4 | True  | True  |
-| MobilenetV2 | True  | True  |
-| MobilenetV3Large | False  | True  |
-| MobilenetV3Small | False  | True  |
-| ResNet18_swsl | True  | True  |
-| ResNet18 | True  | True  |
-| ResNet34 | True  | True  |
-| ResNet50 | True  | True  |
-| ResNet101 | True  | True  |
-| Resnext50_32x4d | True  | True  |
-| Resnext101_32x8d | True  | True  |
-| WideResnet50_2 | True  | True  |
-| WideResnet101_2 | True  | True  |
 
-### Для моделей metric learning
 | model | onnx  | torchscript  | embedding_size |
 | :---: | :-: | :-: | :-: |
 | ResNet18 | True  | True  | 512 |
@@ -256,6 +233,14 @@
 | ResNext50_32x4d | True  | True  | 2048 |
 | WideResnet50_2 | True  | True  | 2048 |
 | WideResnet101_2 | True  | True  | 2048 |
+| EfficientNetb0 | True  | True  | 1280 |
+| EfficientNetb3 | True  | True  | 1536 |
+| EfficientNetb4 | True  | True  | 1792 |
+| Densenet201 | True  | True  | 1920 |
+| Densenet169 | True  | True  | 1664 |
+| Densenet161 | True  | True  | 2208 |
+| Densenet121 | True  | True  | 1024 |
+
 # Training run 
 ```bash
 # To check multiclass pipeline
