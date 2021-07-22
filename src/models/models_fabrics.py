@@ -1,34 +1,33 @@
 from torch import nn
 import torch
-import torchvision as vision
-from models.classification_models import ClassificationModel
-from models.metric_learning_models import MetricLearningModel
+from models.models_classes import ClassificationModel
+from models.models_classes import MetricLearningModel
 
 
 class ModelsFabric:
 
-    @staticmethod
-    def create_model(model, mode, fabric=None, **kwargs):
-        if fabric is None:
-            fabric = ModelsFabric
+    @classmethod
+    def create_model(cls, model, mode, **kwargs):
         if mode == 'Classification':
-            return fabric.create_classification(model, **kwargs)
+            return cls.create_classification(model, **kwargs)
         if mode == 'MetricLearning':
-            return fabric.create_metric_learning(model, **kwargs)
+            return cls.create_metric_learning(model, **kwargs)
 
     @staticmethod
-    def replace_classifier(model, num_classes):
-        classifier_name, old_classifier = model.backbone._modules.popitem()
+    def remove_classifier(model):
+        classifier_name, old_classifier = model._modules.popitem()
+
         if isinstance(old_classifier, nn.Sequential):
-            input_shape = old_classifier[-1].in_features
-            old_classifier[-1] = nn.Linear(input_shape, num_classes)
+            embedding_size = old_classifier[-1].in_features
+            old_classifier[-1] = nn.Sequential()
 
         elif isinstance(old_classifier, nn.Linear):
-            input_shape = old_classifier.in_features
-            old_classifier = nn.Linear(input_shape, num_classes)
+            embedding_size = old_classifier.in_features
+            old_classifier = nn.Sequential()
         else:
             raise Exception("Uknown type of classifier {}".format(type(old_classifier)))
-        model.backbone.add_module(classifier_name, old_classifier)
+        model.add_module(classifier_name, old_classifier)
+        return embedding_size
 
     @staticmethod
     def create_classification(model, **kwargs):
@@ -37,27 +36,32 @@ class ModelsFabric:
         is_local = kwargs.pop('is_local', False)
         old_num_classes = kwargs.pop('old_num_classes', 10)
         num_classes = kwargs.pop('num_classes', 10)
+        embedding_size = ModelsFabric.remove_classifier(model)
 
-        model = ClassificationModel(model)
         if is_local:
             if diff_classes_flag:
-                ModelsFabric.replace_classifier(model, old_num_classes)
+                classificator = nn.Linear(embedding_size, old_num_classes)
+                model = ClassificationModel(model, classificator, embedding_size)
                 model.load_state_dict(torch.load(path)['model_state_dict'])
-                ModelsFabric.replace_classifier(model, num_classes)
+                classificator = nn.Linear(embedding_size, num_classes)
+                model.replace_classifier(classificator)
             else:
-                ModelsFabric.replace_classifier(model, num_classes)
+                classificator = nn.Linear(embedding_size, num_classes)
+                model = ClassificationModel(model, classificator, embedding_size)
+
                 model.load_state_dict(torch.load(path)['model_state_dict'])
         else:
-            ModelsFabric.replace_classifier(model, num_classes)
+            classificator = nn.Linear(embedding_size, num_classes)
+            model = ClassificationModel(model, classificator, embedding_size)
+
         return model
 
     @staticmethod
     def create_metric_learning(model, **kwargs):
         path = kwargs.pop('path', '')
         is_local = kwargs.pop('is_local', False)
-        model = torch.nn.Sequential(
-            *(list(model.children())[:-1]))
-        model = MetricLearningModel(model)
+        embedding_size = ModelsFabric.remove_classifier(model)
+        model = MetricLearningModel(model, embedding_size)
         if is_local:
             model.load_state_dict(torch.load(path)['model_state_dict'])
         return model
