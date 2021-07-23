@@ -16,7 +16,7 @@ class EmbeddingModel(nn.Module):
 
 class ClassificationModel(EmbeddingModel):
     def __init__(self, model: nn.Module, classificator: nn.Module, embedding_size):
-        super().__init__(model)
+        super().__init__(model, embedding_size)
         self.classificator = classificator
 
     def replace_classificator(self, new_classificator: nn.Module, embedding_size):
