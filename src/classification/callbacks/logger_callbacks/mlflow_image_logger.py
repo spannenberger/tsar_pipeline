@@ -74,8 +74,9 @@ class MLFlowMulticlassLoggingCallback(Callback):
             mlflow.log_artifact('logs/checkpoints/last.pth', 'prunned_models')
             mlflow.log_artifact('logs/checkpoints/best.pth', 'prunned_models')
             print('No prunned models to log')
-
-=======
+        except FileNotFoundError:
+            print('No prunned models to log')
+        mlflow.pytorch.log_model(state.model, artifact_path=state.hparams['model']['_target_'])
         mlflow.end_run()
 class MLFlowMultilabelLoggingCallback(Callback):
     def __init__(self, logging_image_number, threshold=0.5):
@@ -125,7 +126,7 @@ class MLFlowMultilabelLoggingCallback(Callback):
         for i in tqdm(range(length)):
             error_ind = np.where(df['class_id'][i] != df['target'][i])[0]
             for ind in tqdm(error_ind):
-                    f"{class_names[ind]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png")
+                    f"{class_names[ind]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png"
         if 'quantization' in state.hparams['stages']['stage']['callbacks']:
             mlflow.log_artifact('logs/quantized.pth', 'quantized_model')
         else:

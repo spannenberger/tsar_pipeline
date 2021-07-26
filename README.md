@@ -1,5 +1,5 @@
 # tsar_pipeline
-Данный репозиторий содержит решение мультикласс и мультилейбл классификации
+Данный репозиторий содержит решение мультикласс, мультилейбл классификации и Metric Learning 
 ----
 ### Содержание
 - [User guide](#user-guide)
@@ -7,14 +7,17 @@
   * [Инструкция по использованию репозитория](#инструкция-по-использованию-репозитория)
 - [Использование тритона после обучения](#использование-тритона-после-обучения)
 - [Информация о конвертации моделей](#информация-о-конвертации-моделей)
+- [Информация о моделях](#информация-о-моделях)
 - [Training run](#training-run)
 - [Train in docker](#train-in-docker)
 # User guide
 ### Структура репозитория
-- [classifications_shells](#training-run) - папка, содержащая скрипты запуска репозитория
+- [classifications_shells](#training-run) - папка, содержащая скрипты запуска решений задач классификации
+- [metric_learning_shells](#training-run) - папка, содержащая скрипты запуска решений задач metric learning
 - [config](./config) - папка с конфигами эксперимента, в которых мы можем изменять: модель, путь до данных, шедулеры, коллбэки и тд
     * [Multiclass](config/classification/multiclass/train_multiclass.yml) - конфиг мультикласс классификации
     * [Multilabel](config/classification/multilabel/train_multilabel.yml) - конфиг мультилейбл класификаци
+    * [MetricLearning](config/metric_learning/train_metric_learning.yml) - конфиг metric learning
 - [src](src/) - папка с основными файлами проекта, в которую добавляются новые шедулеры, модели, коллбэки и тд
 - [docker-compose.yml](#test-in-docker) - конфиг файл для докера
 - [model_converter.py](/model_converter.py) - файл для конвертации моделей в форматы torchscript, onnx и проверки корректности преобразованных файлов
@@ -23,6 +26,7 @@
 ### Инструкция по использованию репозитория
 - [Multiclass](#запуск-и-изменение-multiclass-решения)
 - [Multilabel](#запуск-и-изменение-multilabel-решения)
+- [MetricLearing](#запуск-и-изменение-metric-learning-решения)
 - [PrunningCallback](#использование-prunning-callback-в-пайплайне)
  ### Запуск и изменение multiclass решения
    - Склонировать репозиторий
@@ -87,6 +91,7 @@
      ```
      model:
         _target_: Densenet121 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+        mode: Classification
         num_classes: &num_classes 2
         path: 'our_models/best.pth' # Путь до расположения вашей локальной модели
         is_local: True # True если обучаете локально загруженную модель
@@ -163,17 +168,60 @@
      - Проверить, что данная модель реализована в пайплайне
      - Создать в корне проекта папку ```our_models```
      - Загрузить в данную папку вашу модель в формате .pth с названием файла "best". Пример: ```best.pth```
-     - Поставть True в нужных пунктах конфига
+     - Поставить True в нужных пунктах конфига
      - Пример:
      ```
      model:
         _target_: Densenet121 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
         num_classes: &num_classes 18
+        mode: Classification
         path: 'our_models/best.pth' # Путь до расположения вашей локальной модели
         is_local: True # True если обучаете локально загруженную модель
         diff_classes_flag: True # True, если есть разница в кол-ве классов
         old_num_classes: 2 # Если diff_classes_flag=True, то указать кол-во классов в предобученной модели
      ```
+ ### Запуск и изменение metric learning решения
+   - Склонировать репозиторий
+   - Запустить команду ```pip install -r requirements.txt```
+   - Для изменения, подключения данных обучения:
+       - По стандарту данные идут в формате:
+       ```
+       metric_learning_dataset
+          - base
+          - train
+          - val 
+       ```
+   - Изменение моделей обучения
+     - Изменить в ```train_metric_learning.yml``` файле название модели (доступные модели можно посмотреть в ```src/metric_learning/__init__.py``` в ```Registry(some_model)```) в блоке ```model:```    
+   - Для отключения колбэков достаточно их закомментировать в config файле
+   - Логирование эксперимента в mlflow
+       - Создать .env файл
+       ```
+       USER=YourWorkEmail@napoleonit.ru
+       MLFLOW_TRACKING_URI=
+       MLFLOW_S3_ENDPOINT_URL=
+       AWS_ACCESS_KEY_ID=
+       AWS_SECRET_ACCESS_KEY=
+       ```
+       - Изменить в папке ```./config/multiclass/train_multilabel.yml``` файл, прописав новые url и название эксперимента в блоке 
+       ```
+       loggers:
+            mlflow:
+       ```
+   - Для дообучения на своих моделях:
+     - Проверить, что данная модель реализована в пайплайне
+     - Создать в корне проекта папку ```our_models```
+     - Загрузить в данную папку вашу модель в формате .pth с названием файла "best". Пример: ```best.pth```
+     - Поставить флаг True в ```is_local`` модели
+     - Пример:
+     ```
+      model:
+        _target_: MobilenetV3Small # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+        mode: MetricLearning
+        path: our_models/best.pth # Путь до расположения вашей локальной модели
+        is_local: False # True если обучаете локально загруженную модель
+     ```
+
 ### Использование prunning и quantization callbacks в пайплайне
 - prunning callback прунит параметры во время и/или после обучения.
 :neutral_face:**Стоит отметить, что при использовании данного колбэка при обучении не будет работать конвертация моделей в onnx и torchscript**:neutral_face:
@@ -228,29 +276,30 @@ triton:
   kind: None # Читай доку тритона
   gpus: [ 0 ] # номера используемых gpu
 ```
-Также в таблице([Информация о конвертации моделей](#информация-о-конвертации-моделей)) можно посмотреть возможность использования модели в тритоне
-# Информация о конвертации моделей     
-| model | onnx  | torchscript  | Triton |
-| :---: | :-: | :-: | :-: |
-| Densenet121 | True  | True  | True  |
-| Densenet161 | True  | True  | True  |
-| Densenet169 | True  | True  | True  |
-| Densenet201 | True  | True  | True  |
-| EfficientNetb0 | True  | True  | True  |
-| EfficientNetb3 | True  | True  | True  |
-| EfficientNetb4 | True  | True  | True  |
-| MobilenetV2 | True  | True  | True  |
-| MobilenetV3Large | False  | True  | False  |
-| MobilenetV3Small | False  | True  | False  |
-| ResNet18_swsl | True  | True  | True  |
-| ResNet18 | True  | True  | True  |
-| ResNet34 | True  | True  | True  |
-| ResNet50 | True  | True  | True  |
-| ResNet101 | True  | True  | True  |
-| Resnext50_32x4d | True  | True  | True  |
-| Resnext101_32x8d | True  | True  | True  |
-| WideResnet50_2 | True  | True  | True  |
-| WideResnet101_2 | True  | True  | True  |
+Также в таблице([Информация о моделях](#информация-о-моделях)) можно посмотреть возможность использования модели в тритоне
+# Информация о моделях
+
+| model | onnx  | torchscript  | Triton | embedding_size |
+| :---: | :-: | :-: | :-: | :-: |
+| ResNet18 | True  | True  | True | 512 |
+| ResNet34 | True  | True  | True | 512 |
+| ResNet50 | True  | True  | True | 2048 |
+| ResNet101 | True  | True  | True | 2048 |
+| MobilenetV3Small | False  | True  | False | 576 |
+| MobilenetV2 | True  | True  | True | 576 |
+| MobilenetV3Large | False  | True  | False | 960 |
+| ResNext101_32x8d | True  | True  | True | 2048 |
+| ResNext50_32x4d | True  | True  | True | 2048 |
+| WideResnet50_2 | True  | True  | True | 2048 |
+| WideResnet101_2 | True  | True  | True | 2048 |
+| EfficientNetb0 | True  | True  | True | 1280 |
+| EfficientNetb3 | True  | True  | True | 1536 |
+| EfficientNetb4 | True  | True  | True | 1792 |
+| Densenet201 | True  | True  | True | 1920 |
+| Densenet169 | True  | True  | True | 1664 |
+| Densenet161 | True  | True  | True | 2208 |
+| Densenet121 | True  | True  | True | 1024 |
+
 # Training run 
 ```bash
 # To check multiclass pipeline
@@ -265,6 +314,11 @@ sh classification_shells/check_multilabel.sh
 sh classification_shells/train_multilabel.sh
 
 
+# To train metric_learning pipeline
+sh metric_learning_shells/train.sh
+# To check metric_learning pipeline
+sh metric_learning_shells/check.sh
+
 # Run tensorflow for visualisation
 tensorboard --logdir=logs/ui # for our pipeline
 # Run mlflow 
@@ -273,9 +327,14 @@ mlflow ui
 ```
 # Train in docker
 ```
+docker-compose build
+
 # запуск multilabel решения
 docker-compose up -d --build multilabel
 
 # запуск multiclass решения
 docker-compose up -d --build multiclass
+
+# запуск metric learning решения
+docker-compose up -d --build metric_learning
 ```
