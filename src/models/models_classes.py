@@ -1,7 +1,7 @@
 from torch import nn
 
 
-class EmbeddingModel(nn.Module):
+class FeatureExtractionModel(nn.Module):
     def __init__(self, model: nn.Module, embedding_size):
         super().__init__()
         self.embedding_size = embedding_size
@@ -14,7 +14,7 @@ class EmbeddingModel(nn.Module):
         return self.get_embeddings(X)
 
 
-class ClassificationModel(EmbeddingModel):
+class ClassificationModel(FeatureExtractionModel):
     def __init__(self, model: nn.Module, classificator: nn.Module, embedding_size):
         super().__init__(model, embedding_size)
         self.classificator = classificator
@@ -27,5 +27,5 @@ class ClassificationModel(EmbeddingModel):
         return self.classificator(embeddings)
 
 
-class MetricLearningModel(EmbeddingModel):
+class MetricLearningModel(FeatureExtractionModel):
     pass
