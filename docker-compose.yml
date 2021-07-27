@@ -3,7 +3,7 @@ version: '3.4'
 services:
   multilabel:
     image: multilabel
-    runtime: nvidia
+    # runtime: nvidia
     pid: "host"
     env_file:
       - .env
@@ -22,7 +22,7 @@ services:
       
   multiclass:
     image: multiclass
-    runtime: nvidia
+    # runtime: nvidia
     pid: "host"
     env_file:
       - .env
@@ -41,7 +41,7 @@ services:
 
   metric_learning:
     image: metric_learning
-    runtime: nvidia
+    # runtime: nvidia
     pid: "host"
     env_file:
       - .env
