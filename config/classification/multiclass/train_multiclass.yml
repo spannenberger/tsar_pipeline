@@ -24,7 +24,7 @@ runner: # Параметры для инициализации Runner
 
 engine: # Параметры для distributed training и NVIDIA Apex
   _target_: DeviceEngine
-  # device: cuda:0
+  device: cuda:0
 
 class_names: &class_names ["sigi", "other"]
 
@@ -37,8 +37,8 @@ loggers:
     _target_: CustomMLflowLogger
     experiment: 'sigi'
     class_names: *class_names
-    # tracking_uri: http://mlflow.ddc.itnap.ru:5000/
-    # registry_uri: https://storage.yandexcloud.net/
+    tracking_uri: http://mlflow.ddc.itnap.ru:5000/
+    registry_uri: https://storage.yandexcloud.net/
 
   tensorboard:
     _target_: TensorboardLogger
