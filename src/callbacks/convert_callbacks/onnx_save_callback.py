@@ -4,6 +4,7 @@ from catalyst.registry import Registry
 import torch
 from pathlib import Path
 from tqdm import tqdm
+
 @Registry
 class OnnxSaveCallback(Callback):
 

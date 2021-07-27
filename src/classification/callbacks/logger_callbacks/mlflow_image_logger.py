@@ -57,27 +57,33 @@ class MLFlowMulticlassLoggingCallback(Callback):
             mlflow.log_artifact('logs/quantized.pth', 'quantized_model')
         else:
             print('No such file quantized.pth, because quantization callback is disabled')
-            
-        checkpoint_names = ['last_full', 'best_full']
+        
+        onnx_checkpoint_names = state.hparams['stages']['stage']['callbacks']['onnx_saver']['checkpoint_names']
+        torchsript_checkpoint_names = state.hparams['stages']['stage']['callbacks']['torchscript_saver']['checkpoint_names']
+
         print('Starting logging convert models... please wait')
-        for model in tqdm(checkpoint_names):
+        for model in tqdm(torchsript_checkpoint_names):
             try:
                 mlflow.log_artifact(f'logs/logs/torchsript/{model}.pt', 'torchscript_models')
             except FileNotFoundError:
                 print(f'No such file {model}.pt, nothing to log...')
+        
+        for model in tqdm(onnx_checkpoint_names):
             try:
                 mlflow.log_artifact(f'logs/logs/onnx/{model}.onnx', 'onnx_models')
             except FileNotFoundError:
                 print(f'No such file {model}.onnx, nothing to log...')
-                
-        try:
+
+        if 'prunning' in state.hparams['stages']['stage']['callbacks']:
             mlflow.log_artifact('logs/checkpoints/last.pth', 'prunned_models')
             mlflow.log_artifact('logs/checkpoints/best.pth', 'prunned_models')
+        else:
             print('No prunned models to log')
-        except FileNotFoundError:
-            print('No prunned models to log')
+
         mlflow.pytorch.log_model(state.model, artifact_path=state.hparams['model']['_target_'])
         mlflow.end_run()
+
+@Registry
 class MLFlowMultilabelLoggingCallback(Callback):
     def __init__(self, logging_image_number, threshold=0.5):
         self.logging_image_number = logging_image_number
@@ -122,31 +128,38 @@ class MLFlowMultilabelLoggingCallback(Callback):
         except KeyError:
             class_names = [x for x in range(
                 state.hparams['model']['num_classes'])]
+
         print('Start logging images to mlflow... please wait')
         for i in tqdm(range(length)):
             error_ind = np.where(df['class_id'][i] != df['target'][i])[0]
             for ind in tqdm(error_ind):
                     f"{class_names[ind]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png"
+
         if 'quantization' in state.hparams['stages']['stage']['callbacks']:
             mlflow.log_artifact('logs/quantized.pth', 'quantized_model')
         else:
             print('No such file quantized.pth, because quantization callback is disabled')
 
-        checkpoint_names = ['last_full', 'best_full']
+        onnx_checkpoint_names = state.hparams['stages']['stage']['callbacks']['onnx_saver']['checkpoint_names']
+        torchsript_checkpoint_names = state.hparams['stages']['stage']['callbacks']['torchscript_saver']['checkpoint_names']
+
         print('Starting logging convert models... please wait')
-        for model in tqdm(checkpoint_names):
+        for model in tqdm(torchsript_checkpoint_names):
             try:
                 mlflow.log_artifact(f'logs/logs/torchsript/{model}.pt', 'torchscript_models')
             except FileNotFoundError:
                 print(f'No such file {model}.pt, nothing to log...')
+        
+        for model in tqdm(onnx_checkpoint_names):
             try:
                 mlflow.log_artifact(f'logs/logs/onnx/{model}.onnx', 'onnx_models')
             except FileNotFoundError:
                 print(f'No such file {model}.onnx, nothing to log...')
-        try:
+        
+        if 'prunning' in state.hparams['stages']['stage']['callbacks']:
             mlflow.log_artifact('logs/checkpoints/last.pth', 'prunned_models')
             mlflow.log_artifact('logs/checkpoints/best.pth', 'prunned_models')
-        except FileNotFoundError:
+        else:
             print('No prunned models to log')
 
         mlflow.pytorch.log_model(state.model, artifact_path=state.hparams['model']['_target_'])

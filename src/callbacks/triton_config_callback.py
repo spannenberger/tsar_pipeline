@@ -26,7 +26,7 @@ class TritonConfigCreator(Callback):
             if mode_name == "classification":
                 self.output_size = params['model']['num_classes']
             elif mode_name == "metric_learning":
-                self.output_size = params['stages']['stage']['callbacks']['criterion']['embeding_size']
+                self.output_size = state.model.embedding_size
             else: 
                 raise Exception("Invalid mode")
             self.aug_path = params['stages']['stage']['data']['transform_path']

@@ -48,11 +48,11 @@ class MulticlassRunner(IRunner):
 
         datasets["train"] = {'dataset': CustomDataset(image_paths_train,
                                                       labels_train,
-                                                      transforms_path=data_params['transform_path'])
+                                                      transform_path=data_params['transform_path'])
                              }
         datasets["valid"] = CustomDataset(image_paths_val,
                                           labels_val,
-                                          transforms_path=data_params['transform_path'],
+                                          transform_path=data_params['transform_path'],
                                           valid=True)
 
         return datasets
@@ -112,12 +112,12 @@ class MultilabelRunner(IRunner):
 
         datasets["train"] = {'dataset': CustomDataset(image_paths_train,
                                                       labels_train,
-                                                      transforms_path=data_params['transform_path']
+                                                      transform_path=data_params['transform_path']
                                                       )
                              }
         datasets["valid"] = CustomDataset(image_paths_val,
                                           labels_val,
-                                          transforms_path=data_params['transform_path'],
+                                          transform_path=data_params['transform_path'],
                                           valid=True)
         return datasets
 

@@ -15,17 +15,17 @@ class CustomDataset(Dataset):
                  image_paths: list,
                  image_labels: list,
                  valid: bool = False,
-                 transforms_path=None):
+                 transform_path=None):
         assert len(image_paths) == len(image_labels)
         self.image_paths = image_paths
         self.image_labels = image_labels
-        self.transforms_path = transforms_path
+        self.transform_path = transform_path
         self.valid = valid
         if valid:
             aug_mode = 'valid'
         else:
             aug_mode = 'train'
-        self.transforms = CustomAugmentator().transforms(self.transforms_path, aug_mode)
+        self.transforms = CustomAugmentator().transforms(self.transform_path, aug_mode)
 
     def __len__(self):
         return len(self.image_labels)

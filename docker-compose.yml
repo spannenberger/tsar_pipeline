@@ -3,10 +3,10 @@ version: '3.4'
 services:
   multilabel:
     image: multilabel
-    # runtime: nvidia
-    # pid: "host"
-    # env_file:
-    #   - .env
+    runtime: nvidia
+    pid: "host"
+    env_file:
+      - .env
     ports:
       - 5000:5000
       - 6006:6006
@@ -22,10 +22,10 @@ services:
       
   multiclass:
     image: multiclass
-    # runtime: nvidia
-    # pid: "host"
-    # env_file:
-    #   - .env
+    runtime: nvidia
+    pid: "host"
+    env_file:
+      - .env
     ports:
       - 5000:5000
       - 6006:6006
@@ -41,10 +41,10 @@ services:
 
   metric_learning:
     image: metric_learning
-    # runtime: nvidia
-    # pid: "host"
-    # env_file:
-    #   - .env
+    runtime: nvidia
+    pid: "host"
+    env_file:
+      - .env
     ports:
       - 5000:5000
       - 6006:6006
