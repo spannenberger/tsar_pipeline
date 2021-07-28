@@ -7,6 +7,7 @@ import ast
 from PIL import Image
 import numpy as np
 from tqdm import tqdm
+from utils.utils import get_from_dict
 
 
 class MainMLFlowLoggerCallback(Callback):
@@ -16,24 +17,27 @@ class MainMLFlowLoggerCallback(Callback):
 
     def on_stage_start(self, state: IRunner):
         """Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа"""
-        mlflow.log_artifact(state.hparams['args']['configs'][0], 'config')
+        mlflow.log_artifact(get_from_dict(state.hparams, 'args:configs')[0], 'config')
         mlflow.log_artifact(
-            state.hparams['stages']['stage']['data']['transform_path'], 'config/aug_config')
+            get_from_dict(state.hparams, 'stages:stage:data:transform_path'), 'config/aug_config')
         try:
-            mlflow.log_artifact(state.hparams['stages']['stage']['callbacks']['triton']['conf_path'], 'config/triton')
+            mlflow.log_artifact(get_from_dict(state.hparams, 'stages:stage:callbacks:triton:conf_path'),
+                                'config/triton')
         except FileNotFoundError:
             print('Сant find triton config, because you disabled this callback')
             print('\n'*3)
-        
+
     def on_experiment_end(self, state: IRunner):
 
-        if 'quantization' in state.hparams['stages']['stage']['callbacks']:
+        if 'quantization' in get_from_dict(state.hparams, 'stages:stage:callbacks'):
             mlflow.log_artifact('logs/quantized.pth', 'quantized_model')
         else:
             print('No such file quantized.pth, because quantization callback is disabled')
-        
-        onnx_checkpoint_names = state.hparams['stages']['stage']['callbacks']['onnx_saver']['checkpoint_names']
-        torchsript_checkpoint_names = state.hparams['stages']['stage']['callbacks']['torchscript_saver']['checkpoint_names']
+
+        onnx_checkpoint_names = get_from_dict(
+            state.hparams, 'stages:stage:callbacks:onnx_saver:checkpoint_names')
+        torchsript_checkpoint_names = get_from_dict(
+            state.hparams, 'stages:stage:callbacks:torchscript_saver:checkpoint_names')
 
         print('Starting logging convert models... please wait')
         for model in tqdm(torchsript_checkpoint_names):
@@ -41,25 +45,27 @@ class MainMLFlowLoggerCallback(Callback):
                 mlflow.log_artifact(f'logs/logs/torchsript/{model}.pt', 'torchscript_models')
             except FileNotFoundError:
                 print(f'No such file {model}.pt, nothing to log...')
-        
+
         for model in tqdm(onnx_checkpoint_names):
             try:
                 mlflow.log_artifact(f'logs/logs/onnx/{model}.onnx', 'onnx_models')
             except FileNotFoundError:
                 print(f'No such file {model}.onnx, nothing to log...')
 
-        if 'prunning' in state.hparams['stages']['stage']['callbacks']:
+        if 'prunning' in get_from_dict(state.hparams, 'stages:stage:callbacks'):
             mlflow.log_artifact('logs/checkpoints/last.pth', 'prunned_models')
             mlflow.log_artifact('logs/checkpoints/best.pth', 'prunned_models')
         else:
             print('No prunned models to log')
 
-        mlflow.pytorch.log_model(state.model, artifact_path=state.hparams['model']['_target_'])
+        mlflow.pytorch.log_model(state.model, artifact_path=get_from_dict(
+            state.hparams, 'model:_target_'))
         mlflow.end_run()
+
 
 @Registry
 class MLFlowMulticlassLoggingCallback(MainMLFlowLoggerCallback):
-    
+
     def __init__(self, logging_image_number, **kwargs):
         self.logging_image_number = logging_image_number
         super().__init__()
@@ -78,10 +84,10 @@ class MLFlowMulticlassLoggingCallback(MainMLFlowLoggerCallback):
         class_id = [i for i in df[df['class_id'] != df['target']]['class_id']]
         target = [i for i in df[df['class_id'] != df['target']]['target']]
         try:
-            class_names = state.hparams['class_names']
+            class_names = get_from_dict(state.hparams, 'class_names')
         except KeyError:
             class_names = [x for x in range(
-                state.hparams['model']['num_classes'])]
+                get_from_dict(state.hparams, 'model:num_classes'))]
         print('Start logging images to mlflow... please wait')
         for i in tqdm(range(length)):
             image = Image.open(f"{path_list[i]}")
@@ -92,10 +98,11 @@ class MLFlowMulticlassLoggingCallback(MainMLFlowLoggerCallback):
 
         super().on_experiment_end(state)
 
+
 @Registry
 class MLFlowMultilabelLoggingCallback(MainMLFlowLoggerCallback):
 
-    def __init__(self, logging_image_number, threshold = 0.5):
+    def __init__(self, logging_image_number, threshold=0.5):
         self.logging_image_number = logging_image_number
         self.threshold = threshold
         super().__init__()
@@ -122,10 +129,10 @@ class MLFlowMultilabelLoggingCallback(MainMLFlowLoggerCallback):
         df['class_id'] = df['class_id'].apply(
             lambda x: np.array(x))
         try:
-            class_names = state.hparams['class_names']
+            class_names = get_from_dict(state.hparams, 'class_names')
         except KeyError:
             class_names = [x for x in range(
-                state.hparams['model']['num_classes'])]
+                get_from_dict(state.hparams, 'model:num_classes'))]
 
         print('Start logging images to mlflow... please wait')
         for i in tqdm(range(length)):
@@ -139,20 +146,22 @@ class MLFlowMultilabelLoggingCallback(MainMLFlowLoggerCallback):
 
         super().on_experiment_end(state)
 
+
 @Registry
 class MLFlowMetricLearningCallback(MainMLFlowLoggerCallback):
-        def __init__(self, logging_incorrect_image_number = 5, logging_uncoordinated_image_number = 5):
-            self.logging_incorrect_image_number = logging_incorrect_image_number
-            self.logging_uncoordinated_image_number = logging_uncoordinated_image_number
-            super().__init__()
-        
-def on_experiment_end(self, state: IRunner):
+    def __init__(self, logging_incorrect_image_number=5, logging_uncoordinated_image_number=5):
+        self.logging_incorrect_image_number = logging_incorrect_image_number
+        self.logging_uncoordinated_image_number = logging_uncoordinated_image_number
+        super().__init__()
+
+    def on_experiment_end(self, state: IRunner):
         """В конце эксперимента логаем в одну папку ошибочные фотографии и фотографии к которым модель отнесла ошибочную,
         в другую папку логаем фотографии которые не прошли по расстоянию
         """
-
-        incorrect_df = pd.read_csv(state.hparams['stages']['stage']['callbacks']['iner']['incorrect_file'], sep=';')
-        uncoordinated_df = pd.read_csv(state.hparams['stages']['stage']['callbacks']['iner']['uncoordinated_file'], sep=';')
+        incorrect_df = pd.read_csv(get_from_dict(
+            state.hparams, 'stages:stage:callbacks:iner:incorrect_file'), sep=';')
+        uncoordinated_df = pd.read_csv(
+            get_from_dict(state.hparams, 'stages:stage:callbacks:iner:uncoordinated_file'), sep=';')
 
         incorrect_list = [i for i in incorrect_df['incorrect']]
         couple_list = [i for i in incorrect_df['couple']]
@@ -166,7 +175,6 @@ def on_experiment_end(self, state: IRunner):
             uncoordinated_length = len(uncoordinated_list)
         else:
             uncoordinated_length = self.logging_uncoordinated_image_number
-
         for i in tqdm(range(incorrect_length)):
             incorrect_image = Image.open(incorrect_list[i])
             couple_image = Image.open(couple_list[i])

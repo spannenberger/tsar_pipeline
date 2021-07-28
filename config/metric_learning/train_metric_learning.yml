@@ -120,7 +120,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       transform_path: config/augmentations/light.yml # Режим аугментаций данных (Возможны: light, medium, hard(./config/augmentations/))
       # путь до файла с трансформациями
     loaders: &loaders
-      batch_size: 50 # Размер батча для всех стейджей
+      batch_size: 20 # Размер батча для всех стейджей
       num_workers: 0 #для локальной поставить 0
     num_epochs: 2 # Количество эпох эксперимента
     valid_loader: valid
