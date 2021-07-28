@@ -21,7 +21,7 @@ runner: # Параметры для инициализации Runner
 
 engine: # Параметры для distributed training и NVIDIA Apex
   _target_: DeviceEngine
-  device: cuda:0
+  # device: cuda:0
 loggers:
 # Встроенные логеры каталиста
 #(Возможные логеры: https://github.com/catalyst-team/catalyst/tree/master/catalyst/loggers)
@@ -30,8 +30,8 @@ loggers:
   mlflow:
     _target_: MLflowLogger
     experiment: 'metric_learning'
-    tracking_uri: http://mlflow.ddc.itnap.ru:5000/
-    registry_uri: https://storage.yandexcloud.net/
+    # tracking_uri: http://mlflow.ddc.itnap.ru:5000/
+    # registry_uri: https://storage.yandexcloud.net/
 
 stages: # Словарь всех стадий Catalyst, для обучения и/или инфера. Содержат ключевые слова с параметрами, которые применятся ко всем стейджам, так и сами имена стейджей
   stage:
@@ -62,7 +62,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
         topk_args: [1]
         loaders: valid
       mlflow_logger: # Колбэк для логгирования фотографий, моделей, конфигов в mlflow
-        _target_: MetricLearningLogger
+        _target_: MLFlowMetricLearningCallback
         logging_incorrect_image_number: 10 # Кол-во ошибочных фотографий и фотографий к которым модель отнесла ошибочные
         logging_uncoordinated_image_number: 10 # Кол-во фотографий которые не прошли по расстоянию
       onnx_saver:
