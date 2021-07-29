@@ -7,7 +7,7 @@ import ast
 from PIL import Image
 from torchvision.transforms import ToTensor
 from tqdm import tqdm
-
+from utils.utils import get_from_dict
 
 @Registry
 class TensorboardMulticlassLoggingCallback(Callback):
@@ -90,3 +90,47 @@ class TensorboardMultilabelLoggingCallback(Callback):
                 state.loggers['tensorboard'].loggers['valid'].add_image(
                     f"{class_names[ind]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png",
                     image)
+
+@Registry
+class TensorboardMetricLearningCallback(Callback):
+
+    def __init__(self, logging_incorrect_image_number=5, logging_uncoordinated_image_number=5):
+        self.logging_incorrect_image_number = logging_incorrect_image_number
+        self.logging_uncoordinated_image_number = logging_uncoordinated_image_number
+        super().__init__(CallbackOrder.ExternalExtra)
+
+    def on_experiment_end(self, state: IRunner):
+        incorrect_df = pd.read_csv(get_from_dict(
+            state.hparams, 'stages:stage:callbacks:iner:incorrect_file'), sep=';')
+        uncoordinated_df = pd.read_csv(
+            get_from_dict(state.hparams, 'stages:stage:callbacks:iner:uncoordinated_file'), sep=';')
+
+        incorrect_list = [i for i in incorrect_df['incorrect']]
+        couple_list = [i for i in incorrect_df['couple']]
+        uncoordinated_list = [i for i in uncoordinated_df['uncoordinated']]
+
+        if self.logging_incorrect_image_number >= len(incorrect_list):
+            incorrect_length = len(incorrect_list)
+        else:
+            incorrect_length = self.logging_incorrect_image_number
+        if self.logging_uncoordinated_image_number >= len(uncoordinated_list):
+            uncoordinated_length = len(uncoordinated_list)
+        else:
+            uncoordinated_length = self.logging_uncoordinated_image_number
+        for i in tqdm(range(incorrect_length)):
+            incorrect_image = ToTensor()(Image.open(incorrect_list[i]))
+            couple_image = ToTensor()(Image.open(couple_list[i]))
+            state.loggers['tensorboard'].loggers['valid'].add_image(
+                f'incorrect/{incorrect_list[i].split("/")[2]}/{i}/incorrect.png',
+                incorrect_image
+            )
+            state.loggers['tensorboard'].loggers['valid'].add_image(
+                f'incorrect/{incorrect_list[i].split("/")[2]}/{i}/couple.png',
+                couple_image
+            )
+        for i in tqdm(range(uncoordinated_length)):
+            uncoordinated_image = ToTensor()(Image.open(uncoordinated_list[i]))
+            state.loggers['tensorboard'].loggers['valid'].add_image(
+                f'uncoordinated/{uncoordinated_list[i].split("/")[2]}/{uncoordinated_list[i].split("/")[3]}.png',
+                uncoordinated_image
+            )

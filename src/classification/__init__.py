@@ -41,7 +41,6 @@ from callbacks.logger_callbacks.mlflow_logger import CustomMLflowLogger
 from catalyst.registry import Registry
 from catalyst.loggers.mlflow import MLflowLogger
 from catalyst.loggers.tensorboard import TensorboardLogger
-from catalyst.loggers.tensorboard import TensorboardLogger
 
 
 # Инициализаця

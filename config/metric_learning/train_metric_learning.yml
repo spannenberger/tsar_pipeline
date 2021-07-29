@@ -32,6 +32,9 @@ loggers:
     experiment: 'metric_learning'
     # tracking_uri: http://mlflow.ddc.itnap.ru:5000/
     # registry_uri: https://storage.yandexcloud.net/
+  tensorboard:
+    _target_: TensorboardLogger
+    logdir: "./logs/ui"
 
 stages: # Словарь всех стадий Catalyst, для обучения и/или инфера. Содержат ключевые слова с параметрами, которые применятся ко всем стейджам, так и сами имена стейджей
   stage:
@@ -63,6 +66,10 @@ stages: # Словарь всех стадий Catalyst, для обучения
         loaders: valid
       mlflow_logger: # Колбэк для логгирования фотографий, моделей, конфигов в mlflow
         _target_: MLFlowMetricLearningCallback
+        logging_incorrect_image_number: 10 # Кол-во ошибочных фотографий и фотографий к которым модель отнесла ошибочные
+        logging_uncoordinated_image_number: 10 # Кол-во фотографий которые не прошли по расстоянию
+      tensordoard_logger:
+        _target_: TensorboardMetricLearningCallback
         logging_incorrect_image_number: 10 # Кол-во ошибочных фотографий и фотографий к которым модель отнесла ошибочные
         logging_uncoordinated_image_number: 10 # Кол-во фотографий которые не прошли по расстоянию
       onnx_saver:
@@ -120,9 +127,9 @@ stages: # Словарь всех стадий Catalyst, для обучения
       transform_path: config/augmentations/light.yml # Режим аугментаций данных (Возможны: light, medium, hard(./config/augmentations/))
       # путь до файла с трансформациями
     loaders: &loaders
-      batch_size: 20 # Размер батча для всех стейджей
+      batch_size: 1 # Размер батча для всех стейджей
       num_workers: 0 #для локальной поставить 0
-    num_epochs: 2 # Количество эпох эксперимента
+    num_epochs: 12 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: cmc01
     minimize_metric: False

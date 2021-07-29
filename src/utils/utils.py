@@ -1,8 +1,6 @@
 
 def get_from_dict(dictionary, path, default=None):
     path = path.split(':')
-    import pdb
-    pdb.set_trace()
     for key in path:
         try:
             dictionary = dictionary[key]
