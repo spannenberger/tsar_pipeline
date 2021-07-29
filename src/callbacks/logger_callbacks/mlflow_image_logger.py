@@ -8,6 +8,7 @@ from PIL import Image
 import numpy as np
 from tqdm import tqdm
 from utils.utils import get_from_dict
+from pathlib import Path
 
 
 class MainMLFlowLoggerCallback(Callback):
@@ -28,35 +29,46 @@ class MainMLFlowLoggerCallback(Callback):
             print('\n'*3)
 
     def on_experiment_end(self, state: IRunner):
-
-        if 'quantization' in get_from_dict(state.hparams, 'stages:stage:callbacks'):
+        callbacks_dict = get_from_dict(state.hparams, 'stages:stage:callbacks')
+        if 'quantization' in callbacks_dict:
             mlflow.log_artifact('logs/quantized.pth', 'quantized_model')
         else:
             print('No such file quantized.pth, because quantization callback is disabled')
 
         onnx_checkpoint_names = get_from_dict(
-            state.hparams, 'stages:stage:callbacks:onnx_saver:checkpoint_names')
+            callbacks_dict, 'onnx_saver:checkpoint_names', default=[])
         torchsript_checkpoint_names = get_from_dict(
-            state.hparams, 'stages:stage:callbacks:torchscript_saver:checkpoint_names')
+            callbacks_dict, 'torchscript_saver:checkpoint_names', default=[])
 
-        print('Starting logging convert models... please wait')
-        for model in tqdm(torchsript_checkpoint_names):
-            try:
-                mlflow.log_artifact(f'logs/logs/torchsript/{model}.pt', 'torchscript_models')
-            except FileNotFoundError:
-                print(f'No such file {model}.pt, nothing to log...')
+        print('\nStarting logging convert models... please wait')
+        print('\nTorchsript:')
+        if len(torchsript_checkpoint_names) > 0:
+            for model in tqdm(torchsript_checkpoint_names):
+                try:
+                    path = Path(state.logdir) / get_from_dict(callbacks_dict,
+                                                              'torchscript_saver:out_dir') / f'{model}.pt'
+                    mlflow.log_artifact(path, 'torchscript_models')
+                except FileNotFoundError:
+                    print(f'\nNo such file {model}.pt, nothing to log...')
+        else:
+            print("Torchsript convert callback is disabled\n")
+        print('\nOnnx:')
+        if len(torchsript_checkpoint_names) > 0:
+            for model in tqdm(onnx_checkpoint_names):
+                try:
+                    path = Path(state.logdir) / get_from_dict(callbacks_dict,
+                                                              'onnx_saver:out_dir') / f'{model}.pt'
+                    mlflow.log_artifact(f'logs/logs/onnx/{model}.onnx', 'onnx_models')
+                except FileNotFoundError:
+                    print(f'\nNo such file {model}.onnx, nothing to log...\n')
+        else:
+            print("Onnx convert callback is disabled\n")
 
-        for model in tqdm(onnx_checkpoint_names):
-            try:
-                mlflow.log_artifact(f'logs/logs/onnx/{model}.onnx', 'onnx_models')
-            except FileNotFoundError:
-                print(f'No such file {model}.onnx, nothing to log...')
-
-        if 'prunning' in get_from_dict(state.hparams, 'stages:stage:callbacks'):
+        if 'prunning' in callbacks_dict:
             mlflow.log_artifact('logs/checkpoints/last.pth', 'prunned_models')
             mlflow.log_artifact('logs/checkpoints/best.pth', 'prunned_models')
         else:
-            print('No prunned models to log')
+            print('\nNo prunned models to log\n')
 
         mlflow.pytorch.log_model(state.model, artifact_path=get_from_dict(
             state.hparams, 'model:_target_'))
@@ -178,18 +190,18 @@ class MLFlowMetricLearningCallback(MainMLFlowLoggerCallback):
         for i in tqdm(range(incorrect_length)):
             incorrect_image = Image.open(incorrect_list[i])
             couple_image = Image.open(couple_list[i])
+            save_path = Path('incorrect/')/Path(incorrect_list[i]).parts[2]/[i]
             mlflow.log_image(
                 incorrect_image,
-                f'incorrect/{incorrect_list[i].split("/")[2]}/{i}/incorrect.png'
+                save_path/'incorrect.png'
             )
             mlflow.log_image(
                 couple_image,
-                f'incorrect/{incorrect_list[i].split("/")[2]}/{i}/couple.png'
+                save_path/'couple.png'
             )
         for i in tqdm(range(uncoordinated_length)):
             uncoordinated_image = Image.open(uncoordinated_list[i])
-            mlflow.log_image(
-                uncoordinated_image,
-                f'uncoordinated/{uncoordinated_list[i].split("/")[2]}/{uncoordinated_list[i].split("/")[3]}.png'
-            )
+            image_path = Path(uncoordinated_list[i])
+            save_path = Path('uncoordinated/') / image_path.parts[2] / image_path.name
+            mlflow.log_image(uncoordinated_image, save_path.as_posix())
         super().on_experiment_end(state)

@@ -8,6 +8,8 @@ from PIL import Image
 from torchvision.transforms import ToTensor
 from tqdm import tqdm
 from utils.utils import get_from_dict
+from pathlib import Path
+
 
 @Registry
 class TensorboardMulticlassLoggingCallback(Callback):
@@ -15,7 +17,7 @@ class TensorboardMulticlassLoggingCallback(Callback):
     def __init__(self, logging_image_number, **kwargs):
         self.logging_image_number = logging_image_number
         super().__init__(CallbackOrder.ExternalExtra)
-        
+
     def on_experiment_end(self, state: IRunner):
         """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок,
         которые соответствуют class_names в нашем конфиге
@@ -60,7 +62,6 @@ class TensorboardMultilabelLoggingCallback(Callback):
 
         df = pd.read_csv(get_from_dict(
             state.hparams, 'stages:stage:callbacks:infer:subm_file'), sep=';')
-        # df = pd.read_csv('crossval_log/preds.csv', sep=';')
 
         df[['class_id', 'target', 'losses']] = df[['class_id', 'target', 'losses']].apply(
             lambda x: x.apply(ast.literal_eval))
@@ -93,6 +94,7 @@ class TensorboardMultilabelLoggingCallback(Callback):
                 state.loggers['tensorboard'].loggers['valid'].add_image(
                     f"{class_names[ind]}/{df['class_id'][i][ind]} - {df['target'][i][ind]} error number {i}.png",
                     image)
+
 
 @Registry
 class TensorboardMetricLearningCallback(Callback):
@@ -133,7 +135,9 @@ class TensorboardMetricLearningCallback(Callback):
             )
         for i in tqdm(range(uncoordinated_length)):
             uncoordinated_image = ToTensor()(Image.open(uncoordinated_list[i]))
+            image_path = Path(uncoordinated_list[i])
+            save_path = Path('uncoordinated/') / image_path.parts[2] / image_path.name
             state.loggers['tensorboard'].loggers['valid'].add_image(
-                f'uncoordinated/{uncoordinated_list[i].split("/")[2]}/{uncoordinated_list[i].split("/")[3]}.png',
+                save_path.as_posix(),
                 uncoordinated_image
             )
