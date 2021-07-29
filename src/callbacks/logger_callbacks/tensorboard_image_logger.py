@@ -21,7 +21,8 @@ class TensorboardMulticlassLoggingCallback(Callback):
         которые соответствуют class_names в нашем конфиге
         """
 
-        df = pd.read_csv('crossval_log/preds.csv', sep=';')
+        pd.read_csv(get_from_dict(
+            state.hparams, 'stages:stage:callbacks:infer:subm_file'), sep=';')
 
         path_list = [i for i in df[df['class_id'] != df['target']]['path']]
         if(len(df[df['class_id'] != df['target']]) <= self.logging_image_number):
@@ -57,7 +58,9 @@ class TensorboardMultilabelLoggingCallback(Callback):
         которые соответствуют class_names в нашем конфиге
         """
 
-        df = pd.read_csv('crossval_log/preds.csv', sep=';')
+        df = pd.read_csv(get_from_dict(
+            state.hparams, 'stages:stage:callbacks:infer:subm_file'), sep=';')
+        # df = pd.read_csv('crossval_log/preds.csv', sep=';')
 
         df[['class_id', 'target', 'losses']] = df[['class_id', 'target', 'losses']].apply(
             lambda x: x.apply(ast.literal_eval))
