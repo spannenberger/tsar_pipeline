@@ -33,7 +33,7 @@ class MainMLFlowLoggerCallback(Callback):
         if 'quantization' in callbacks_dict:
             mlflow.log_artifact('logs/quantized.pth', 'quantized_model')
         else:
-            print('No such file quantized.pth, because quantization callback is disabled')
+            print('\nNo such file quantized.pth, because quantization callback is disabled')
 
         onnx_checkpoint_names = get_from_dict(
             callbacks_dict, 'onnx_saver:checkpoint_names', default=[])
@@ -57,16 +57,17 @@ class MainMLFlowLoggerCallback(Callback):
             for model in tqdm(onnx_checkpoint_names):
                 try:
                     path = Path(state.logdir) / get_from_dict(callbacks_dict,
-                                                              'onnx_saver:out_dir') / f'{model}.pt'
-                    mlflow.log_artifact(f'logs/logs/onnx/{model}.onnx', 'onnx_models')
+                                                              'onnx_saver:out_dir') / f'{model}.onnx'
+                    mlflow.log_artifact(path, 'onnx_models')
                 except FileNotFoundError:
                     print(f'\nNo such file {model}.onnx, nothing to log...\n')
         else:
             print("Onnx convert callback is disabled\n")
 
         if 'prunning' in callbacks_dict:
-            mlflow.log_artifact('logs/checkpoints/last.pth', 'prunned_models')
-            mlflow.log_artifact('logs/checkpoints/best.pth', 'prunned_models')
+            path = get_from_dict(callbacks_dict, 'saver:logdir')
+            mlflow.log_artifact(f'{path}/last.pth', 'prunned_models')
+            mlflow.log_artifact(f'{path}/best.pth', 'prunned_models')
         else:
             print('\nNo prunned models to log\n')
 
@@ -87,7 +88,7 @@ class MLFlowMulticlassLoggingCallback(MainMLFlowLoggerCallback):
         которые соответствуют class_names в нашем конфиге
         """
 
-        df = pd.read_csv('crossval_log/preds.csv', sep=';')
+        df = pd.read_csv(get_from_dict(state.hparams, 'stages:stage:callbacks:infer:subm_file'), sep=';')
         path_list = [i for i in df[df['class_id'] != df['target']]['path']]
         if(len(df[df['class_id'] != df['target']]) <= self.logging_image_number):
             length = len(df[df['class_id'] != df['target']])
@@ -123,8 +124,7 @@ class MLFlowMultilabelLoggingCallback(MainMLFlowLoggerCallback):
         """В конце эксперимента логаем ошибочные фотографии, раскидывая их в N папок,
         которые соответствуют class_names в нашем конфиге
         """
-
-        df = pd.read_csv('crossval_log/preds.csv', sep=';')
+        df = pd.read_csv(get_from_dict(state.hparams, 'stages:stage:callbacks:infer:subm_file'), sep=';')
 
         df[['class_id', 'target', 'losses']] = df[['class_id', 'target', 'losses']].apply(
             lambda x: x.apply(ast.literal_eval))

@@ -23,7 +23,7 @@ class TensorboardMulticlassLoggingCallback(Callback):
         которые соответствуют class_names в нашем конфиге
         """
 
-        pd.read_csv(get_from_dict(
+        df = pd.read_csv(get_from_dict(
             state.hparams, 'stages:stage:callbacks:infer:subm_file'), sep=';')
 
         path_list = [i for i in df[df['class_id'] != df['target']]['path']]
@@ -86,7 +86,7 @@ class TensorboardMultilabelLoggingCallback(Callback):
         except KeyError:
             class_names = [x for x in range(
                 state.hparams['model']['num_classes'])]
-        print('We start logging images to tensorboard... please wait')
+        print('\nWe start logging images to tensorboard... please wait')
         for i in tqdm(range(length)):
             error_ind = np.where(df['class_id'][i] != df['target'][i])[0]
             for ind in tqdm(error_ind):
