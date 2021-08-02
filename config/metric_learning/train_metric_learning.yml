@@ -128,7 +128,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       # путь до файла с трансформациями
     loaders: &loaders
       batch_size: 15 # Размер батча для всех стейджей
-      num_workers: 4 #для локальной поставить 0
+      num_workers: 2 #для локальной поставить 0
     num_epochs: 25 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: cmc01
