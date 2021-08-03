@@ -88,15 +88,6 @@ stages: # Словарь всех стадий Catalyst, для обучения
         count: 1 # Количество запущенных инстансов модели на каждом gpu/cpu
         kind: KIND_GPU # Есть два возможных параметра - KIND_CPU (для работы на CPU) и KIND_GPU (для работы на GPU)
         gpus: [ 0 ] # Если kind: KIND_GPU, то нужно указать какие именно GPU будут использоваться
-      prunning: # Коллбэк для прунинга модели. Смотри документацию в Readme
-        _target_: PruningCallback
-        pruning_fn: random_unstructured # функция из модуля torch.nn.utils.prune или ваш на основе BasePruningMethod. Может быть строкой, например. " l1_unstructured ". Подробнее см. В документации по pytorch.
-        prune_on_epoch_end: True # флаг для прунинга в конце стэйджа
-        amount: 0.5 # количество параметров для обрезки. Если с плавающей точкой, должно быть от 0,0 до 1,0 и представляют собой часть параметров, подлежащих сокращению. Если int, он представляет собой абсолютное число параметров для обрезки.
-        l_norm: 2
-      quantization:
-        _target_: QuantizationCallback
-        logdir: "./logs" # Путь для сохранение модели после квантизации
       criterion:
         # Имеется возможность указать параметры scale и margin
         _target_: CustomTrainCriterion
@@ -116,7 +107,6 @@ stages: # Словарь всех стадий Catalyst, для обучения
         _target_: CheckpointCallback
         logdir: "logs/checkpoints"
         save_n_best: 3
-
       # Подключение кастомных колбэков
       #(Возможные колбэки: ./src_multilabel/callbacks/)
     data:

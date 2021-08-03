@@ -9,7 +9,7 @@ services:
       - .env
     ports:
       - 5005:5000
-      - 6008:6006
+      - 6008:6006w
     stdin_open: true
     tty: true
     volumes:

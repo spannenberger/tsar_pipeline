@@ -72,14 +72,6 @@ stages: # Словарь всех стадий Catalyst, для обучения
         _target_: TensorboardMetricLearningCallback
         logging_incorrect_image_number: 10 # Кол-во ошибочных фотографий и фотографий к которым модель отнесла ошибочные
         logging_uncoordinated_image_number: 10 # Кол-во фотографий которые не прошли по расстоянию
-      onnx_saver:
-        _target_: OnnxSaveCallback
-        out_dir: "./logs/onnx"
-        checkpoint_names: ["best", "best_full"]
-      torchscript_saver: # Конвертация в torchscript формат
-        _target_: TorchscriptSaveCallback
-        out_dir: "./logs/torchsript"
-        checkpoint_names: ["best", "best_full"]
       triton: # Колбэк для создания конфига тритона
         _target_: TritonConfigCreator
         conf_path: "./logs/triton/config.pbtxt"
