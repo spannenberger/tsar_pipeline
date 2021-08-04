@@ -4,7 +4,7 @@ from catalyst.registry import Registry
 from pathlib import Path
 import yaml
 import os
-
+from pprint import pprint
 @Registry
 class TritonConfigCreator(Callback):
 
@@ -22,10 +22,12 @@ class TritonConfigCreator(Callback):
 
         with open(os.path.abspath(state.hparams['args']['configs'][0]), encoding="utf-8") as config_yaml:
             params = yaml.safe_load(config_yaml)
-            mode_name = state.hparams['args']['configs'][0].split("/")[1]
-            if mode_name == "classification":
+            pprint(params)
+            mode_name = params['model']['mode']
+            print(mode_name)
+            if mode_name == "Classification":
                 self.output_size = params['model']['num_classes']
-            elif mode_name == "metric_learning":
+            elif mode_name == "MetricLearning":
                 self.output_size = state.model.embedding_size
             else: 
                 raise Exception("Invalid mode")
