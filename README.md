@@ -225,7 +225,7 @@
 
 ### Использование колбэков в пайплайне
 - prunning callback прунит параметры во время и/или после обучения.
-:neutral_face:**Стоит отметить, что при использовании данного колбэка при обучении не будет работать конвертация моделей в onnx и torchscript**:neutral_face:
+:neutral_face:**Стоит отметить, что при использовании данного колбэка при обучении multilabel и metric learninng не будет работать конвертация моделей в onnx и torchscript**:neutral_face:
   ```
     Args:
         pruning_fn: функция из torch.nn.utils.prune module.
