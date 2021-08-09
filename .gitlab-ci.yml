@@ -1,0 +1,24 @@
+image: "pytorch:1.8.0" 
+
+before_script:
+  - pip install -r requirements.txt
+
+stages:
+  - test_multiclass_classification
+  - test_multilabel_classification
+  - test_metric_learning
+
+pytest1:
+  stage: test_multiclass_classification
+  script:
+  - pytest -v -m test_multiclass_classification
+
+pytest2:
+  stage: test_multilabel_classification
+  script:
+  - pytest -v -m test_multilabel_classification
+
+pytest3:
+  stage: test_metric_learning
+  script:
+  - pytest -v -m test_metric_learning
