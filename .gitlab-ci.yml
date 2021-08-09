@@ -1,4 +1,4 @@
-image: "pytorch:1.8.0" 
+image: "pytorch" 
 
 before_script:
   - pip install -r requirements.txt
