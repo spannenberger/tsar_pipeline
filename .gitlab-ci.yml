@@ -22,10 +22,8 @@ build_image:
 pep8:
   stage: testing
   image: $CONTAINER_TEST_IMAGE
-  before_script:
-    - python3.9 -m pip install flake8
   script:
-    - cd .
+    # - cd .
     - flake8 --statistics --show-source --ignore=W291,W293 --count src/
 
 # test_release_push:
