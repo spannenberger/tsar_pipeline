@@ -2,7 +2,7 @@ image: docker:latest
 
 stages:
   - build_image
-  - testing
+  # - testing
   # - testing_release
   # - release
   - cleanup
@@ -19,12 +19,12 @@ build_image:
     - docker image build --pull -t $CONTAINER_TEST_IMAGE .
     - docker image push $CONTAINER_TEST_IMAGE
 
-pep8:
-  stage: testing
-  image: $CONTAINER_TEST_IMAGE
-  script:
-    # - cd .
-    - flake8 --statistics --show-source --ignore=W291,W293 --count src/
+# pep8:
+#   stage: testing
+#   image: $CONTAINER_TEST_IMAGE
+#   script:
+#     # - cd .
+#     - flake8 --statistics --show-source --ignore=W291,W293 --count src/
 
 # test_release_push:
 #   stage: testing_release
