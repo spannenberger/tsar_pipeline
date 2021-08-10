@@ -26,7 +26,7 @@ pep8:
     - python3.6 -m pip install flake8
   script:
     - cd .
-    - python3.6 -m flake8 . --filename=*.py --max-line-length=99 --exclude=.eggs --statistics --show-source --ignore=W291,W293
+    # - python3.6 -m flake8 . --filename=*.py --max-line-length=99 --exclude=.eggs --statistics --show-source --ignore=W291,W293
 
 # test_release_push:
 #   stage: testing_release
@@ -38,15 +38,15 @@ pep8:
 #   only:
 #     - release
 
-release_push:
-  stage: release
-  script:
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
-    - docker image pull $CONTAINER_TEST_IMAGE
-    - docker image tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
-    - docker image push $CONTAINER_RELEASE_IMAGE
-  only:
-    - master
+# release_push:
+#   stage: release
+#   script:
+#     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+#     - docker image pull $CONTAINER_TEST_IMAGE
+#     - docker image tag $CONTAINER_TEST_IMAGE $CONTAINER_RELEASE_IMAGE
+#     - docker image push $CONTAINER_RELEASE_IMAGE
+#   only:
+#     - master
 
 cleanup:
   stage: cleanup
