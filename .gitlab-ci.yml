@@ -23,10 +23,10 @@ pep8:
   stage: testing
   image: $CONTAINER_TEST_IMAGE
   before_script:
-    - python3.6 -m pip install flake8
+    - python3.9 -m pip install flake8
   script:
     - cd .
-    # - python3.6 -m flake8 . --filename=*.py --max-line-length=99 --exclude=.eggs --statistics --show-source --ignore=W291,W293
+    - flake8 --statistics --show-source --ignore=W291,W293 --count src/
 
 # test_release_push:
 #   stage: testing_release
