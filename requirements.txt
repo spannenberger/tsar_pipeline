@@ -1,4 +1,4 @@
-catalyst==21.03
+catalyst==21.05
 numpy>=1.17.4
 opencv-python>=4.0
 torch==1.8.0

@@ -1,5 +1,5 @@
 model:
-  _target_: ResNet50 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: MobilenetV2 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
   mode: MetricLearning
   path: our_models/best.pth # Путь до расположения вашей локальной модели
   is_local: False # True если обучаете локально загруженную модель

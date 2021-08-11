@@ -1,4 +1,4 @@
-FROM pytorch/pytorch
+FROM pytorch/pytorch:1.8.0-cuda11.1-cudnn8-runtime
 LABEL Name=cv Version=0.0.1
 
 RUN apt update -y

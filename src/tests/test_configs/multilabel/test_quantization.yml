@@ -1,5 +1,5 @@
 model:
-  _target_: ResNet18 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: MobilenetV2 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
   num_classes: &num_classes 18
   mode: Classification
   # path: 'our_models/best.pth' # Путь до расположения вашей локальной модели

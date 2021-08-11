@@ -26,7 +26,6 @@ from callbacks.logger_callbacks.tensorboard_image_logger import TensorboardMetri
 from catalyst.loggers.tensorboard import TensorboardLogger
 from callbacks.convert_callbacks.onnx_save_callback import OnnxSaveCallback
 from callbacks.convert_callbacks.torchscript_save_callback import TorchscriptSaveCallback
-from callbacks.convert_callbacks.quantization import QuantizationCallback
 from callbacks.triton_config_callback import TritonConfigCreator
 from callbacks.criterion import CustomTrainCriterion
 from callbacks.cmc_valid import CustomCMC
