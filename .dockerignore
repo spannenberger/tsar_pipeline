@@ -28,8 +28,6 @@ log/
 train_dataset/
 **/*zip
 README.md
-src/
-config/
 notebooks
 .gitignore
 *.sh
