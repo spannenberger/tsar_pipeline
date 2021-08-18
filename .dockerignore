@@ -31,7 +31,8 @@ README.md
 notebooks
 .gitignore
 *.sh
-config/
+config/classification/
+config/metric_learning/
 dataset_classif_0804
 env/
 logs/
