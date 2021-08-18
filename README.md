@@ -1,15 +1,15 @@
 # tsar_pipeline
-Данный репозиторий содержит решение мультикласс, мультилейбл классификации и Metric Learning 
+### Данный репозиторий содержит решение мультикласс, мультилейбл классификации и Metric Learning
 ----
 ### Содержание
 - [User guide](#user-guide)
   * [Структура репозитория](#структура-репозитория)
-  * [Инструкция по использованию репозитория](#инструкция-по-использованию-репозитория)
+  * [Инструкция по использования репозитория через CI/CD](./examples/Readme.md)
+  * [Инструкция по использованию репозитория для virtualenv/env](#инструкция-по-использованию-репозитория)
 - [Использование тритона после обучения](#использование-тритона-после-обучения)
 - [Информация о конвертации моделей](#информация-о-конвертации-моделей)
 - [Информация о моделях](#информация-о-моделях)
 - [Training run](#training-run)
-- [Train in docker](#train-in-docker)
 # User guide
 ### Структура репозитория
 - [classifications_shells](#training-run) - папка, содержащая скрипты запуска решений задач классификации
@@ -20,7 +20,7 @@
     * [MetricLearning](config/metric_learning/train_metric_learning.yml) - конфиг metric learning
 - [src](src/) - папка с основными файлами проекта, в которую добавляются новые шедулеры, модели, коллбэки и тд
 - [docker-compose.yml](#test-in-docker) - конфиг файл для докера
-- [model_converter.py](/model_converter.py) - файл для конвертации моделей в форматы torchscript, onnx и проверки корректности преобразованных файлов
+- [examples](examples/) - папка с примером и документацией использования репозитория для CI/CD
 - [requirements.txt](/requirements.txt) - файл с библиотеками и инструментами, которые нам нужны в проектах
 ---
 ### Инструкция по использованию репозитория
@@ -329,17 +329,4 @@ tensorboard --logdir=logs/ui # for our pipeline
 # Run mlflow 
 mlflow ui
 
-```
-# Train in docker
-```
-docker-compose build
-
-# запуск multilabel решения
-docker-compose up -d --build multilabel
-
-# запуск multiclass решения
-docker-compose up -d --build multiclass
-
-# запуск metric learning решения
-docker-compose up -d --build metric_learning
 ```

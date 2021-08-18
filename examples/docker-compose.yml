@@ -1,0 +1,55 @@
+version: '2.3'
+
+services:
+  multilabel:
+    image: 8acf35ae7904 # image_id докера, который вы пульнули с registry gitlab
+    # runtime: nvidia
+    # pid: "host"
+    # env_file:
+    #   - .env
+    ports:
+      - 5000:5000
+      - 6006:6006
+    stdin_open: true
+    tty: true
+    command: sh classification_shells/check_multilabel.sh # Скрипт запуска обучения (запустится автоматически после того как вы поднимете докер)
+    volumes:
+      - "./dataset_classif_0804:/workspace/cv/dataset" # Прокидываем ваш датасет, где "dataset_classif_0804" - название вашей папки с данными 
+      - "./your_local_config/multilabel/:/workspace/cv/config/classification/multilabel/" # Прокидываем ваш конфиг для задачи multilabel
+
+  multiclass:
+      image: 8acf35ae7904 # image_id докера, который вы пульнули с registry gitlab
+      # runtime: nvidia
+      # pid: "host"
+      # env_file:
+      #   - .env
+      ports:
+        - 5000:5000
+        - 6006:6006
+      stdin_open: true
+      tty: true
+      command: sh classification_shells/train_multiclass.sh # Скрипт запуска обучения (запустится автоматически после того как вы поднимете докер)
+      volumes:
+        - "./train_dataset_sigi:/workspace/cv/dataset" # Прокидываем ваш датасет, где "train_dataset_sigi" - название вашей папки с данными 
+        - "./your_local_config/multiclass/:/workspace/cv/config/classification/multiclass/" # Прокидываем ваш конфиг для задачи multiclass
+
+  metric_learning:
+      image: 8acf35ae7904 # image_id докера, который вы пульнули с registry gitlab
+      # runtime: nvidia
+      # pid: "host"
+      # env_file:
+      #   - .env
+      ports:
+        - 5000:5000
+        - 6006:6006
+      stdin_open: true
+      tty: true
+      command: sh metric_learning_shells/check.sh # Скрипт запуска обучения (запустится автоматически после того как вы поднимете докер)
+      volumes:
+        - "./metric_learning_dataset:/workspace/cv/dataset" # Прокидываем ваш датасет, где "metric_learning_dataset" - название вашей папки с данными 
+        - "./your_local_config/metric_learning:/workspace/cv/config/metric_learning/" # Прокидываем ваш конфиг для задачи metric_learning
+
+volumes:
+  multilabel:
+  multiclass:
+  metric_learning:
