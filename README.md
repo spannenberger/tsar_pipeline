@@ -20,7 +20,6 @@
     * [MetricLearning](config/metric_learning/train_metric_learning.yml) - конфиг metric learning
 - [src](src/) - папка с основными файлами проекта, в которую добавляются новые шедулеры, модели, коллбэки и тд
 - [docker-compose.yml](#test-in-docker) - конфиг файл для докера
-- [examples](examples/) - папка с примером и документацией использования репозитория для CI/CD
 - [requirements.txt](/requirements.txt) - файл с библиотеками и инструментами, которые нам нужны в проектах
 ---
 ### Инструкция по использованию репозитория
