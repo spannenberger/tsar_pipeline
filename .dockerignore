@@ -28,8 +28,14 @@ log/
 train_dataset/
 **/*zip
 README.md
-src/
-config/
 notebooks
 .gitignore
 *.sh
+config/classification/
+config/metric_learning/
+dataset_classif_0804
+env/
+logs/
+metric_learning_dataset/
+mlruns/
+train_dataset_sigi/
