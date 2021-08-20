@@ -63,9 +63,11 @@
           ...
           1
         ```
-       - Изменить в папке ```./config/multiclass/train_multiclass.yml``` файл, прописав новые пути до данных в блоке ```data:```
+       - Изменить в папке ```./config/classification/multiclass/train_multiclass.yml``` файл, прописав новые пути до данных в блоке ```data:```
+       - Подготовка данных к эксперименту происходит в ```./src/classification/SupervisedRunner.py``` в методе get_datasets класса ```MulticlassRunner```,
+       чтение данных во время эксперимента происходит в ```dataset.py```
    - Изменение моделей обучения
-       - Изменить в ```train_multiclass.yml``` файле название модели (доступные модели можно посмотреть в ```src/classification/__init__.py``` в ```Registry(some_model)```) в блоке ```model:```
+       - Изменить в ```train_multiclass.yml``` файле название модели (доступные модели можно посмотреть в таблице([Информация о моделях](#информация-о-моделях))
    - Логирование эксперимента в mlflow
    - Для отключения колбэков достаточно их закомментировать в config файле
     - Для дообучения на своих моделях:
@@ -77,7 +79,7 @@
        AWS_ACCESS_KEY_ID=
        AWS_SECRET_ACCESS_KEY=
        ```
-       - Изменить в папке ```./config/multiclass/train_multiclass.yml``` файл, прописав новые url и название эксперимента в блоке 
+       - Изменить в папке ```./config/classification/multiclass/train_multiclass.yml``` файл, прописав новые url и название эксперимента в блоке 
        ```
        loggers:
             mlflow:
@@ -144,11 +146,11 @@
           ...
           1.0
         ```
-       - Изменить в папке ```./config/multilabel/train_multilabel.yml``` файл, прописав новые пути до данных в блоке ```data:```
-       - Подготовка данных к эксперименту происходит в ```./src/multilabel/TTASupervisedRunner.py``` в методе get_datasets,
+       - Изменить в папке ```./config/classification/multilabel/train_multilabel.yml``` файл, прописав новые пути до данных в блоке ```data:```
+       - Подготовка данных к эксперименту происходит в ```./src/classification/SupervisedRunner.py``` в методе get_datasets класса ```MultilabelRunner```,
        чтение данных во время эксперимента происходит в ```dataset.py```
    - Изменение моделей обучения
-       - Изменить в ```train_multilabel.yml``` файле название модели (доступные модели можно посмотреть в ```src/classification/__init__.py``` в ```Registry(some_model)```) в блоке ```model:```
+       - Изменить в ```train_multilabel.yml``` файле название модели (доступные модели можно посмотреть в таблице([Информация о моделях](#информация-о-моделях)))
    - Логирование эксперимента в mlflow
        - Создать .env файл
        ```
@@ -158,7 +160,7 @@
        AWS_ACCESS_KEY_ID=
        AWS_SECRET_ACCESS_KEY=
        ```
-       - Изменить в папке ```./config/multiclass/train_multilabel.yml``` файл, прописав новые url и название эксперимента в блоке 
+       - Изменить в папке ```./config/classification/multilabel/train_multilabel.yml``` файл, прописав новые url и название эксперимента в блоке 
        ```
        loggers:
             mlflow:
@@ -192,7 +194,7 @@
           - val 
        ```
    - Изменение моделей обучения
-     - Изменить в ```train_metric_learning.yml``` файле название модели (доступные модели можно посмотреть в ```src/metric_learning/__init__.py``` в ```Registry(some_model)```) в блоке ```model:```    
+     - Изменить в ```train_metric_learning.yml``` файле название модели (доступные модели можно посмотреть в таблице([Информация о моделях](#информация-о-моделях)))
    - Для отключения колбэков достаточно их закомментировать в config файле
    - Логирование эксперимента в mlflow
        - Создать .env файл
@@ -203,7 +205,7 @@
        AWS_ACCESS_KEY_ID=
        AWS_SECRET_ACCESS_KEY=
        ```
-       - Изменить в папке ```./config/multiclass/train_multilabel.yml``` файл, прописав новые url и название эксперимента в блоке 
+       - Изменить в папке ```./config/metric_learning/train_metric_learning.yml``` файл, прописав новые url и название эксперимента в блоке 
        ```
        loggers:
             mlflow:
