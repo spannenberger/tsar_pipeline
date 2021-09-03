@@ -37,8 +37,6 @@ loggers:
     _target_: CustomMLflowLogger
     experiment: 'sigi'
     class_names: *class_names
-    # tracking_uri: http://mlflow.ddc.itnap.ru:5000/
-    # registry_uri: https://storage.yandexcloud.net/
 
   tensorboard:
     _target_: TensorboardLogger

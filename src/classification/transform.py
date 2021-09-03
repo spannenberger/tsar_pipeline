@@ -42,6 +42,3 @@ class CustomAugmentator():
         raise Exception('Unknown mode')
 
 
-if __name__ == "__main__":
-    a = CustomAugmentator().transforms("config/classification/augmentations/medium.yml")
-    print(a)

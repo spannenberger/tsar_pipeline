@@ -68,17 +68,8 @@
        чтение данных во время эксперимента происходит в ```dataset.py```
    - Изменение моделей обучения
        - Изменить в ```train_multiclass.yml``` файле название модели (доступные модели можно посмотреть в таблице([Информация о моделях](#информация-о-моделях))
-   - Логирование эксперимента в mlflow
    - Для отключения колбэков достаточно их закомментировать в config файле
-    - Для дообучения на своих моделях:
-       - Создать .env файл
-       ```
-       USER=YourWorkEmail@napoleonit.ru
-       MLFLOW_TRACKING_URI=
-       MLFLOW_S3_ENDPOINT_URL=
-       AWS_ACCESS_KEY_ID=
-       AWS_SECRET_ACCESS_KEY=
-       ```
+   - Логирование эксперимента в mlflow
        - Изменить в папке ```./config/classification/multiclass/train_multiclass.yml``` файл, прописав новые url и название эксперимента в блоке 
        ```
        loggers:
@@ -152,14 +143,6 @@
    - Изменение моделей обучения
        - Изменить в ```train_multilabel.yml``` файле название модели (доступные модели можно посмотреть в таблице([Информация о моделях](#информация-о-моделях)))
    - Логирование эксперимента в mlflow
-       - Создать .env файл
-       ```
-       USER=YourWorkEmail@napoleonit.ru
-       MLFLOW_TRACKING_URI=
-       MLFLOW_S3_ENDPOINT_URL=
-       AWS_ACCESS_KEY_ID=
-       AWS_SECRET_ACCESS_KEY=
-       ```
        - Изменить в папке ```./config/classification/multilabel/train_multilabel.yml``` файл, прописав новые url и название эксперимента в блоке 
        ```
        loggers:
@@ -197,14 +180,6 @@
      - Изменить в ```train_metric_learning.yml``` файле название модели (доступные модели можно посмотреть в таблице([Информация о моделях](#информация-о-моделях)))
    - Для отключения колбэков достаточно их закомментировать в config файле
    - Логирование эксперимента в mlflow
-       - Создать .env файл
-       ```
-       USER=YourWorkEmail@napoleonit.ru
-       MLFLOW_TRACKING_URI=
-       MLFLOW_S3_ENDPOINT_URL=
-       AWS_ACCESS_KEY_ID=
-       AWS_SECRET_ACCESS_KEY=
-       ```
        - Изменить в папке ```./config/metric_learning/train_metric_learning.yml``` файл, прописав новые url и название эксперимента в блоке 
        ```
        loggers:

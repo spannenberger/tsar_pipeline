@@ -30,8 +30,6 @@ loggers:
   mlflow:
     _target_: MLflowLogger
     experiment: 'metric_learning'
-    # tracking_uri: http://mlflow.ddc.itnap.ru:5000/
-    # registry_uri: https://storage.yandexcloud.net/
   tensorboard:
     _target_: TensorboardLogger
     logdir: "./logs/ui"
