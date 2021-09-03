@@ -9,6 +9,7 @@
 - [Информация о конвертации моделей](#информация-о-конвертации-моделей)
 - [Информация о моделях](#информация-о-моделях)
 - [Training run](#training-run)
+- [Docker run](#docker-run)
 # User guide
 ### Структура репозитория
 - [classifications_shells](#training-run) - папка, содержащая скрипты запуска решений задач классификации
@@ -304,4 +305,15 @@ tensorboard --logdir=logs/ui # for our pipeline
 # Run mlflow 
 mlflow ui
 
+```
+# Docker run 
+```
+# build ur project, u need to do this only once
+docker-compose build
+
+# run docker ur container
+docker-compose up
+
+# shutdown ur container
+docker-compose stop
 ```
