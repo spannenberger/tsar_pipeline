@@ -21,12 +21,6 @@ class MainMLFlowLoggerCallback(Callback):
         mlflow.log_artifact(get_from_dict(state.hparams, 'args:configs')[0], 'config')
         mlflow.log_artifact(
             get_from_dict(state.hparams, 'stages:stage:data:transform_path'), 'config/aug_config')
-        try:
-            mlflow.log_artifact(get_from_dict(state.hparams, 'stages:stage:callbacks:triton:conf_path'),
-                                'config/triton')
-        except FileNotFoundError:
-            print('Сant find triton config, because you disabled this callback')
-            print('\n'*3)
 
     def on_experiment_end(self, state: IRunner):
         callbacks_dict = get_from_dict(state.hparams, 'stages:stage:callbacks')

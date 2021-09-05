@@ -78,14 +78,6 @@ stages: # Словарь всех стадий Catalyst, для обучения
         _target_: TorchscriptSaveCallback
         out_dir: "./logs/torchsript"
         checkpoint_names: ["best", "best_full"]
-      triton: # Колбэк для создания конфига тритона
-        _target_: TritonConfigCreator
-        conf_path: "./logs/triton/config.pbtxt"
-        # instance_group params
-        # Читай доку Тритона (https://github.com/bytedance/triton-inference-server/blob/master/docs/model_configuration.md#instance-groups)
-        count: 1 # Количество запущенных инстансов модели на каждом gpu/cpu
-        kind: KIND_GPU # Есть два возможных параметра - KIND_CPU (для работы на CPU) и KIND_GPU (для работы на GPU)
-        gpus: [ 0 ] # Если kind: KIND_GPU, то нужно указать какие именно GPU будут использоваться
       # prunning: # Коллбэк для прунинга модели. Смотри документацию в Readme
       #   _target_: PruningCallback
       #   pruning_fn: random_unstructured # функция из модуля torch.nn.utils.prune или ваш на основе BasePruningMethod. Может быть строкой, например. " l1_unstructured ". Подробнее см. В документации по pytorch.

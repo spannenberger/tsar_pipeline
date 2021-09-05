@@ -5,7 +5,6 @@
 - [User guide](#user-guide)
   * [Структура репозитория](#структура-репозитория)
   * [Инструкция по использованию репозитория для virtualenv/env](#инструкция-по-использованию-репозитория)
-- [Использование тритона после обучения](#использование-тритона-после-обучения)
 - [Информация о конвертации моделей](#информация-о-конвертации-моделей)
 - [Информация о моделях](#информация-о-моделях)
 - [Training run](#training-run)
@@ -245,41 +244,28 @@
   - best.pth - лучшая модель за обучение
   - last.pth - модель с последней эпохи
   - stage.1_full.pth, ..., stage.n_full.pth - лучшие n моделей за обучение 
-# Использование тритона после обучения
-В репозитории реализован колбэк для создания минимального тритон конфига модели, который автоматически логируется в mlflow:
-```
-triton:
-  _target_: TritonConfigCreator
-  conf_path: "./logs/triton/config.pbtxt" # Путь создания конфига
-  mode: multilabel # Выбрать один из режимов multiclass, multilabel
-  # instance_group params
-  count: 1 # Кол-во используемых gpu
-  kind: None # Читай доку тритона
-  gpus: [ 0 ] # номера используемых gpu
-```
-Также в таблице([Информация о моделях](#информация-о-моделях)) можно посмотреть возможность использования модели в тритоне
 # Информация о моделях
 
-| model | onnx  | torchscript  | Triton | embedding_size |
-| :---: | :-: | :-: | :-: | :-: |
-| ResNet18 | True  | True  | True | 512 |
-| ResNet34 | True  | True  | True | 512 |
-| ResNet50 | True  | True  | True | 2048 |
-| ResNet101 | True  | True  | True | 2048 |
-| MobilenetV3Small | False  | True  | False | 576 |
-| MobilenetV2 | True  | True  | True | 576 |
-| MobilenetV3Large | False  | True  | False | 960 |
-| ResNext101_32x8d | True  | True  | True | 2048 |
-| ResNext50_32x4d | True  | True  | True | 2048 |
-| WideResnet50_2 | True  | True  | True | 2048 |
-| WideResnet101_2 | True  | True  | True | 2048 |
-| EfficientNetb0 | True  | True  | True | 1280 |
-| EfficientNetb3 | True  | True  | True | 1536 |
-| EfficientNetb4 | True  | True  | True | 1792 |
-| Densenet201 | True  | True  | True | 1920 |
-| Densenet169 | True  | True  | True | 1664 |
-| Densenet161 | True  | True  | True | 2208 |
-| Densenet121 | True  | True  | True | 1024 |
+| model | onnx  | torchscript | embedding_size |
+| :---: | :-: | :-: | :-: |
+| ResNet18 | True  | True  | 512 |
+| ResNet34 | True  | True | 512 |
+| ResNet50 | True  | True | 2048 |
+| ResNet101 | True  | True | 2048 |
+| MobilenetV3Small | False  | True | 576 |
+| MobilenetV2 | True  | True | 576 |
+| MobilenetV3Large | False  | True | 960 |
+| ResNext101_32x8d | True  | True | 2048 |
+| ResNext50_32x4d | True  | True | 2048 |
+| WideResnet50_2 | True  | True | 2048 |
+| WideResnet101_2 | True  | True | 2048 |
+| EfficientNetb0 | True  | True | 1280 |
+| EfficientNetb3 | True  | True | 1536 |
+| EfficientNetb4 | True  | True | 1792 |
+| Densenet201 | True  | True | 1920 |
+| Densenet169 | True  | True | 1664 |
+| Densenet161 | True  | True | 2208 |
+| Densenet121 | True  | True | 1024 |
 
 # Training run 
 ```bash
