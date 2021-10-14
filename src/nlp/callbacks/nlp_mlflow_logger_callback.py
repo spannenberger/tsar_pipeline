@@ -13,3 +13,7 @@ class NLPMlflowLoggerCallback(Callback):
 
     def on_stage_start(self, state: IRunner):
         mlflow.log_artifact(get_from_dict(state.hparams, 'args:configs')[0], 'config')
+
+    def on_experiment_end(self, state: IRunner):
+        mlflow.log_artifact(get_from_dict(state.hparams, 'stages:stage:callbacks:distance_analyse:similary_file_path'))
+    
