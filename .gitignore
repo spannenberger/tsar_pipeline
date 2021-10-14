@@ -137,6 +137,7 @@ metric_learning_dataset/
 train_dataset_kcm/
 train_dataset/
 *_dataset/
+*_data/
 dataset_classif_0804/
 train_dataset_sigi/
 mnist*/
@@ -152,3 +153,4 @@ our_models/
 cassava-leaf-disease-classification
 .DS_Store
 crossval_log/
+nlp_data/
