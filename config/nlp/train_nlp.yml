@@ -61,14 +61,14 @@ stages: # Словарь всех стадий Catalyst, для обучения
         _target_: TqdmCallback
       distance_analyse:
         _target_: DistanceAnalyse
-        data_path: "nlp_data/napoleon_user_stories_clean.csv"
+        data_path: "nlp_dataset/napoleon_user_stories_clean.csv"
         similary_file_path: "./logs/user_story_distance_labeled.txt"
       custom_mlflow:
         _target_: NLPMlflowLoggerCallback
 
     data: # Подключение данных и параметров обучения
       shuffle: True
-      dataset_path: "nlp_data/encoded_labeled_story_clean_2.csv"
+      dataset_path: "nlp_dataset/encoded_labeled_story_clean_2.csv"
     loaders: &loaders
       batch_size: 4 # Размер батча для всех стейджей
       num_workers: 0 #для локальной поставить 0
