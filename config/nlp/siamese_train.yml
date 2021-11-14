@@ -1,10 +1,8 @@
 model:
-  _target_: Bert # имя клаccа. Сам класс будет сконструирован в registry по этому имени
-  num_classes: &num_classes 40
-  model_path: "sberbank-ai/ruBert-large"
+  _target_: Siamese # имя клаccа. Сам класс будет сконструирован в registry по этому имени
 
 args: # Различные аргументы для Catalyst
-  expdir: src/nlp # Путь до нашего эксперимента, с файлом `__init__`, в котором импортируется Runner, и, опционально, регистрируются все дополнительные сущности: model, callback, criterion, etc
+  expdir: src/nlp # Путь до нашего эксперимента, с файлом __init__, в котором импортируется Runner, и, опционально, регистрируются все дополнительные сущности: model, callback, criterion, etc
   logdir: logs # Путь в который будут сохранятся логи
   verbose: True # Нужно ли выводить на консоль информацию об обучении
   seed: 42 # сид обучения для PyTorch, Numpy, Python и Tensorflow
@@ -12,10 +10,10 @@ args: # Различные аргументы для Catalyst
   benchmark: True # Нужно ли использовать CuDNN benchmark
 
 runner: # Параметры для инициализации Runner
-   _target_: ruBertNLPRunner
-   input_key: &model_input "features"
+   _target_: SiameseSupervisedRunner
+   input_key: &model_input "text"
    output_key: &model_output "logits"
-   target_key: &model_target "targets"
+   target_key: &model_target "labels"
    loss_key: &model_loss "loss"
 
 engine: # Параметры для distributed training и NVIDIA Apex
@@ -28,9 +26,10 @@ loggers:
 #(Возможные логеры: https://github.com/catalyst-team/catalyst/tree/master/catalyst/loggers)
   console:
     _target_: ConsoleLogger
+
   mlflow:
     _target_: MLflowLogger
-    experiment: "skolkovo_experiments"
+    experiment: "Siamese experiment"
     # tracking_uri: http://mlflow.ddc.itnap.ru:5000/
     # registry_uri: https://storage.yandexcloud.net/
 
@@ -38,7 +37,7 @@ loggers:
 stages: # Словарь всех стадий Catalyst, для обучения и/или инфера. Содержат ключевые слова с параметрами, которые применятся ко всем стейджам, так и сами имена стейджей
   stage:
     criterion: # Параметры для лосс-функции
-      _target_: CrossEntropyLoss
+      _target_: BCEWithLogitsLoss
 
     optimizer: # Параметры оптимизатора
       _target_: AdamW
@@ -48,31 +47,39 @@ stages: # Словарь всех стадий Catalyst, для обучения
       optimizer: # Параметры для оптимизатора
         _target_: OptimizerCallback
         metric_key: *model_loss
+
       accuracy:
         _target_: AccuracyCallback
         input_key: *model_output
         target_key: *model_target
+
       loss:
         _target_: CriterionCallback
         input_key: *model_output
         target_key: *model_target
         metric_key: *model_loss
+
+      analyze:
+        _target_: AnalyticsDistanceCallback
+        analytics_data: "./nlp_dataset/napoleon_user_stories_clean.csv"
+        similarity_file_path: "./logs/similarity.txt"
+        cluster_file_path: "./logs/clusters.csv"
+
+      # duplet:
+      #   _target_: DupletMetricCallback
+      #   duplets_file: ./dupl_stories_with_added_short.csv
+      custom_mlflow:
+        _target_: CustomMLFlowCallback
       verbose:
         _target_: TqdmCallback
-      distance_analyse:
-        _target_: DistanceAnalyse
-        data_path: "nlp_dataset/napoleon_user_stories_clean.csv"
-        similary_file_path: "./logs/user_story_distance_labeled.txt"
-      custom_mlflow:
-        _target_: NLPMlflowLoggerCallback
 
     data: # Подключение данных и параметров обучения
       shuffle: True
-      dataset_path: "nlp_dataset/encoded_labeled_story_clean_2.csv"
+      text: "./nlp_dataset/dupl_stories_with_added_short.csv"
     loaders: &loaders
-      batch_size: 4 # Размер батча для всех стейджей
+      batch_size: 2 # Размер батча для всех стейджей
       num_workers: 0 #для локальной поставить 0
-    num_epochs: 2 # Количество эпох эксперимента
+    num_epochs: 1 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: accuracy01
     minimize_metric: False
