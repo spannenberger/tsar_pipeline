@@ -1,11 +1,12 @@
-from SupervisedRunner import ruBertNLPRunner
-from model import Bert
+from .SupervisedRunner import SiameseSupervisedRunner, NLPSupervisedRunner
+from .models.gpt import gpt
+from .models.siamese_model import Siamese
 from catalyst.registry import Registry
-from transformers import AdamW
-from nlp.callbacks.nlp_mlflow_logger_callback import NLPMlflowLoggerCallback
-from catalyst.loggers.mlflow import MLflowLogger
-from callbacks.nlp_mlflow_logger_callback import NLPMlflowLoggerCallback
+from .callbacks.analytics_callback import AnalyticsDistanceCallback
+from .callbacks.custom_mlflow_callback import CustomMLFlowCallback
+from .callbacks.duplet_metric_callback import DupletMetricCallback
 
-Registry(NLPMlflowLoggerCallback)
-Registry(Bert)
-Registry(ruBertNLPRunner)
+Registry(Siamese)
+Registry(gpt)
+Registry(SiameseSupervisedRunner)
+Registry(NLPSupervisedRunner)
