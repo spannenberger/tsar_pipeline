@@ -25,6 +25,7 @@ from models.models import WideResnet101_2
 from callbacks.custom_scheduler import CustomScheduler
 from callbacks.convert_callbacks.torchscript_save_callback import TorchscriptSaveCallback
 from callbacks.convert_callbacks.onnx_save_callback import OnnxSaveCallback
+from callbacks.logger_callbacks.mlflow_logger import CustomMLflowLogger
 # Multiclass
 from callbacks.iner_callback import MulticlassInerCallback
 from callbacks.logger_callbacks.mlflow_image_logger import MLFlowMulticlassLoggingCallback
@@ -34,10 +35,8 @@ from callbacks.iner_callback import MultilabelInerCallback
 from callbacks.logger_callbacks.mlflow_image_logger import MLFlowMultilabelLoggingCallback
 from callbacks.logger_callbacks.tensorboard_image_logger import TensorboardMultilabelLoggingCallback
 
-from callbacks.logger_callbacks.mlflow_logger import CustomMLflowLogger
 # Импорт инструментов каталиста
 from catalyst.registry import Registry
-from catalyst.loggers.mlflow import MLflowLogger
 from catalyst.loggers.tensorboard import TensorboardLogger
 
 

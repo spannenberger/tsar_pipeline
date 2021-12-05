@@ -22,8 +22,11 @@ from models.models import EfficientNetb3
 
 
 from callbacks.logger_callbacks.mlflow_image_logger import MLFlowMetricLearningCallback
+
 from callbacks.logger_callbacks.tensorboard_image_logger import TensorboardMetricLearningCallback
 from catalyst.loggers.tensorboard import TensorboardLogger
+from callbacks.logger_callbacks.mlflow_logger import CustomMLflowLogger
+
 from callbacks.convert_callbacks.onnx_save_callback import OnnxSaveCallback
 from callbacks.convert_callbacks.torchscript_save_callback import TorchscriptSaveCallback
 from callbacks.criterion import CustomTrainCriterion
@@ -52,3 +55,4 @@ Registry(MobilenetV3Small)
 Registry(CustomTrainCriterion)
 Registry(CustomCMC)
 Registry(MertricLearningSupervisedRunner)
+Registry(CustomMLflowLogger)
