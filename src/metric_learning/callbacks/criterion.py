@@ -14,6 +14,7 @@ class CustomCriterion(CriterionCallback):
     def on_stage_start(self, runner):
         self.criterion = AngularPenaltySMLoss(
             runner.model.embedding_size, self.num_classes, scale=self.scale, margin=self.margin, loss_type=self.loss_type)
+        runner.engine.sync_device(self.criterion)
 
 
 class CustomTrainCriterion(dl.ControlFlowCallback):
