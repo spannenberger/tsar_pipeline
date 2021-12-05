@@ -19,8 +19,11 @@ class MainMLFlowLoggerCallback(Callback):
     def on_stage_start(self, state: IRunner):
         """Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа"""
         mlflow.log_artifact(get_from_dict(state.hparams, 'args:configs')[0], 'config')
-        mlflow.log_artifact(
-            get_from_dict(state.hparams, 'stages:stage:data:transform_path'), 'config/aug_config')
+        try: 
+            mlflow.log_artifact(
+                get_from_dict(state.hparams, 'stages:stage:data:transform_path'), 'config/aug_config')
+        except KeyError as e:
+            print(f"\nCant log augmentations because of error: {e}\n")
 
     def on_experiment_end(self, state: IRunner):
         callbacks_dict = get_from_dict(state.hparams, 'stages:stage:callbacks')
@@ -199,3 +202,17 @@ class MLFlowMetricLearningCallback(MainMLFlowLoggerCallback):
             save_path = Path('uncoordinated/') / image_path.parts[2] / image_path.name
             mlflow.log_image(uncoordinated_image, save_path.as_posix())
         super().on_experiment_end(state)
+
+@Registry
+class MLFlowNLPLoggingCallback(MainMLFlowLoggerCallback):
+
+    def __init__(self):
+        super().__init__()
+    
+    def on_experiment_end(self, state: IRunner):
+        callbacks_dict = get_from_dict(state.hparams, 'stages:stage:callbacks')
+        if "analyze" in callbacks_dict:
+            similar_path = get_from_dict(callbacks_dict, 'analyze:similarity_file_path')
+            cluster_path = get_from_dict(callbacks_dict, 'analyze:cluster_file_path')
+            mlflow.log_artifact(similar_path, 'distance analyze')
+            mlflow.log_artifact(cluster_path, 'clusters')

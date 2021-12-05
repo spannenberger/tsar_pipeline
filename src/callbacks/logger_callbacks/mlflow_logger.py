@@ -10,8 +10,6 @@ ALLOWED_PARAMS_EXPERIMENT = {
 ALLOWED_PARAMS_STAGE = {
     'optimizer._target_': 'optimizer',
     'optimizer.lr': 'lr',
-    'scheduler._target_': 'scheduler',
-    'data.transform_path': 'transform_path',
     'loaders.batch_size': 'batch_size',
     'loaders.num_workers': 'num_workers',
     'num_epochs': 'num_epochs',

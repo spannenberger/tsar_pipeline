@@ -1,5 +1,7 @@
 model:
   _target_: Siamese # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  model_name: "sberbank-ai/rugpt3small_based_on_gpt2"
+  embeddings_number: 768
 
 args: # Различные аргументы для Catalyst
   expdir: src/nlp # Путь до нашего эксперимента, с файлом __init__, в котором импортируется Runner, и, опционально, регистрируются все дополнительные сущности: model, callback, criterion, etc
@@ -28,11 +30,8 @@ loggers:
     _target_: ConsoleLogger
 
   mlflow:
-    _target_: MLflowLogger
+    _target_: CustomMLflowLogger
     experiment: "Siamese experiment"
-    # tracking_uri: http://mlflow.ddc.itnap.ru:5000/
-    # registry_uri: https://storage.yandexcloud.net/
-
 
 stages: # Словарь всех стадий Catalyst, для обучения и/или инфера. Содержат ключевые слова с параметрами, которые применятся ко всем стейджам, так и сами имена стейджей
   stage:
@@ -59,17 +58,18 @@ stages: # Словарь всех стадий Catalyst, для обучения
         target_key: *model_target
         metric_key: *model_loss
 
+      save_config_model:
+        _target_: SaveModelWithConfigCallback
+        save_path: ./siamese_gpt
+
       analyze:
         _target_: AnalyticsDistanceCallback
         analytics_data: "./nlp_dataset/napoleon_user_stories_clean.csv"
         similarity_file_path: "./logs/similarity.txt"
         cluster_file_path: "./logs/clusters.csv"
 
-      # duplet:
-      #   _target_: DupletMetricCallback
-      #   duplets_file: ./dupl_stories_with_added_short.csv
       custom_mlflow:
-        _target_: CustomMLFlowCallback
+        _target_: MLFlowNLPLoggingCallback
       verbose:
         _target_: TqdmCallback
 

@@ -1,5 +1,6 @@
 model:
   _target_: gpt # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  model_name: sberbank-ai/rugpt3small_based_on_gpt2
 
 args: # Различные аргументы для Catalyst
   expdir: src/nlp # Путь до нашего эксперимента, с файлом `__init__`, в котором импортируется Runner, и, опционально, регистрируются все дополнительные сущности: model, callback, criterion, etc
@@ -30,8 +31,6 @@ loggers:
   mlflow:
     _target_: MLflowLogger
     experiment: "Skolkovo_4"
-    # tracking_uri: http://mlflow.ddc.itnap.ru:5000/
-    # registry_uri: https://storage.yandexcloud.net/
 
 
 stages: # Словарь всех стадий Catalyst, для обучения и/или инфера. Содержат ключевые слова с параметрами, которые применятся ко всем стейджам, так и сами имена стейджей

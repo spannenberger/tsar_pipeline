@@ -310,7 +310,9 @@ LMDB - Lightning Memory-Mapped Database - программная библиот�
 | Densenet169 | True  | True | 1664 |
 | Densenet161 | True  | True | 2208 |
 | Densenet121 | True  | True | 1024 |
-
+| sberbank-ai/rugpt3medium_based_on_gpt2 | False | False | 1024 | 
+| sberbank-ai/rugpt3large_based_on_gpt2 | False | False | 1536 | 
+| "sberbank-ai/rugpt3small_based_on_gpt2" | False | False | 768 |
 # Training run 
 ```bash
 # To check multiclass pipeline
@@ -329,6 +331,19 @@ sh classification_shells/train_multilabel.sh
 sh metric_learning_shells/train.sh
 # To check metric_learning pipeline
 sh metric_learning_shells/check.sh
+
+
+# To train nlp siamese pipeline
+nlp_shells/siamese_train.sh
+# To check nlp siamse pipeline
+sh nlp_shells/siamese_check.sh
+
+
+# To train gpt language pipeline
+sh nlp_shells/gpt_train.sh
+# To check gpt language pipeline
+sh nlp_shells/gpt_check.sh
+
 
 # Run tensorflow for visualisation
 tensorboard --logdir=logs/ui # for our pipeline

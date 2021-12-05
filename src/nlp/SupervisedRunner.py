@@ -61,8 +61,8 @@ class MulticlassSiameseRunner(IRunner):
         datasets = OrderedDict()
 
         df = pd.read_csv(self._stage_config[stage]["data"]["text"])
-
-        self.tokenizer = GPT2Tokenizer.from_pretrained("sberbank-ai/rugpt3small_based_on_gpt2")
+        tokenizer_name = self._config["model"]["model_name"]
+        self.tokenizer = GPT2Tokenizer.from_pretrained(tokenizer_name)
         self.tokenizer.add_special_tokens({'pad_token': '<pad>'})
 
         train_split, val_split = train_test_split(df)
