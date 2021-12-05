@@ -26,21 +26,34 @@ class MertricLearningRunner(IRunner):
         datasets = OrderedDict()
         data_params = self._stage_config[stage]["data"]
         dataset_path = data_params["dataset_path"]
-        trainsform_path = data_params["transform_path"]
+        transform_path = data_params["transform_path"]
         train_path = f'{dataset_path}/{data_params["train_path"]}/'
         base_path = f'{dataset_path}/{data_params["base_path"]}/'
         val_path = f'{dataset_path}/{data_params["val_path"]}/'
-        train_dataset = dataset.TrainMLDataset(
-            train_path, loader=cv2.imread, transforms_path=trainsform_path)
-        sampler = data.BalanceBatchSampler(labels=train_dataset.get_labels(), p=5, k=10)
-        valid_dataset = dataset.ValidMLDataset(base_path,
-                                               val_path,
-                                               loader=cv2.imread,
-                                               transforms_path=trainsform_path,
-                                               is_check=self.hparams['args'].get('check', False))
-        datasets["train"] = {'dataset': train_dataset, 'sampler': sampler}
-        datasets["valid"] = {'dataset': valid_dataset}
+        mode = data_params["mode"]
 
+        if mode == "LMDB":
+            train_dataset = dataset.LMDBTrainMLDataset(
+                train_path, transforms_path=transform_path)
+
+            valid_dataset = dataset.LMDBValidMLDataset(base_path,
+                                                val_path,
+                                                transforms_path=transform_path,
+                                                is_check=self.hparams['args'].get('check', False))
+
+            datasets["train"] = {'dataset': train_dataset}
+            datasets["valid"] = {'dataset': valid_dataset}
+        else:
+            train_dataset = dataset.TrainMLDataset(
+                train_path, loader=lambda image : cv2.cvtColor(cv2.imread(image), cv2.COLOR_BGR2RGB), transforms_path=transform_path)
+            sampler = data.BalanceBatchSampler(labels=train_dataset.get_labels(), p=5, k=10)
+            valid_dataset = dataset.ValidMLDataset(base_path,
+                                                val_path,
+                                                loader=lambda image : cv2.cvtColor(cv2.imread(image), cv2.COLOR_BGR2RGB),
+                                                transforms_path=transform_path,
+                                                is_check=self.hparams['args'].get('check', False))
+            datasets["train"] = {'dataset': train_dataset, 'sampler': sampler}
+            datasets["valid"] = {'dataset': valid_dataset}
         return datasets
 
 
