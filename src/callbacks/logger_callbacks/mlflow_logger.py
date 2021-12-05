@@ -4,18 +4,13 @@ import mlflow
 
 ALLOWED_PARAMS_EXPERIMENT = {
     'model._target_': 'model_name',
-    'model.num_classes': 'num_classes',
     'args.seed': 'seed',
 }
 
 ALLOWED_PARAMS_STAGE = {
-    'criterion._target_': 'criterion',
     'optimizer._target_': 'optimizer',
     'optimizer.lr': 'lr',
     'scheduler._target_': 'scheduler',
-    'scheduler.delay_epochs': 'scheduler_delay_epochs',
-    'scheduler.eta_min': 'scheduler_eta_min',
-    'data.shuffle': 'data_shuffle',
     'data.transform_path': 'transform_path',
     'loaders.batch_size': 'batch_size',
     'loaders.num_workers': 'num_workers',
@@ -26,7 +21,7 @@ ALLOWED_PARAMS_STAGE = {
 
 
 class CustomMLflowLogger(MLflowLogger):
-    def __init__(self, class_names, *args, **kwargs):
+    def __init__(self, class_names=None, *args, **kwargs):
         self.class_names = class_names
         super().__init__(*args, **kwargs)
 
