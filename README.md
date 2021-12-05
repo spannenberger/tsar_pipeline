@@ -18,6 +18,7 @@
     * [Multiclass](config/classification/multiclass/train_multiclass.yml) - конфиг мультикласс классификации
     * [Multilabel](config/classification/multilabel/train_multilabel.yml) - конфиг мультилейбл класификаци
     * [MetricLearning](config/metric_learning/train_metric_learning.yml) - конфиг metric learning
+    * [NLP](config/nlp/) - конфиги для nlp задач
 - [src](src/) - папка с основными файлами проекта, в которую добавляются новые шедулеры, модели, коллбэки и тд
 - [docker-compose.yml](#test-in-docker) - конфиг файл для докера
 - [requirements.txt](/requirements.txt) - файл с библиотеками и инструментами, которые нам нужны в проектах
@@ -26,6 +27,7 @@
 - [Multiclass](#запуск-и-изменение-multiclass-решения)
 - [Multilabel](#запуск-и-изменение-multilabel-решения)
 - [MetricLearing](#запуск-и-изменение-metric-learning-решения)
+- [NLP](#запуск-и-изменение-nlp-решения)
 - [Callbacks](#использование-колбэков-в-пайплайне)
  ### Запуск и изменение multiclass решения
    - Склонировать репозиторий
@@ -198,7 +200,13 @@
         path: our_models/best.pth # Путь до расположения вашей локальной модели
         is_local: False # True если обучаете локально загруженную модель
      ```
-
+ ### Запуск и изменение nlp решения
+  - Склонировать репозиторий
+  - Запустить команду ```pip install -r requirements.txt```
+  - Для обучения ```языковой модели gpt``` входные данные: ```txt``` файл с текстом для модели
+  - Для обучения ```siamese gpt``` входные данные: ```csv``` таблица с 3-мя колонками: ```story_1, story_2, label```
+  - Изменение моделей обучения:
+     - Изменить в ```.yml``` файле название модели (доступные модели можно посмотреть в таблице([Информация о моделях]). Пока доступны только ```sberbank модели```
 ### Использование колбэков в пайплайне
 - prunning callback прунит параметры во время и/или после обучения.
 :neutral_face:**Стоит отметить, что при использовании данного колбэка при обучении multilabel и metric learninng не будет работать конвертация моделей в onnx и torchscript**:neutral_face:

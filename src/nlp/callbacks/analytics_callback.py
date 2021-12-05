@@ -24,7 +24,11 @@ class AnalyticsDistanceCallback(Callback):
     def on_experiment_end(self, state: IRunner):
         """ @TODO Docs
         """
-        model = state.model.backbone
+        
+        if state.hparams['model']['_target_'] == 'gpt':
+            model = state.model.backbone.transformer
+        elif state.hparams['model']['_target_'] == 'Siamese':
+            model = state.model.backbone
         tokenizer = state.tokenizer
         df = pd.read_csv(str(self.analytics_data))
         sents = list(set(df["user_story"]))

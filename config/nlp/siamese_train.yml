@@ -68,6 +68,10 @@ stages: # Словарь всех стадий Catalyst, для обучения
         similarity_file_path: "./logs/similarity.txt"
         cluster_file_path: "./logs/clusters.csv"
 
+      duplet:
+        _target_: DupletMetricCallback
+        duplets_file: ./nlp_dataset/dupl_stories_with_added_short.csv
+        
       custom_mlflow:
         _target_: MLFlowNLPLoggingCallback
       verbose:

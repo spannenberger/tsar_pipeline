@@ -11,7 +11,7 @@ args: # Различные аргументы для Catalyst
   benchmark: True # Нужно ли использовать CuDNN benchmark
 
 runner: # Параметры для инициализации Runner
-   _target_: MulticlassNLPSupervisedRunner
+   _target_: NLPSupervisedRunner
    input_key: &model_input "text"
    output_key: &model_output "logits"
    target_key: &model_target "labels"
@@ -29,8 +29,8 @@ loggers:
     _target_: ConsoleLogger
 
   mlflow:
-    _target_: MLflowLogger
-    experiment: "Skolkovo_4"
+    _target_: CustomMLflowLogger
+    experiment: "gpt_check"
 
 
 stages: # Словарь всех стадий Catalyst, для обучения и/или инфера. Содержат ключевые слова с параметрами, которые применятся ко всем стейджам, так и сами имена стейджей
@@ -45,31 +45,29 @@ stages: # Словарь всех стадий Catalyst, для обучения
         _target_: CheckpointCallback
         use_runner_logdir: True
         mode: model
-        # save_n_best: 0
-        # loader_key: valid
-        # metric_key: *model_loss
-        # minimize: True
+
       optimizer: # Параметры для оптимизатора
         _target_: OptimizerCallback
         metric_key: *model_loss
 
       analyze:
         _target_: AnalyticsDistanceCallback
-        analytics_data: "napoleon_user_stories_clean.csv"
+        analytics_data: "./nlp_dataset/napoleon_user_stories_clean.csv"
         similarity_file_path: "./logs/similarity.txt"
         cluster_file_path: "./logs/clusters.csv"
 
       duplet:
         _target_: DupletMetricCallback
-        duplets_file: ./dupl_stories_with_added_short.csv
+        duplets_file: ./nlp_dataset/dupl_stories_with_added_short.csv
+
       custom_mlflow:
-        _target_: CustomMLFlowCallback
+        _target_: MLFlowNLPLoggingCallback
       verbose:
         _target_: TqdmCallback
 
     data: # Подключение данных и параметров обучения
       shuffle: True
-      text: "./parse_user_story.txt"
+      text: "./nlp_dataset/parse_user_story.txt"
     loaders: &loaders
       batch_size: 1 # Размер батча для всех стейджей
       num_workers: 0 #для локальной поставить 0
