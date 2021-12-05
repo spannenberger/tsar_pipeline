@@ -32,6 +32,7 @@ from callbacks.convert_callbacks.torchscript_save_callback import TorchscriptSav
 from callbacks.criterion import CustomTrainCriterion
 from callbacks.cmc_valid import CustomCMC
 from callbacks.iner_callback import MLInerCallback
+from callbacks.custom_cmc_score import CustomCMCScoreCallback
 from callbacks.custom_scheduler import CustomScheduler
 
 Registry(EfficientNetb0)
@@ -54,5 +55,7 @@ Registry(ResNet18)
 Registry(MobilenetV3Small)
 Registry(CustomTrainCriterion)
 Registry(CustomCMC)
+Registry(CustomCMCScoreCallback)
+Registry(MertricLearningSupervisedRunner)
 Registry(MertricLearningSupervisedRunner)
 Registry(CustomMLflowLogger)

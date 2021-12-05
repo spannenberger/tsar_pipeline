@@ -62,6 +62,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
         is_query_key: "is_query"
         topk_args: [1]
         loaders: valid
+
       mlflow_logger: # Колбэк для логгирования фотографий, моделей, конфигов в mlflow
         _target_: MLFlowMetricLearningCallback
         logging_incorrect_image_number: 10 # Кол-во ошибочных фотографий и фотографий к которым модель отнесла ошибочные
