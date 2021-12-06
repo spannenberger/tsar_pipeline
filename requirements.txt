@@ -19,3 +19,5 @@ flake8
 transformers==4.9.2
 git+git://github.com/pabloppp/pytorch-tools.git@0.2.6
 ml-pyxis
+xmltodict==0.12.0
+mean-average-precision
