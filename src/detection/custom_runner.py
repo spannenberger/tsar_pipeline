@@ -17,7 +17,6 @@ class YOLOXDetectionRunner(ConfigRunner):
         Returns:
             ordered dict with torch.utils.data.DataLoader
         """
-        # import pdb;pdb.set_trace()
         loaders = super().get_loaders(stage)
         for item in loaders.values():
             if hasattr(item.dataset, "collate_fn"):
