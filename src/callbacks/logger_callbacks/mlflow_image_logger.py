@@ -11,7 +11,7 @@ from tqdm import tqdm
 from utils.utils import get_from_dict
 from pathlib import Path
 try:
-    from callbacks.iner_callback import MLInerCallback as InerCallback
+    from callbacks.iner_callback import MetricLearningInerCallback as InerCallback
 except ImportError:
     from callbacks.iner_callback import MainInerCallback as InerCallback
 

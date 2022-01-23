@@ -47,7 +47,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       eta_min: 0.0001
     callbacks:
       iner:
-        _target_: MLInerCallback
+        _target_: MetricLearningInerCallback
         incorrect_file: logs/csv/incorrect.csv
         uncoordinated_file: logs/csv/uncoordinated.csv
         threshold: 10.

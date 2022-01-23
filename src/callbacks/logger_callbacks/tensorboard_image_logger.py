@@ -12,7 +12,7 @@ import numpy as np
 import ast
 
 try:
-    from callbacks.iner_callback import MLInerCallback as InerCallback
+    from callbacks.iner_callback import MetricLearningInerCallback as InerCallback
 except ImportError:
     from callbacks.iner_callback import MainInerCallback as InerCallback
 

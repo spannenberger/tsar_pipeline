@@ -9,7 +9,7 @@ import torch
 
 
 @Registry
-class MLInerCallback(Callback):
+class MetricLearningInerCallback(Callback):
     """
     InerCallback - кастомный колбэк
     Записывает в файл preds.csv, в нашем случае,
