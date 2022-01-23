@@ -24,7 +24,7 @@ class LMDBDataset(Dataset):
     def __len__(self):
         return len(self._dataset)
 
-if __name__ == "__main__":
+def main():
     config_path = Path("src/utils/lmdb_config.yml").absolute()
     with open(config_path, "r") as config:
         config_dict = yaml.load(config, Loader=yaml.FullLoader)
@@ -64,3 +64,6 @@ if __name__ == "__main__":
                 }
             db.put_samples(data)
         db.close()
+
+if __name__ == '__main__':
+    main()
