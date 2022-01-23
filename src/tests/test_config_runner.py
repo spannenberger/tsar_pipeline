@@ -26,7 +26,6 @@ def test_config_runner(config_list, path):
             required=False,
         )
         boolean_flag(parser, "check", default=None)
-
         args, unknown_args = parser.parse_known_args(['--config', path + '/' + i, '--check'])
 
         args, config = parse_args_uargs(args, unknown_args)

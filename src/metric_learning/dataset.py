@@ -1,11 +1,12 @@
-from typing import Any, Callable, Dict, List, Optional
 from catalyst.data.dataset.metric_learning import MetricLearningTrainDataset, QueryGalleryDataset
+from typing import Any, Callable, Dict, List
 from torchvision.datasets import ImageFolder
-from transform import CustomAugmentator
-import pyxis as px
+from utils.transform import CustomAugmentator
 from torch.utils.data import Dataset
 from functools import lru_cache
 from tqdm import tqdm
+import pyxis as px
+
 
 class TrainMLDataset(MetricLearningTrainDataset, ImageFolder):
     def __init__(self, *args, transforms_path: str, **kwargs):
@@ -80,12 +81,13 @@ class ValidMLDataset(QueryGalleryDataset):
         """Query Gallery dataset should have query_size property"""
         return self._query_size
 
+
 class LMDBTrainMLDataset(MetricLearningTrainDataset, Dataset):
 
-    def __init__(self, data_folder, transforms_path: str):
+    def __init__(self, data_folder, transforms_path: str, aug_mode: str="train"):
         self.data_folder = data_folder
         self.transforms_path = transforms_path
-        self.transforms = CustomAugmentator().transforms(self.transforms_path, aug_mode='train')
+        self.transforms = CustomAugmentator().transforms(self.transforms_path, aug_mode=aug_mode)
         db = px.Reader(dirpath=self.data_folder)
         self.size = len(db)
         db.close()
@@ -126,15 +128,15 @@ class LMDBTrainMLDataset(MetricLearningTrainDataset, Dataset):
 
 
 class LMDBValidMLDataset(QueryGalleryDataset):
-    # Возможно надо разделить аугментации галлереи и запроса
     def __init__(
         self, root_gallery: str, root_query: str,
         transforms_path: str, is_check: bool = False
     ) -> None:
         self.is_check = is_check
 
-        self._gallery = LMDBTrainMLDataset(root_gallery, transforms_path=transforms_path)
-        self._query = LMDBTrainMLDataset(root_query, transforms_path=transforms_path)
+        self._gallery = LMDBTrainMLDataset(root_gallery, transforms_path=transforms_path, aug_mode='valid')
+        self._query = LMDBTrainMLDataset(root_query, transforms_path=transforms_path, aug_mode='valid')
+
         
         self._gallery_size = len(self._gallery)
         self._query_size = len(self._query)

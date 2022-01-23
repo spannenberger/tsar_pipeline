@@ -1,9 +1,8 @@
-import cv2
-import numpy as np
+from utils.transform import CustomAugmentator
+from torch.utils.data import Dataset
 from pathlib import Path
 import torch
-from torch.utils.data import Dataset
-from transform import CustomAugmentator
+import cv2
 
 
 class CustomDataset(Dataset):
@@ -33,15 +32,13 @@ class CustomDataset(Dataset):
     def __getitem__(self, idx):
         item = {}
         idx = idx
-
         image_path = self.image_paths[idx]
         if isinstance(image_path, Path):
             image_path = image_path.as_posix()
         image = cv2.imread(image_path)
         if self.transforms:
             image = self.transforms(image=image)["image"]
-
-        image = np.moveaxis(image, -1, 0)
+        image = image.detach().numpy()
         item["image_name"] = image_path
         item["features"] = torch.from_numpy(image)
         item["targets"] = self.image_labels[idx]

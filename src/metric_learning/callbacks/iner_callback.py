@@ -1,13 +1,11 @@
+from sklearn.neighbors import KNeighborsClassifier
 from catalyst.dl import Callback, CallbackOrder
+from sklearn.metrics import accuracy_score
 from catalyst.core.runner import IRunner
 from catalyst.registry import Registry
-from sklearn.metrics import accuracy_score
 from pathlib import Path
-from torch.nn import BCELoss, Sigmoid
-from torch.nn import CrossEntropyLoss
-from sklearn.neighbors import KNeighborsClassifier
-import torch
 import numpy as np
+import torch
 
 
 @Registry
@@ -26,8 +24,8 @@ class MLInerCallback(Callback):
                  threshold,
                  **kwargs):
         super().__init__(CallbackOrder.Internal)
-        self.incorrect_file = Path(incorrect_file)
-        self.uncoordinated_file = Path(uncoordinated_file)
+        self.incorrect_file = Path(incorrect_file).absolute()
+        self.uncoordinated_file = Path(uncoordinated_file).absolute()
         self.incorrect_file.parent.mkdir(parents=True, exist_ok=True)
         self.uncoordinated_file.parent.mkdir(parents=True, exist_ok=True)
         self.threshold = threshold
