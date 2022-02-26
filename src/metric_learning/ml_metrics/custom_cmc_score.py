@@ -1,37 +1,7 @@
-from catalyst.dl import Callback, CallbackOrder
-from catalyst.core.runner import IRunner
-from catalyst.registry import Registry
-import torch
-from typing import List, Iterable
-from catalyst.metrics._cmc_score import CMCMetric
-from catalyst.callbacks.metric import LoaderMetricCallback
-import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
-
-
-class CustomCMCScoreCallback(LoaderMetricCallback):
-    def __init__(
-        self,
-        embeddings_key: str,
-        labels_key: str,
-        is_query_key: str,
-        topk_args: Iterable[int] = None,
-        prefix: str = None,
-        suffix: str = None,
-    ):
-        """Init."""
-        super().__init__(
-            metric=CustomCMCMetric(
-                embeddings_key=embeddings_key,
-                labels_key=labels_key,
-                is_query_key=is_query_key,
-                topk_args=topk_args,
-                prefix=prefix,
-                suffix=suffix,
-            ),
-            input_key=[embeddings_key, is_query_key],
-            target_key=[labels_key],
-        )
+from catalyst.metrics._cmc_score import CMCMetric
+from typing import List
+import torch
 
 
 class CustomCMCMetric(CMCMetric):

@@ -1,5 +1,5 @@
 model:
-  _target_: ResNet50 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: Densenet121 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
   num_classes: &num_classes 2
   mode: Classification
   # path: 'our_models/best.pth' # Путь до расположения вашей локальной модели
@@ -38,9 +38,9 @@ loggers:
     experiment: 'sigi'
     class_names: *class_names
 
-  tensorboard:
-    _target_: TensorboardLogger
-    logdir: "./logs/ui"
+  # tensorboard:
+  #   _target_: TensorboardLogger
+  #   logdir: "./logs/ui"
 
 stages: # Словарь всех стадий Catalyst, для обучения и/или инфера. Содержат ключевые слова с параметрами, которые применятся ко всем стейджам, так и сами имена стейджей
   stage:
@@ -98,15 +98,25 @@ stages: # Словарь всех стадий Catalyst, для обучения
         _target_: TorchscriptSaveCallback
         out_dir: "./logs/torchsript"
         checkpoint_names: ["last", "best_full"]
-      infer:
-        _target_: MulticlassInerCallback
-        subm_file: "./crossval_log/preds.csv"
+
+      iner:
+        _target_: MulticlassCustomAccuracy
+        logits: *model_output
+        targets: *model_target
+        image_name: image_name
+        loaders: valid
+
+      save_metrics:
+        _target_: SaveMetricInFileCallback
+        required_metrics: 
+          iner: 
+            predicted_images: "logs/csv/subm_file.csv"
       custom_mlflow: # Логирование ошибочных фотографий в mlflow
         _target_: MLFlowMulticlassLoggingCallback
         logging_image_number: 10
-      custom_tensorboard: # Логирование ошибочных фотографий в tensorboard
-        _target_: TensorboardMulticlassLoggingCallback
-        logging_image_number: 10
+      # custom_tensorboard: # Логирование ошибочных фотографий в tensorboard
+      #   _target_: TensorboardMulticlassLoggingCallback
+      #   logging_image_number: 10
         
     data: # Подключение данных и параметров обучения
       shuffle: false
@@ -117,9 +127,9 @@ stages: # Словарь всех стадий Catalyst, для обучения
       test_meta: "test_metadata.csv"
       transform_path: "config/augmentations/light.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/augmentations/))
     loaders: &loaders
-      batch_size: 1 # Размер батча для всех стейджей
+      batch_size: 5 # Размер батча для всех стейджей
       num_workers: 1 #для локальной поставить 0
-    num_epochs: 1 # Количество эпох эксперимента
+    num_epochs: 3 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: accuracy01
     minimize_metric: False

@@ -1,4 +1,3 @@
-from typing import KeysView
 from catalyst.dl import Callback, CallbackOrder
 from catalyst.registry import Registry
 from catalyst.core.runner import IRunner
@@ -8,12 +7,11 @@ import ast
 from PIL import Image
 import numpy as np
 from tqdm import tqdm
+from catalyst.core.misc import _get_original_callback
+from catalyst.callbacks.metric import LoaderMetricCallback
+from metrics.custom_metric import CustomMetric
 from utils.utils import get_from_dict
 from pathlib import Path
-try:
-    from callbacks.iner_callback import MetricLearningInerCallback as InerCallback
-except ImportError:
-    from callbacks.iner_callback import MainInerCallback as InerCallback
 
 
 class MainMLFlowLoggerCallback(Callback):
@@ -24,10 +22,13 @@ class MainMLFlowLoggerCallback(Callback):
     def on_stage_start(self, state: IRunner):
         """Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа"""
 
-        callbacks = [type(x) for x in state.callbacks.values()]
-        include_iner = max(map(lambda x: issubclass(x,InerCallback), callbacks))
-        if not include_iner:
-            raise Exception("This callback depends on InerCallback. Turn on InerCallback or turn off this callback.")
+        # callbacks = [type(x) for x in state.callbacks.values()]
+        # include_iner = max(map(lambda x: issubclass(x, CustomMetric), callbacks))
+        callbacks = [_get_original_callback(x) for x in state.callbacks.values()]
+        all_metrics = [x.metric for x in callbacks if issubclass(type(x), LoaderMetricCallback)]
+        include_custom_metric = max([issubclass(type(x), CustomMetric) for x in all_metrics])
+        if not include_custom_metric:
+            raise Exception("This callback depends on CustomMetric. Turn on CustomMetric or turn off this callback.")
 
         mlflow.log_artifact(get_from_dict(state.hparams, 'args:configs')[0], 'config')
         mlflow.log_artifact(
@@ -92,7 +93,7 @@ class MLFlowMulticlassLoggingCallback(MainMLFlowLoggerCallback):
         которые соответствуют class_names в нашем конфиге
         """
 
-        df = pd.read_csv(get_from_dict(state.hparams, 'stages:stage:callbacks:infer:subm_file'), sep=';')
+        df = pd.read_csv(get_from_dict(state.hparams, 'stages:stage:callbacks:save_metrics:required_metrics:iner:predicted_images'), sep=';')
         path_list = [i for i in df[df['class_id'] != df['target']]['path']]
 
         if(len(df[df['class_id'] != df['target']]) <= self.logging_image_number):
@@ -132,7 +133,7 @@ class MLFlowMultilabelLoggingCallback(MainMLFlowLoggerCallback):
         которые соответствуют class_names в нашем конфиге
         """
 
-        df = pd.read_csv(get_from_dict(state.hparams, 'stages:stage:callbacks:infer:subm_file'), sep=';')
+        df = pd.read_csv(get_from_dict(state.hparams, 'stages:stage:callbacks:save_metrics:required_metrics:iner:predicted_images'), sep=';')
 
         df[['class_id', 'target', 'losses']] = df[['class_id', 'target', 'losses']].apply(
             lambda x: x.apply(ast.literal_eval))
@@ -183,9 +184,9 @@ class MLFlowMetricLearningCallback(MainMLFlowLoggerCallback):
         """
 
         incorrect_df = pd.read_csv(
-            get_from_dict(state.hparams, 'stages:stage:callbacks:iner:incorrect_file'), sep=';')
+            get_from_dict(state.hparams, 'stages:stage:callbacks:save_metrics:required_metrics:custom_accuracy:incorrect'), sep=';')
         uncoordinated_df = pd.read_csv(
-            get_from_dict(state.hparams, 'stages:stage:callbacks:iner:uncoordinated_file'), sep=';')
+            get_from_dict(state.hparams, 'stages:stage:callbacks:save_metrics:required_metrics:custom_accuracy:uncoordinated'), sep=';')
 
         incorrect_list = [i for i in incorrect_df['incorrect']]
         couple_list = [i for i in incorrect_df['couple']]

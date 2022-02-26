@@ -30,9 +30,9 @@ loggers:
   mlflow:
     _target_: CustomMLflowLogger
     experiment: 'metric_learning'
-  tensorboard:
-    _target_: TensorboardLogger
-    logdir: "./logs/ui"
+  # tensorboard:
+  #   _target_: TensorboardLogger
+  #   logdir: "./logs/ui"
 
 stages: # Словарь всех стадий Catalyst, для обучения и/или инфера. Содержат ключевые слова с параметрами, которые применятся ко всем стейджам, так и сами имена стейджей
   stage:
@@ -46,11 +46,11 @@ stages: # Словарь всех стадий Catalyst, для обучения
       total_epochs: 10
       eta_min: 0.0001
     callbacks:
-      iner:
-        _target_: MetricLearningInerCallback
-        incorrect_file: logs/csv/incorrect.csv
-        uncoordinated_file: logs/csv/uncoordinated.csv
-        threshold: 10.
+      # iner:
+      #   _target_: MetricLearningInerCallback
+      #   incorrect_file: logs/csv/incorrect.csv
+      #   uncoordinated_file: logs/csv/uncoordinated.csv
+      #   threshold: 10.
       scheduler:
         _target_: SchedulerCallback
       # Подключение колбэков каталиста
@@ -63,14 +63,30 @@ stages: # Словарь всех стадий Catalyst, для обучения
         topk_args: [1]
         loaders: valid
 
+      custom_accuracy:
+        _target_: CustomAccuracy
+        threshold: 10.
+        embeddings_key: *model_output
+        labels_key: *model_target
+        is_query_key: "is_query"
+        image_name: image_name
+        loaders: valid
+      
+      save_metrics:
+        _target_: SaveMetricInFileCallback
+        required_metrics: 
+          custom_accuracy: 
+            incorrect: "logs/csv/incorrect.csv"
+            uncoordinated: "logs/csv/uncoordinated.csv"
+
       mlflow_logger: # Колбэк для логгирования фотографий, моделей, конфигов в mlflow
         _target_: MLFlowMetricLearningCallback
         logging_incorrect_image_number: 10 # Кол-во ошибочных фотографий и фотографий к которым модель отнесла ошибочные
         logging_uncoordinated_image_number: 10 # Кол-во фотографий которые не прошли по расстоянию
-      tensordoard_logger:
-        _target_: TensorboardMetricLearningCallback
-        logging_incorrect_image_number: 10 # Кол-во ошибочных фотографий и фотографий к которым модель отнесла ошибочные
-        logging_uncoordinated_image_number: 10 # Кол-во фотографий которые не прошли по расстоянию
+      # tensordoard_logger:
+      #   _target_: TensorboardMetricLearningCallback
+      #   logging_incorrect_image_number: 10 # Кол-во ошибочных фотографий и фотографий к которым модель отнесла ошибочные
+      #   logging_uncoordinated_image_number: 10 # Кол-во фотографий которые не прошли по расстоянию
       onnx_saver:
         _target_: OnnxSaveCallback
         out_dir: "./logs/onnx"
@@ -120,7 +136,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
     loaders: &loaders
       batch_size: 1 # Размер батча для всех стейджей
       num_workers: 0 #для локальной поставить 0
-    num_epochs: 25 # Количество эпох эксперимента
+    num_epochs: 3 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: cmc01
     minimize_metric: False

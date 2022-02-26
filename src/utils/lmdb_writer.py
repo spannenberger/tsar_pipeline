@@ -29,6 +29,10 @@ def main():
     with open(config_path, "r") as config:
         config_dict = yaml.load(config, Loader=yaml.FullLoader)
 
+    if config_dict["convert"] == False:
+        print("Convertation flag is False. Do not create LMDB dataset")
+        return
+
     width = config_dict["width"]
     height = config_dict["height"]
     channels = config_dict["channels"]
