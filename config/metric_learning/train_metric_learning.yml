@@ -127,12 +127,12 @@ stages: # Словарь всех стадий Catalyst, для обучения
       # Подключение кастомных колбэков
       #(Возможные колбэки: ./src_multilabel/callbacks/)
     data:
-      dataset_path: metric_learning_dataset # путь до датасета
+      dataset_path: lmdb_test_dataset # путь до датасета
       train_path: train # путь до папки с тренировочными фотографиями
       base_path: base # путь до папки с фотографиями галлереи
       val_path: val # путь до папки с фотографиями валидации(запроса/query)
       transform_path: config/augmentations/light.yml # Режим аугментаций данных (Возможны: light, medium, hard(./config/augmentations/))
-      mode: Classic # Для использования lmdb датасета указать - LMDB
+      mode: LMDB # Для использования lmdb датасета указать - LMDB
     loaders: &loaders
       batch_size: 1 # Размер батча для всех стейджей
       num_workers: 0 #для локальной поставить 0
