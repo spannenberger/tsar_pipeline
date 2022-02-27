@@ -1,7 +1,7 @@
 from catalyst.runners import SupervisedConfigRunner
 from catalyst.core import IRunner
 
-from datasets_fabric import DatasetFabric
+from dataset_fabric import MetricLearningDatasetCreator
 
 
 class MertricLearningRunner(IRunner):
@@ -31,10 +31,10 @@ class MertricLearningRunner(IRunner):
 
     def get_datasets(self, stage: str, **kwargs):
         """Работа с данными, формирование train и valid"""
-
         data_params = self._stage_config[stage]["data"]
         data_params["is_check"] = self.hparams["args"].get("check", False)
-        datasets = DatasetFabric.create_dataset(data_params, **kwargs)
+        data_params["task_mode"] = self._config["model"]["mode"]
+        datasets = MetricLearningDatasetCreator.create_datasets(data_params, **kwargs)
         return datasets
 
 

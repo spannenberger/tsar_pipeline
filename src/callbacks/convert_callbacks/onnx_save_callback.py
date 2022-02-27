@@ -20,9 +20,9 @@ class OnnxSaveCallback(Callback):
             try:
                 model_path = Path(state.logdir).absolute() / "checkpoints" / (checkpoint + ".pth")
                 state.model.load_state_dict(torch.load(model_path)['model_state_dict'])
-            except FileNotFoundError as e:
+            except FileNotFoundError:
                 warnings.warn(
-                    f"Error because of: {e}"
+                    "File for onnx convertation is not found"
                 )
                 continue
             state.model.eval()
@@ -42,7 +42,7 @@ class OnnxSaveCallback(Callback):
                               output_names=['output'],  # the model's output names
                               dynamic_axes={'input': {0: 'batch_size'},    # variable lenght axes
                                             'output': {0: 'batch_size'}})
-            except RuntimeError as e:
+            except RuntimeError:
                 warnings.warn(
-                    f"Error because of: {e}"
+                    "Can't convert this model to onnx format"
                 )

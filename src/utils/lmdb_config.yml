@@ -4,7 +4,7 @@ width: 224
 height: 224
 channels: 3
 
-dataset_path: "./test_dataset" # Путь до папки датасета содержащей папки: train, val, base
+dataset_path: "./metric_learning_dataset" # Путь до папки датасета содержащей папки: train, val, base
 num_workers: 0
 batch_size: 32
 pin_memory: True

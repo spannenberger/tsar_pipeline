@@ -1,5 +1,5 @@
 model:
-  _target_: Densenet121 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: ResNet18 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
   num_classes: &num_classes 2
   mode: Classification
   # path: 'our_models/best.pth' # Путь до расположения вашей локальной модели
@@ -126,10 +126,11 @@ stages: # Словарь всех стадий Catalyst, для обучения
       train_meta: "train_metadata.csv"
       test_meta: "test_metadata.csv"
       transform_path: "config/augmentations/light.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/augmentations/))
+      mode: Classic
     loaders: &loaders
-      batch_size: 5 # Размер батча для всех стейджей
+      batch_size: 1 # Размер батча для всех стейджей
       num_workers: 1 #для локальной поставить 0
-    num_epochs: 3 # Количество эпох эксперимента
+    num_epochs: 1 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: accuracy01
     minimize_metric: False

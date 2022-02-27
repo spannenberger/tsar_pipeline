@@ -1,5 +1,9 @@
-from catalyst.data.dataset.metric_learning import MetricLearningTrainDataset, QueryGalleryDataset
-from typing import Any, Callable, Dict, List
+from catalyst.data.dataset.metric_learning import (
+    MetricLearningTrainDataset,
+    QueryGalleryDataset,
+)
+from typing import Any, Dict, List
+import cv2
 from torchvision.datasets import ImageFolder
 from utils.transform import CustomAugmentator
 from torch.utils.data import Dataset
@@ -11,8 +15,15 @@ import pyxis as px
 class TrainMLDataset(MetricLearningTrainDataset, ImageFolder):
     def __init__(self, *args, transforms_path: str, **kwargs):
         self.transforms_path = transforms_path
-        transforms = CustomAugmentator().transforms(self.transforms_path, aug_mode='train')
-        super().__init__(transform=lambda x: transforms(image=x)['image'], *args, **kwargs)
+        transforms = CustomAugmentator().transforms(
+            self.transforms_path, aug_mode="train"
+        )
+        super().__init__(
+            transform=lambda x: transforms(image=x)["image"],
+            loader=lambda image: cv2.cvtColor(cv2.imread(image), cv2.COLOR_BGR2RGB),
+            *args,
+            **kwargs
+        )
 
     def get_labels(self) -> List[int]:
         """
@@ -25,16 +36,27 @@ class TrainMLDataset(MetricLearningTrainDataset, ImageFolder):
 class ValidMLDataset(QueryGalleryDataset):
     # Возможно надо разделить аугментации галлереи и запроса
     def __init__(
-        self, root_gallery: str, root_query: str, loader: Callable,
-        transforms_path: str, is_check: bool = False
+        self,
+        root_gallery: str,
+        root_query: str,
+        transforms_path: str,
+        is_check: bool = False,
     ) -> None:
         self.is_check = is_check
         self.transforms_path = transforms_path
-        self.transforms = CustomAugmentator().transforms(self.transforms_path, aug_mode='valid')
-        self._gallery = ImageFolder(root_gallery, loader=loader,
-                                    transform=lambda x: self.transforms(image=x)['image'])
-        self._query = ImageFolder(root_query, loader=loader,
-                                  transform=lambda x: self.transforms(image=x)['image'])
+        self.transforms = CustomAugmentator().transforms(
+            self.transforms_path, aug_mode="valid"
+        )
+        self._gallery = ImageFolder(
+            root_gallery,
+            loader=lambda image: cv2.cvtColor(cv2.imread(image), cv2.COLOR_BGR2RGB),
+            transform=lambda x: self.transforms(image=x)["image"],
+        )
+        self._query = ImageFolder(
+            root_query,
+            loader=lambda image: cv2.cvtColor(cv2.imread(image), cv2.COLOR_BGR2RGB),
+            transform=lambda x: self.transforms(image=x)["image"],
+        )
         self._gallery_size = len(self._gallery)
         self._query_size = len(self._query)
 
@@ -48,11 +70,11 @@ class ValidMLDataset(QueryGalleryDataset):
         """
         if self.is_check:
             if idx % 2 == 0:
-                image, label = self._gallery[idx//2]
-                image_name = self._gallery.imgs[idx//2][0]
+                image, label = self._gallery[idx // 2]
+                image_name = self._gallery.imgs[idx // 2][0]
             else:
-                image, label = self._query[idx//2]
-                image_name = self._query.imgs[idx//2][0]
+                image, label = self._query[idx // 2]
+                image_name = self._query.imgs[idx // 2][0]
         else:
             if idx < self._gallery_size:
                 image, label = self._gallery[idx]
@@ -83,11 +105,12 @@ class ValidMLDataset(QueryGalleryDataset):
 
 
 class LMDBTrainMLDataset(MetricLearningTrainDataset, Dataset):
-
-    def __init__(self, data_folder, transforms_path: str, aug_mode: str="train"):
+    def __init__(self, data_folder, transforms_path: str, aug_mode: str = "train"):
         self.data_folder = data_folder
         self.transforms_path = transforms_path
-        self.transforms = CustomAugmentator().transforms(self.transforms_path, aug_mode=aug_mode)
+        self.transforms = CustomAugmentator().transforms(
+            self.transforms_path, aug_mode=aug_mode
+        )
         db = px.Reader(dirpath=self.data_folder)
         self.size = len(db)
         db.close()
@@ -110,7 +133,6 @@ class LMDBTrainMLDataset(MetricLearningTrainDataset, Dataset):
         item["image_name"] = image_name
         return item
 
-
     def __len__(self):
         return self.size
 
@@ -120,24 +142,32 @@ class LMDBTrainMLDataset(MetricLearningTrainDataset, Dataset):
         Returns:
             labels of digits
         """
-        full_targets = []
-        for i in tqdm(self.db):
-            full_targets.append(i["target"][0])
+        db = px.Reader(dirpath=self.data_folder)
 
+        full_targets = []
+        for i in tqdm(db):
+            full_targets.append(i["target"][0])
+        db.close()
         return full_targets
 
 
 class LMDBValidMLDataset(QueryGalleryDataset):
     def __init__(
-        self, root_gallery: str, root_query: str,
-        transforms_path: str, is_check: bool = False
+        self,
+        root_gallery: str,
+        root_query: str,
+        transforms_path: str,
+        is_check: bool = False,
     ) -> None:
         self.is_check = is_check
 
-        self._gallery = LMDBTrainMLDataset(root_gallery, transforms_path=transforms_path, aug_mode='valid')
-        self._query = LMDBTrainMLDataset(root_query, transforms_path=transforms_path, aug_mode='valid')
+        self._gallery = LMDBTrainMLDataset(
+            root_gallery, transforms_path=transforms_path, aug_mode="valid"
+        )
+        self._query = LMDBTrainMLDataset(
+            root_query, transforms_path=transforms_path, aug_mode="valid"
+        )
 
-        
         self._gallery_size = len(self._gallery)
         self._query_size = len(self._query)
 
@@ -151,12 +181,12 @@ class LMDBValidMLDataset(QueryGalleryDataset):
         """
         if self.is_check:
             if idx % 2 == 0:
-                tmp = self._gallery[idx//2]
+                tmp = self._gallery[idx // 2]
                 image = tmp["features"]
                 label = tmp["targets"]
                 image_name = tmp["image_name"]
             else:
-                tmp = self._query[idx//2]
+                tmp = self._query[idx // 2]
                 image = tmp["features"]
                 label = tmp["targets"]
                 image_name = tmp["image_name"]

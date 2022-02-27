@@ -20,9 +20,9 @@ class TorchscriptSaveCallback(Callback):
             try:
                 model_path = Path(state.logdir).absolute() / "checkpoints" / (checkpoint + ".pth")
                 state.model.load_state_dict(torch.load(model_path)['model_state_dict'])
-            except FileNotFoundError as e:
+            except FileNotFoundError:
                 warnings.warn(
-                    f"Error because of: {e}"
+                    "File for torchscript convertation is not found"
                 )
                 continue
             state.model.eval()
@@ -36,7 +36,7 @@ class TorchscriptSaveCallback(Callback):
                     scripted = torch.jit.script(state.model, x)
                     try:
                         torch.jit.save(scripted, str(path))
-                    except RuntimeError as e:
+                    except RuntimeError:
                         warnings.warn(
-                            f"Error because of: {e}"
+                            "Can't convert this model to torchscript format"
                         )
