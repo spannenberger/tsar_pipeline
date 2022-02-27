@@ -29,11 +29,11 @@ from callbacks.logger_callbacks.mlflow_logger import CustomMLflowLogger
 # Multiclass
 from callbacks.iner_callback import MulticlassCustomAccuracy
 from callbacks.logger_callbacks.mlflow_image_logger import MLFlowMulticlassLoggingCallback
-# from callbacks.logger_callbacks.tensorboard_image_logger import TensorboardMulticlassLoggingCallback
+from callbacks.logger_callbacks.tensorboard_image_logger import TensorboardMulticlassLoggingCallback
 # Multilabel
 from callbacks.iner_callback import MultilabelCustomAccuracy
 from callbacks.logger_callbacks.mlflow_image_logger import MLFlowMultilabelLoggingCallback
-# from callbacks.logger_callbacks.tensorboard_image_logger import TensorboardMultilabelLoggingCallback
+from callbacks.logger_callbacks.tensorboard_image_logger import TensorboardMultilabelLoggingCallback
 
 from callbacks.save_metric_callback import SaveMetricInFileCallback
 

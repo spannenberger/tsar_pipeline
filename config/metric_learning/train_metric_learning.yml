@@ -30,9 +30,9 @@ loggers:
   mlflow:
     _target_: CustomMLflowLogger
     experiment: 'metric_learning'
-  # tensorboard:
-  #   _target_: TensorboardLogger
-  #   logdir: "./logs/ui"
+  tensorboard:
+    _target_: TensorboardLogger
+    logdir: "./logs/ui"
 
 stages: # Словарь всех стадий Catalyst, для обучения и/или инфера. Содержат ключевые слова с параметрами, которые применятся ко всем стейджам, так и сами имена стейджей
   stage:
@@ -83,10 +83,10 @@ stages: # Словарь всех стадий Catalyst, для обучения
         _target_: MLFlowMetricLearningCallback
         logging_incorrect_image_number: 10 # Кол-во ошибочных фотографий и фотографий к которым модель отнесла ошибочные
         logging_uncoordinated_image_number: 10 # Кол-во фотографий которые не прошли по расстоянию
-      # tensordoard_logger:
-      #   _target_: TensorboardMetricLearningCallback
-      #   logging_incorrect_image_number: 10 # Кол-во ошибочных фотографий и фотографий к которым модель отнесла ошибочные
-      #   logging_uncoordinated_image_number: 10 # Кол-во фотографий которые не прошли по расстоянию
+      tensordoard_logger:
+        _target_: TensorboardMetricLearningCallback
+        logging_incorrect_image_number: 10 # Кол-во ошибочных фотографий и фотографий к которым модель отнесла ошибочные
+        logging_uncoordinated_image_number: 10 # Кол-во фотографий которые не прошли по расстоянию
       onnx_saver:
         _target_: OnnxSaveCallback
         out_dir: "./logs/onnx"

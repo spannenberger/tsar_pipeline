@@ -22,8 +22,6 @@ class MainMLFlowLoggerCallback(Callback):
     def on_stage_start(self, state: IRunner):
         """Логаем конфиг эксперимента и аугментации как артефакт в начале стейджа"""
 
-        # callbacks = [type(x) for x in state.callbacks.values()]
-        # include_iner = max(map(lambda x: issubclass(x, CustomMetric), callbacks))
         callbacks = [_get_original_callback(x) for x in state.callbacks.values()]
         all_metrics = [x.metric for x in callbacks if issubclass(type(x), LoaderMetricCallback)]
         include_custom_metric = max([issubclass(type(x), CustomMetric) for x in all_metrics])

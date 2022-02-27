@@ -1,4 +1,3 @@
-
 from catalyst.dl import Callback, CallbackOrder
 from torchvision.transforms import ToTensor
 from catalyst.core.runner import IRunner
@@ -10,20 +9,18 @@ from tqdm import tqdm
 import pandas as pd
 import numpy as np
 import ast
-
-try:
-    from callbacks.iner_callback import MetricLearningInerCallback as InerCallback
-except ImportError:
-    from callbacks.iner_callback import MainInerCallback as InerCallback
-
+from catalyst.core.misc import _get_original_callback
+from catalyst.callbacks.metric import LoaderMetricCallback
+from metrics.custom_metric import CustomMetric
 
 class TensorboardLoggingCallback(Callback):
 
     def on_stage_start(self, state: IRunner):
-        callbacks = [type(x) for x in state.callbacks.values()]
-        include_iner = max(map(lambda x: issubclass(x,InerCallback), callbacks))
-        if not include_iner:
-            raise Exception("This callback depends on InerCallback. Turn on InerCallback or turn off this callback.")
+        callbacks = [_get_original_callback(x) for x in state.callbacks.values()]
+        all_metrics = [x.metric for x in callbacks if issubclass(type(x), LoaderMetricCallback)]
+        include_custom_metric = max([issubclass(type(x), CustomMetric) for x in all_metrics])
+        if not include_custom_metric:
+            raise Exception("This callback depends on CustomMetric. Turn on CustomMetric or turn off this callback.")
 
 
 @Registry
@@ -38,7 +35,7 @@ class TensorboardMulticlassLoggingCallback(TensorboardLoggingCallback):
         которые соответствуют class_names в нашем конфиге
         """
         df = pd.read_csv(get_from_dict(
-            state.hparams, 'stages:stage:callbacks:infer:subm_file'), sep=';')
+            state.hparams, 'stages:stage:callbacks:save_metrics:required_metrics:iner:predicted_images'), sep=';')
 
         path_list = [i for i in df[df['class_id'] != df['target']]['path']]
 
@@ -77,7 +74,7 @@ class TensorboardMultilabelLoggingCallback(TensorboardLoggingCallback):
         которые соответствуют class_names в нашем конфиге
         """
         df = pd.read_csv(get_from_dict(
-            state.hparams, 'stages:stage:callbacks:infer:subm_file'), sep=';')
+            state.hparams, 'stages:stage:callbacks:save_metrics:required_metrics:iner:predicted_images'), sep=';')
 
         df[['class_id', 'target', 'losses']] = df[['class_id', 'target', 'losses']].apply(
             lambda x: x.apply(ast.literal_eval))
@@ -124,9 +121,9 @@ class TensorboardMetricLearningCallback(TensorboardLoggingCallback):
 
     def on_experiment_end(self, state: IRunner):
         incorrect_df = pd.read_csv(get_from_dict(
-            state.hparams, 'stages:stage:callbacks:iner:incorrect_file'), sep=';')
+            state.hparams, 'stages:stage:callbacks:save_metrics:required_metrics:custom_accuracy:incorrect'), sep=';')
         uncoordinated_df = pd.read_csv(
-            get_from_dict(state.hparams, 'stages:stage:callbacks:iner:uncoordinated_file'), sep=';')
+            get_from_dict(state.hparams, 'stages:stage:callbacks:save_metrics:required_metrics:custom_accuracy:uncoordinated'), sep=';')
 
         incorrect_list = [i for i in incorrect_df['incorrect']]
         couple_list = [i for i in incorrect_df['couple']]

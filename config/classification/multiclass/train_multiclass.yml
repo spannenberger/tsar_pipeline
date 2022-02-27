@@ -38,9 +38,9 @@ loggers:
     experiment: 'sigi'
     class_names: *class_names
 
-  # tensorboard:
-  #   _target_: TensorboardLogger
-  #   logdir: "./logs/ui"
+  tensorboard:
+    _target_: TensorboardLogger
+    logdir: "./logs/ui"
 
 stages: # Словарь всех стадий Catalyst, для обучения и/или инфера. Содержат ключевые слова с параметрами, которые применятся ко всем стейджам, так и сами имена стейджей
   stage:
@@ -114,9 +114,9 @@ stages: # Словарь всех стадий Catalyst, для обучения
       custom_mlflow: # Логирование ошибочных фотографий в mlflow
         _target_: MLFlowMulticlassLoggingCallback
         logging_image_number: 10
-      # custom_tensorboard: # Логирование ошибочных фотографий в tensorboard
-      #   _target_: TensorboardMulticlassLoggingCallback
-      #   logging_image_number: 10
+      custom_tensorboard: # Логирование ошибочных фотографий в tensorboard
+        _target_: TensorboardMulticlassLoggingCallback
+        logging_image_number: 10
         
     data: # Подключение данных и параметров обучения
       shuffle: false

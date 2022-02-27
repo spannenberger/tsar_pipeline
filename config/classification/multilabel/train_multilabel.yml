@@ -37,9 +37,9 @@ loggers:
     experiment: 'kcm'
     class_names: *class_names
 
-  # tensorboard:
-  #   _target_: TensorboardLogger
-  #   logdir: "./logs/ui"
+  tensorboard:
+    _target_: TensorboardLogger
+    logdir: "./logs/ui"
 
 stages: # Словарь всех стадий Catalyst, для обучения и/или инфера. Содержат ключевые слова с параметрами, которые применятся ко всем стейджам, так и сами имена стейджей
   stage:
@@ -121,10 +121,10 @@ stages: # Словарь всех стадий Catalyst, для обучения
       custom_mlflow: # Логирование ошибочных фотографий в mlflow
         _target_: MLFlowMultilabelLoggingCallback
         logging_image_number: 20 # Кол-во фотографий, которые надо логнуть
-      # custom_tensorboard: # Логирование ошибочных фотографий в tensorboard
-      #   _target_: TensorboardMultilabelLoggingCallback
-      #   logging_image_number: 20 # Кол-во фотографий, которые надо логнуть
-      #   threshold: 0.5
+      custom_tensorboard: # Логирование ошибочных фотографий в tensorboard
+        _target_: TensorboardMultilabelLoggingCallback
+        logging_image_number: 20 # Кол-во фотографий, которые надо логнуть
+        threshold: 0.5
 
     data: # Подключение данных и параметров обучения
       shuffle: false
