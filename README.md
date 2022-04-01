@@ -323,33 +323,33 @@ LMDB - Lightning Memory-Mapped Database - программная библиот�
 # Training run 
 ```bash
 # To check multiclass pipeline
-sh classification_shells/check_multiclass.sh
+sh shells/classification_shells/multiclass/check.sh
 # To usual multiclass train pipeline
-sh classification_shells/train_multiclass.sh
+sh shells/classification_shells/multiclass/train.sh
 
 
 # To check multilabel pipeline
-sh classification_shells/check_multilabel.sh
+sh shells/classification_shells/multilabel/check.sh
 # To usual multilabel train pipeline
-sh classification_shells/train_multilabel.sh
+sh shells/classification_shells/multilabel/train.sh
 
 
 # To train metric_learning pipeline
-sh metric_learning_shells/train.sh
+sh shells/metric_learning_shells/train.sh
 # To check metric_learning pipeline
-sh metric_learning_shells/check.sh
+sh shells/metric_learning_shells/check.sh
 
 
 # To train nlp siamese pipeline
-nlp_shells/siamese_train.sh
+sh shells/nlp_shells/siamese_train.sh
 # To check nlp siamse pipeline
-sh nlp_shells/siamese_check.sh
+sh shells/nlp_shells/siamese_check.sh
 
 
 # To train gpt language pipeline
-sh nlp_shells/gpt_train.sh
+sh shells/nlp_shells/gpt_train.sh
 # To check gpt language pipeline
-sh nlp_shells/gpt_check.sh
+sh shells/nlp_shells/gpt_check.sh
 
 
 # Run tensorflow for visualisation
