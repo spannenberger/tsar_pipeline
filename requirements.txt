@@ -17,5 +17,5 @@ onnxruntime==1.7.0
 mlconfig==0.1.0
 flake8
 transformers==4.9.2
-pytorch-tools==0.1.9
+# pytorch-tools==0.1.9
 ml-pyxis
