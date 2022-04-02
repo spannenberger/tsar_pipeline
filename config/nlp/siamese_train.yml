@@ -1,7 +1,7 @@
 model:
-  _target_: Siamese # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: SiameseGPTModels # имя клаccа. Сам класс будет сконструирован в registry по этому имени
   model_name: "sberbank-ai/rugpt3small_based_on_gpt2"
-  embeddings_number: 768
+  mode: NLP
 
 args: # Различные аргументы для Catalyst
   expdir: src/nlp # Путь до нашего эксперимента, с файлом __init__, в котором импортируется Runner, и, опционально, регистрируются все дополнительные сущности: model, callback, criterion, etc
@@ -61,19 +61,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
       save_config_model:
         _target_: SaveModelWithConfigCallback
         save_path: ./siamese_gpt
-
-      analyze:
-        _target_: AnalyticsDistanceCallback
-        analytics_data: "./nlp_dataset/napoleon_user_stories_clean.csv"
-        similarity_file_path: "./logs/similarity.txt"
-        cluster_file_path: "./logs/clusters.csv"
-
-      duplet:
-        _target_: DupletMetricCallback
-        duplets_file: ./nlp_dataset/dupl_stories_with_added_short.csv
         
-      custom_mlflow:
-        _target_: MLFlowNLPLoggingCallback
       verbose:
         _target_: TqdmCallback
 

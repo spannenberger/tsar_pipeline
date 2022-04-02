@@ -1,12 +1,11 @@
-from catalyst.core import IRunner
+from sklearn.model_selection import train_test_split
 from catalyst.runners import SupervisedConfigRunner
-from collections import OrderedDict
-import pandas as pd
 from dataset import CustomNLPDataset, NLPDataset
-import torch
 from transformers import GPT2Tokenizer
-from sklearn.model_selection import train_test_split
-from sklearn.model_selection import train_test_split
+from collections import OrderedDict
+from catalyst.core import IRunner
+import pandas as pd
+import torch
 
 
 class NLPRunner(IRunner):

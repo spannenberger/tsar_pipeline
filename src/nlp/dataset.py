@@ -1,9 +1,5 @@
-import cv2
-import numpy as np
-from pathlib import Path
-import torch
 from torch.utils.data import Dataset
-import json
+import torch
 
 
 class CustomNLPDataset(Dataset):

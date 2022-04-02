@@ -1,5 +1,6 @@
 model:
-  _target_: gpt # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: ruGPT3Models # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  mode: NLP
   model_name: sberbank-ai/rugpt3small_based_on_gpt2
 
 args: # Различные аргументы для Catalyst
@@ -50,15 +51,15 @@ stages: # Словарь всех стадий Catalyst, для обучения
         _target_: OptimizerCallback
         metric_key: *model_loss
 
-      analyze:
-        _target_: AnalyticsDistanceCallback
-        analytics_data: "./nlp_dataset/napoleon_user_stories_clean.csv"
-        similarity_file_path: "./logs/similarity.txt"
-        cluster_file_path: "./logs/clusters.csv"
+      # analyze:
+      #   _target_: AnalyticsDistanceCallback
+      #   analytics_data: "./nlp_dataset/napoleon_user_stories_clean.csv"
+      #   similarity_file_path: "./logs/similarity.txt"
+      #   cluster_file_path: "./logs/clusters.csv"
 
-      duplet:
-        _target_: DupletMetricCallback
-        duplets_file: ./nlp_dataset/dupl_stories_with_added_short.csv
+      # duplet:
+      #   _target_: DupletMetricCallback
+      #   duplets_file: ./nlp_dataset/dupl_stories_with_added_short.csv
 
       custom_mlflow:
         _target_: MLFlowNLPLoggingCallback
