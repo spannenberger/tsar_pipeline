@@ -1,4 +1,5 @@
 from torch.utils.data import Dataset
+from typing import List
 import torch
 
 
@@ -17,18 +18,17 @@ class CustomNLPDataset(Dataset):
         return item
 
 class NLPDataset(Dataset):
-    def __init__(self, input_ids, attention_mask, masked=0.15, labels=True):
-        self.input_ids = input_ids
-        self.attention_mask = attention_mask
+    def __init__(self, dataset: List[str], tokenizer, masked=0.15, labels=True):
         self.masked = masked
         self.labels = labels
-
+        self.dataset = tokenizer(dataset, padding=True, truncation=True, max_length=100, return_tensors='pt')
+    
     def __len__(self):
-        return len(self.input_ids)
-
+        return len(self.dataset["input_ids"])
+    
     def __getitem__(self, idx):
         item = {}
-        input_ids = self.input_ids[idx].detach().clone()
+        input_ids = self.dataset["input_ids"][idx].detach().clone()
 
         mask = torch.rand(input_ids.shape) < self.masked # marks for masked part
         mask *= input_ids != 101 # remove marks for special tokens
@@ -36,8 +36,8 @@ class NLPDataset(Dataset):
         input_ids[mask] = 103 # add mask tokens
 
         item["input_ids"] = input_ids
-        item["attention_mask"] = self.attention_mask[idx]
+        item["attention_mask"] = self.dataset["attention_mask"][idx]
         if self.labels:
-            item["labels"] = self.input_ids[idx]
+            item["labels"] = self.dataset["input_ids"][idx]
         return item
 

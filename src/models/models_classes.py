@@ -1,5 +1,4 @@
-from re import L
-from torch import embedding, nn
+from torch import nn
 import torch
 
 class FeatureExtractionModel(nn.Module):
@@ -41,6 +40,7 @@ class GPTFeatureExtractionModel(nn.Module):
     def forward(self, input_ids, attention_mask, labels):
         tmp = self.backbone(input_ids=input_ids, attention_mask=attention_mask, labels=labels)
         return tmp
+        
 class NLPModel(GPTFeatureExtractionModel):
     pass
 

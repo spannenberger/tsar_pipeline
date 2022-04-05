@@ -2,9 +2,7 @@ from torch import nn
 import torch
 from models.models_classes import (
     ClassificationModel,
-    NLPModel,
-    SiameseModel,
-    MetricLearningModel,
+    MetricLearningModel
 )
 
 
@@ -15,8 +13,6 @@ class ModelsFabric:
             return cls.create_classification(model, **kwargs)
         if mode == "MetricLearning":
             return cls.create_metric_learning(model, **kwargs)
-        if mode == "NLP":
-            return cls.create_nlp(model, **kwargs)
 
     @staticmethod
     def remove_classifier(model):
@@ -69,11 +65,4 @@ class ModelsFabric:
         model = MetricLearningModel(model, embedding_size)
         if is_local:
             model.load_state_dict(torch.load(path)["model_state_dict"])
-        return model
-
-    @staticmethod
-    def create_nlp(model, **kwargs):
-        # model = NLPModel(model)
-        model = SiameseModel(model)
-        # Нужно придумать как можно нормально переключаться между Siamese и обычным GPT
         return model

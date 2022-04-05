@@ -1,6 +1,5 @@
 model:
   _target_: ruGPT3Models # имя клаccа. Сам класс будет сконструирован в registry по этому имени
-  mode: NLP
   model_name: sberbank-ai/rugpt3small_based_on_gpt2
 
 args: # Различные аргументы для Catalyst
