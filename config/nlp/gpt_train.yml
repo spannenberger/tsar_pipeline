@@ -19,8 +19,7 @@ runner: # Параметры для инициализации Runner
 
 engine: # Параметры для distributed training и NVIDIA Apex
   _target_: DeviceEngine
-  # device: cuda:0
-
+  device: cpu
 
 loggers:
 # Встроенные логеры каталиста

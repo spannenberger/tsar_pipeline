@@ -4,14 +4,14 @@ from transformers import GPT2LMHeadModel
 from models.models_classes import NLPModel, SiameseModel
 from models.models_fabrics import ModelsFabric
 
-class ruGPT3Models(ModelsFabric):
+class ruGPT3Models():
 
     @staticmethod
     def get_from_params(model_name, **kwargs):
         model = GPT2LMHeadModel.from_pretrained(model_name)
         return NLPModel(model, **kwargs)
 
-class SiameseGPTModels(ModelsFabric):
+class SiameseGPTModels():
 
     @staticmethod
     def get_from_params(model_name, **kwargs):
