@@ -7,13 +7,17 @@ import ast
 from PIL import Image
 import numpy as np
 from tqdm import tqdm
-from catalyst.core.misc import _get_original_callback
+from catalyst.core.callback import Callback, CallbackWrapper
 from catalyst.callbacks.metric import LoaderMetricCallback
 from metrics.custom_metric import CustomMetric
 from utils.utils import get_from_dict
 from pathlib import Path
 
-
+def _get_original_callback(callback: Callback) -> Callback:
+    """Docs."""
+    while isinstance(callback, CallbackWrapper):
+        callback = callback.callback
+    return callback
 class MainMLFlowLoggerCallback(Callback):
 
     def __init__(self):
