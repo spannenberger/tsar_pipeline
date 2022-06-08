@@ -1,15 +1,16 @@
-catalyst==21.05
+catalyst==21.12
 numpy>=1.17.4
 opencv-python>=4.0
-torch==1.8.0
+torch==1.11.0
 albumentations==0.4.3
 torch_optimizer==0.1.0
-mlflow==1.23.1
+mlflow==1.26.1
 boto3==1.17.13
 scikit-multilearn==0.2.0
-torchvision==0.9.0
+torchvision==0.12.0
 python-dotenv==0.15.0
 torch-tools==0.1.5
+torchtools==0.1.4
 onnxruntime==1.7.0
 scikit-learn==0.24.1
 tensorboard==2.5.0
@@ -17,5 +18,8 @@ onnxruntime==1.7.0
 mlconfig==0.1.0
 flake8
 transformers==4.9.2
-# pytorch-tools==0.1.9
+protobuf==3.20.1
+ml-pyxis
+xmltodict==0.12.0
+mean-average-precision
 ml-pyxis
