@@ -3,7 +3,7 @@ version: '2.3'
 services:
   cv:
     image: cv
-    # runtime: nvidia
+    runtime: nvidia
     pid: "host"
     # env_file:
     #   - .env
