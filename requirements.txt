@@ -22,3 +22,4 @@ protobuf==3.20.1
 ml-pyxis
 xmltodict==0.12.0
 mean-average-precision
+ml-pyxis

@@ -1,11 +1,23 @@
-from torch import nn
 import torch
 import torchvision as vision
+from transformers import GPT2LMHeadModel
+from models.models_classes import NLPModel, SiameseModel
 from models.models_fabrics import ModelsFabric
-from models.models_classes import MetricLearningModel
-from models.models_classes import ClassificationModel
 
+class ruGPT3Models(ModelsFabric):
 
+    @staticmethod
+    def get_from_params(model_name, **kwargs):
+        model = GPT2LMHeadModel.from_pretrained(model_name)
+        return NLPModel(model, **kwargs)
+
+class SiameseGPTModels(ModelsFabric):
+
+    @staticmethod
+    def get_from_params(model_name, **kwargs):
+        model = GPT2LMHeadModel.from_pretrained(model_name).transformer
+        return SiameseModel(model, **kwargs)
+        
 class MobilenetV3Small(ModelsFabric):
 
     @staticmethod

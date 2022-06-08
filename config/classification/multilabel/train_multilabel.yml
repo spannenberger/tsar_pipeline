@@ -1,5 +1,5 @@
 model:
-  _target_: EfficientNetb0 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
+  _target_: ResNet18 # имя клаccа. Сам класс будет сконструирован в registry по этому имени
   num_classes: &num_classes 18
   mode: Classification
   # path: 'our_models/best.pth' # Путь до расположения вашей локальной модели
@@ -30,6 +30,8 @@ class_names: &class_names ['anti-aerosol', 'cap', 'hood', 'face', 'gas-aerosol',
 loggers:
 # Встроенные логеры каталиста
 #(Возможные логеры: https://github.com/catalyst-team/catalyst/tree/master/catalyst/loggers)
+  console:
+    _target_: ConsoleLogger
   mlflow:
     _target_: MLflowLogger
     experiment: 'kcm'
@@ -73,6 +75,7 @@ stages: # Словарь всех стадий Catalyst, для обучения
         input_key: *model_output
         target_key: *model_target
         threshold: *threshold
+
       loss:
         _target_: CriterionCallback
         input_key: *model_output
@@ -101,9 +104,20 @@ stages: # Словарь всех стадий Catalyst, для обучения
         _target_: OnnxSaveCallback
         out_dir: "./logs/onnx"
         checkpoint_names: ["last", "best_full"]
-      infer: #
-        _target_: MultilabelInerCallback
-        subm_file: "./crossval_log/preds.csv"
+      iner:
+        _target_: MultilabelCustomAccuracy
+        logits: *model_output
+        targets: *model_target
+        image_name: image_name
+        loaders: valid
+        for_metrics: for_metrics
+        threshold: *threshold
+
+      save_metrics:
+        _target_: SaveMetricInFileCallback
+        required_metrics: 
+          iner: 
+            predicted_images: "logs/csv/subm_file.csv"
       custom_mlflow: # Логирование ошибочных фотографий в mlflow
         _target_: MLFlowMultilabelLoggingCallback
         logging_image_number: 20 # Кол-во фотографий, которые надо логнуть
@@ -119,11 +133,12 @@ stages: # Словарь всех стадий Catalyst, для обучения
       test_image_dir: "images"
       train_meta: "train_metadata.csv"
       test_meta: "test_metadata.csv"
-      transform_path: "config/augmentations/medium.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/augmentations/))
+      transform_path: "config/augmentations/light.yml" # Режим аугментаций данных (Возможны: light, medium, hard(./config/augmentations/))
+      mode: Classic
     loaders: &loaders
       batch_size: 1 # Размер батча для всех стейджей
       num_workers: 0 # Для локальной поставить 0
-    num_epochs: 50 # Количество эпох эксперимента
+    num_epochs: 1 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: multi_label_accuracy
     minimize_metric: False

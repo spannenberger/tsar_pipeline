@@ -1,19 +1,19 @@
-import numpy as np
-import pyxis as px
 from torch.utils.data import DataLoader, Dataset
 from torchvision.datasets import ImageFolder
-import cv2
 import albumentations as A
-from tqdm import tqdm
-import yaml 
 from pathlib import Path
+from tqdm import tqdm
+import numpy as np
+import pyxis as px
+import cv2
+import yaml
 
 class LMDBDataset(Dataset):
-    """ LMDB data class """
+
     def __init__(self, root, loader) -> None:
         self._dataset = ImageFolder(root=root, loader=loader)
         super().__init__()
-    
+
     def __getitem__(self, idx):
         item = {}
         item["sample"] = self._dataset[idx][0]
@@ -23,11 +23,15 @@ class LMDBDataset(Dataset):
 
     def __len__(self):
         return len(self._dataset)
-        
-if __name__ == "__main__":
-    # read config
-    with open("./src/utils/lmdb_config.yml", "r") as config:
+
+def main():
+    config_path = Path("src/utils/lmdb_config.yml").absolute()
+    with open(config_path, "r") as config:
         config_dict = yaml.load(config, Loader=yaml.FullLoader)
+
+    if config_dict["convert"] == False:
+        print("Convertation flag is False. Do not create LMDB dataset")
+        return
 
     width = config_dict["width"]
     height = config_dict["height"]
@@ -46,7 +50,7 @@ if __name__ == "__main__":
     folders_list = ["/val", "/base", "/train"]
 
     for folder in folders_list:
-        dataset = LMDBDataset(dataset_path + folder, loader=lambda x: transforms(image=cv2.imread(x))["image"])
+        dataset = LMDBDataset(dataset_path + folder, loader=lambda x: transforms(image=cv2.cvtColor(cv2.imread(x), cv2.COLOR_BGR2RGB))["image"])
         data_count = len(dataset)
 
         loader = DataLoader(dataset, num_workers=num_workers, batch_size=batch_size, pin_memory=pin_memory)
@@ -64,3 +68,6 @@ if __name__ == "__main__":
                 }
             db.put_samples(data)
         db.close()
+
+if __name__ == '__main__':
+    main()

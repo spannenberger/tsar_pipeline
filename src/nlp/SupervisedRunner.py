@@ -1,13 +1,16 @@
-from catalyst.core import IRunner
+from sklearn.model_selection import train_test_split
 from catalyst.runners import SupervisedConfigRunner
-from collections import OrderedDict
-import pandas as pd
 from dataset import CustomNLPDataset, NLPDataset
-import torch
 from transformers import GPT2Tokenizer
-from sklearn.model_selection import train_test_split
-from sklearn.model_selection import train_test_split
+from collections import OrderedDict
+from catalyst.core import IRunner
+import pandas as pd
+import torch
 
+def create_tokenizer(tokenizer_name: str):
+    tokenizer = GPT2Tokenizer.from_pretrained(tokenizer_name)
+    tokenizer.add_special_tokens({'pad_token': '<pad>'})
+    return tokenizer
 
 class NLPRunner(IRunner):
     """Кастомный runner нашего эксперимента"""
@@ -25,17 +28,12 @@ class NLPRunner(IRunner):
             shuffled_data = f.readlines()
         shuffled_data = list(set(shuffled_data))
 
-        tokenizer_name = self._config["model"]["model_name"]
-        self.tokenizer = GPT2Tokenizer.from_pretrained(tokenizer_name)
-        self.tokenizer.add_special_tokens({'pad_token': '<pad>'})
+        tokenizer = create_tokenizer(self._config["model"]["model_name"])
 
         train_split, val_split = train_test_split(shuffled_data)
 
-        train_data = self.tokenizer(list(train_split), padding=True, truncation=True, max_length=100, return_tensors='pt')
-        val_data = self.tokenizer(list(val_split), padding=True, truncation=True, max_length=100, return_tensors='pt')
-
-        datasets["train"] = {'dataset': NLPDataset(**train_data)}
-        datasets["valid"] = NLPDataset(**val_data)
+        datasets["train"] = {'dataset': NLPDataset(train_split, tokenizer)}
+        datasets["valid"] = NLPDataset(val_split, tokenizer)
 
         return datasets
 
@@ -57,17 +55,15 @@ class MulticlassSiameseRunner(IRunner):
         datasets = OrderedDict()
 
         df = pd.read_csv(self._stage_config[stage]["data"]["text"])
-        tokenizer_name = self._config["model"]["model_name"]
-        self.tokenizer = GPT2Tokenizer.from_pretrained(tokenizer_name)
-        self.tokenizer.add_special_tokens({'pad_token': '<pad>'})
+        tokenizer = create_tokenizer(self._config["model"]["model_name"])
 
         train_split, val_split = train_test_split(df)
 
-        train_split["story_1"] = train_split["story_1"].apply(lambda x : self.tokenizer(x, padding="max_length", truncation=True, max_length=100, return_tensors='pt'))
-        train_split["story_2"] = train_split["story_2"].apply(lambda x : self.tokenizer(x, padding="max_length", truncation=True, max_length=100, return_tensors='pt'))
+        train_split["story_1"] = train_split["story_1"].apply(lambda x : tokenizer(x, padding="max_length", truncation=True, max_length=100, return_tensors='pt'))
+        train_split["story_2"] = train_split["story_2"].apply(lambda x : tokenizer(x, padding="max_length", truncation=True, max_length=100, return_tensors='pt'))
 
-        val_split["story_1"] = val_split["story_1"].apply(lambda x : self.tokenizer(x, padding="max_length", truncation=True, max_length=100, return_tensors='pt'))
-        val_split["story_2"] = val_split["story_2"].apply(lambda x : self.tokenizer(x, padding="max_length", truncation=True, max_length=100, return_tensors='pt'))
+        val_split["story_1"] = val_split["story_1"].apply(lambda x : tokenizer(x, padding="max_length", truncation=True, max_length=100, return_tensors='pt'))
+        val_split["story_2"] = val_split["story_2"].apply(lambda x : tokenizer(x, padding="max_length", truncation=True, max_length=100, return_tensors='pt'))
         
         train_split=train_split.reset_index(drop=True)
         val_split=val_split.reset_index(drop=True)

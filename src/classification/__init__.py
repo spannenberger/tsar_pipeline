@@ -27,13 +27,15 @@ from callbacks.convert_callbacks.torchscript_save_callback import TorchscriptSav
 from callbacks.convert_callbacks.onnx_save_callback import OnnxSaveCallback
 # from callbacks.logger_callbacks.mlflow_logger import CustomMLflowLogger
 # Multiclass
-from callbacks.iner_callback import MulticlassInerCallback
-# from callbacks.logger_callbacks.mlflow_image_logger import MLFlowMulticlassLoggingCallback
+from callbacks.iner_callback import MulticlassCustomAccuracy
+from callbacks.logger_callbacks.mlflow_image_logger import MLFlowMulticlassLoggingCallback
 from callbacks.logger_callbacks.tensorboard_image_logger import TensorboardMulticlassLoggingCallback
 # Multilabel
-from callbacks.iner_callback import MultilabelInerCallback
+from callbacks.iner_callback import MultilabelCustomAccuracy
 from callbacks.logger_callbacks.mlflow_image_logger import MLFlowMultilabelLoggingCallback
 from callbacks.logger_callbacks.tensorboard_image_logger import TensorboardMultilabelLoggingCallback
+
+from callbacks.save_metric_callback import SaveMetricInFileCallback
 
 # Импорт инструментов каталиста
 from catalyst.registry import Registry
@@ -41,6 +43,8 @@ from catalyst.loggers.tensorboard import TensorboardLogger
 
 
 # Инициализаця
+Registry(MultilabelCustomAccuracy)
+Registry(MulticlassCustomAccuracy)
 Registry(MulticlassSupervisedRunner)
 Registry(MultilabelSupervisedRunner)
 Registry(ResNet18)

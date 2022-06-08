@@ -46,11 +46,11 @@ stages: # Словарь всех стадий Catalyst, для обучения
       total_epochs: 10
       eta_min: 0.0001
     callbacks:
-      iner:
-        _target_: MLInerCallback
-        incorrect_file: logs/csv/incorrect.csv
-        uncoordinated_file: logs/csv/uncoordinated.csv
-        threshold: 10.
+      # iner:
+      #   _target_: MetricLearningInerCallback
+      #   incorrect_file: logs/csv/incorrect.csv
+      #   uncoordinated_file: logs/csv/uncoordinated.csv
+      #   threshold: 10.
       scheduler:
         _target_: SchedulerCallback
       # Подключение колбэков каталиста
@@ -62,6 +62,22 @@ stages: # Словарь всех стадий Catalyst, для обучения
         is_query_key: "is_query"
         topk_args: [1]
         loaders: valid
+
+      custom_accuracy:
+        _target_: CustomAccuracy
+        threshold: 10.
+        embeddings_key: *model_output
+        labels_key: *model_target
+        is_query_key: "is_query"
+        image_name: image_name
+        loaders: valid
+      
+      save_metrics:
+        _target_: SaveMetricInFileCallback
+        required_metrics: 
+          custom_accuracy: 
+            incorrect: "logs/csv/incorrect.csv"
+            uncoordinated: "logs/csv/uncoordinated.csv"
 
       mlflow_logger: # Колбэк для логгирования фотографий, моделей, конфигов в mlflow
         _target_: MLFlowMetricLearningCallback
@@ -111,16 +127,16 @@ stages: # Словарь всех стадий Catalyst, для обучения
       # Подключение кастомных колбэков
       #(Возможные колбэки: ./src_multilabel/callbacks/)
     data:
-      dataset_path: metric_learning_dataset # путь до датасета
+      dataset_path: lmdb_test_dataset # путь до датасета
       train_path: train # путь до папки с тренировочными фотографиями
       base_path: base # путь до папки с фотографиями галлереи
       val_path: val # путь до папки с фотографиями валидации(запроса/query)
       transform_path: config/augmentations/light.yml # Режим аугментаций данных (Возможны: light, medium, hard(./config/augmentations/))
-      mode: Classic # Для использования lmdb датасета указать - LMDB
+      mode: LMDB # Для использования lmdb датасета указать - LMDB, иначе Classic
     loaders: &loaders
       batch_size: 1 # Размер батча для всех стейджей
       num_workers: 0 #для локальной поставить 0
-    num_epochs: 25 # Количество эпох эксперимента
+    num_epochs: 3 # Количество эпох эксперимента
     valid_loader: valid
     main_metric: cmc01
     minimize_metric: False
