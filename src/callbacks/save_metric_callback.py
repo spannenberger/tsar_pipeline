@@ -1,14 +1,17 @@
+from catalyst.core.callback import Callback, CallbackWrapper, CallbackOrder
 from catalyst.callbacks.metric import LoaderMetricCallback
-from catalyst.core.callback import Callback, CallbackOrder
-from catalyst.core.misc import _get_original_callback
 from metrics.custom_metric import CustomMetric
-from catalyst.dl import ControlFlowCallback
 from catalyst.core.runner import IRunner
 from catalyst.registry import Registry
 from abc import abstractmethod
 from pathlib import Path
 from typing import Dict
 
+def _get_original_callback(callback: Callback) -> Callback:
+    """Docs."""
+    while isinstance(callback, CallbackWrapper):
+        callback = callback.callback
+    return callback
 
 class SaveMetricCallback(Callback):
     

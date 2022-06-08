@@ -9,9 +9,15 @@ from tqdm import tqdm
 import pandas as pd
 import numpy as np
 import ast
-from catalyst.core.misc import _get_original_callback
 from catalyst.callbacks.metric import LoaderMetricCallback
 from metrics.custom_metric import CustomMetric
+from catalyst.core.callback import Callback, CallbackWrapper
+
+def _get_original_callback(callback: Callback) -> Callback:
+    """Docs."""
+    while isinstance(callback, CallbackWrapper):
+        callback = callback.callback
+    return callback
 
 class TensorboardLoggingCallback(Callback):
 
