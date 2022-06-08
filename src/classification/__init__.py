@@ -22,13 +22,13 @@ from models.models import WideResnet50_2
 from models.models import WideResnet101_2
 
 # Импорт колбэков
-from callbacks.custom_scheduler import CustomScheduler
+# from callbacks.custom_scheduler import CustomScheduler
 from callbacks.convert_callbacks.torchscript_save_callback import TorchscriptSaveCallback
 from callbacks.convert_callbacks.onnx_save_callback import OnnxSaveCallback
-from callbacks.logger_callbacks.mlflow_logger import CustomMLflowLogger
+# from callbacks.logger_callbacks.mlflow_logger import CustomMLflowLogger
 # Multiclass
 from callbacks.iner_callback import MulticlassInerCallback
-from callbacks.logger_callbacks.mlflow_image_logger import MLFlowMulticlassLoggingCallback
+# from callbacks.logger_callbacks.mlflow_image_logger import MLFlowMulticlassLoggingCallback
 from callbacks.logger_callbacks.tensorboard_image_logger import TensorboardMulticlassLoggingCallback
 # Multilabel
 from callbacks.iner_callback import MultilabelInerCallback
@@ -61,4 +61,4 @@ Registry(WideResnet101_2)
 Registry(MobilenetV2)
 Registry(MobilenetV3Large)
 Registry(MobilenetV3Small)
-Registry(CustomMLflowLogger)
+# Registry(CustomMLflowLogger)

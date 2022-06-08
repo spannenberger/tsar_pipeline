@@ -155,3 +155,6 @@ crossval_log/
 nlp_data/
 siamese_gpt/
 detection_dataset/
+train_walrus/
+*.csv
+dataset/

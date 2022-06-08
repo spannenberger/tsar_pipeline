@@ -4,9 +4,9 @@ services:
   cv:
     image: cv
     # runtime: nvidia
-    # pid: "host"
-    env_file:
-      - .env
+    pid: "host"
+    # env_file:
+    #   - .env
     ports:
       - 5000:5000
       - 6006:6006

@@ -1,25 +1,27 @@
 shared:
   num_classes: &num_classes 4
-  num_epochs: &num_epochs 100
+  num_epochs: &num_epochs 20
   validation_period: &val_period 5
-  train_file: &train ./detection_dataset/dataset.json
-  train_imgs_dir: &train_imgs_dir ./detection_dataset/images
-  valid_file: &valid ./detection_dataset/dataset.json
-  valid_imgs_dir: &valid_imgs_dir ./detection_dataset/images
+  train_file: &train train_walrus/test_5.json
+  train_imgs_dir: &train_imgs_dir dataset/images
+  valid_file: &valid train_walrus/test_5.json
+  valid_imgs_dir: &valid_imgs_dir dataset/images
   images_height: &img_h 416
   images_width: &img_w 416
 
 runner:
   _target_: YOLOXDetectionRunner
-  
-args:
-  expdir: src/detection
-  verbose: True
-  logdir: logs
-  seed: 42
 
+args: # Различные аргументы для Catalyst
+  expdir: src/detection # Путь до нашего эксперимента, с файлом `__init__`, в котором импортируется Runner, и, опционально, регистрируются все дополнительные сущности: model, callback, criterion, etc
+  logdir: logs # Путь в который будут сохранятся логи
+  verbose: True # Нужно ли выводить на консоль информацию об обучении
+  seed: 42 # сид обучения для PyTorch, Numpy, Python и Tensorflow
+  deterministic: True # Нужно ли использовать deterministic CuDNN
+  benchmark: True # Нужно ли использовать CuDNN benchmark
 engine:
   _target_: DeviceEngine
+  device: cuda
 model:
   _target_: yolo_x_tiny
   num_classes: *num_classes
@@ -27,9 +29,9 @@ model:
 loggers:
   console:
     _target_: ConsoleLogger
-  mlflow:
-    _target_: MLflowLogger
-    experiment: "detection_test"
+  # mlflow:
+  #   _target_: MLflowLogger
+  #   experiment: 'detection'
 
 stages:
   initial_training:
